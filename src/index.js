@@ -12,14 +12,19 @@ const _ = require("lodash");
 const HTTP_METHODS = ["get", "put", "post", "delete"];
 
 const { MoleculerError } = require("moleculer").Errors;
-class MoleculerGotError extends MoleculerError {}
+
+class MoleculerGotError extends MoleculerError {
+  constructor(msg, data) {
+    super(msg || `Got Client HTTP Error.`, 500, "MOLECULER_HTTP_ERROR", data);
+  }
+}
 
 module.exports = {
   name: "got",
 
   /**
    * Got instance https://github.com/sindresorhus/got#instances
-   *
+   * @type {import("got").GotInstance} _client
    */
   _client: null,
 
@@ -32,7 +37,8 @@ module.exports = {
       // More about Got default options: https://github.com/sindresorhus/got#instances
       defaultOptions: {
         hooks: {
-          afterResponse: []
+          afterResponse: [],
+          beforeError: []
         }
       }
     }
@@ -76,18 +82,22 @@ module.exports = {
       methodsToRemove.forEach(methodName => delete this[`_${methodName}`]);
     }
 
-    // Create Got client with default options
+    // Extend Got client with default options
     const { defaultOptions } = this.settings.got;
+
+    /**
+     * @type {import("got").GotInstance}
+     */
     this._client = got.extend(defaultOptions);
   },
 
   /**
    * Service started lifecycle event handler
    */
-  started() {},
+  async started() {},
 
   /**
    * Service stopped lifecycle event handler
    */
-  stopped() {}
+  async stopped() {}
 };

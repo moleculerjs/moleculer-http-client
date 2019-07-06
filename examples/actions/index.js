@@ -24,7 +24,7 @@ let s = broker.createService({
   actions: {
     async get() {
       try {
-        let res = await this._get("http://httpbin.org/status/400", {
+        let res = await this._get("http://httpbin.org/status/404", {
           json: true
         });
 
