@@ -1,7 +1,7 @@
 {
-  "name": "my-project",
+  "name": "moleculer-got",
   "version": "0.1.0",
-  "description": "A tiny wrapper of GOT package",
+  "description": "A tiny wrapper of GOT (HTTP client) package",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon examples/index.js",
@@ -47,5 +47,8 @@
   },
   "engines": {
     "node": ">= 8.x.x"
+  },
+  "dependencies": {
+    "got": "^9.6.0"
   }
 }

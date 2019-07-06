@@ -1,56 +1,45 @@
 /*
- * my-project
- * Copyright (c) 2019 André Mazayev (https://github.com/AndreMaz/my-project)
+ * moleculer-got
+ * Copyright (c) 2019 André Mazayev (https://github.com/AndreMaz/moleculer-got)
  * MIT Licensed
  */
 
 "use strict";
 
 module.exports = {
+  name: "my-project",
 
-	name: "my-project",
+  /**
+   * Default settings
+   */
+  settings: {},
 
-	/**
-	 * Default settings
-	 */
-	settings: {
+  /**
+   * Actions
+   */
+  actions: {
+    test(ctx) {
+      return "Hello " + (ctx.params.name || "Anonymous");
+    }
+  },
 
-	},
+  /**
+   * Methods
+   */
+  methods: {},
 
-	/**
-	 * Actions
-	 */
-	actions: {
-		test(ctx) {
-			return "Hello " + (ctx.params.name || "Anonymous");
-		}
-	},
+  /**
+   * Service created lifecycle event handler
+   */
+  created() {},
 
-	/**
-	 * Methods
-	 */
-	methods: {
+  /**
+   * Service started lifecycle event handler
+   */
+  started() {},
 
-	},
-
-	/**
-	 * Service created lifecycle event handler
-	 */
-	created() {
-
-	},
-
-	/**
-	 * Service started lifecycle event handler
-	 */
-	started() {
-
-	},
-
-	/**
-	 * Service stopped lifecycle event handler
-	 */
-	stopped() {
-
-	}
+  /**
+   * Service stopped lifecycle event handler
+   */
+  stopped() {}
 };
