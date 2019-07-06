@@ -20,11 +20,11 @@ describe("Test MoleculerGOT base", () => {
   it("setting field should be an Object", () => {
     expect(service.settings.got).toBeInstanceOf(Object);
     expect(service.settings.got.includeMethods).toEqual(null);
-    expect(service.settings.got.includeClient).toEqual(true);
+    expect(service.settings.got.defaultOptions).toBeInstanceOf(Object);
   });
 
   it("should have a GOT client", () => {
-    expect(service.client).toBeDefined();
+    expect(service._client).toBeDefined();
   });
 
   it("should NOT have any methods", () => {
