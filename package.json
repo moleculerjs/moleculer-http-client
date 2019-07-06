@@ -25,6 +25,8 @@
     "moleculer": "^0.13.0"
   },
   "devDependencies": {
+    "@types/got": "^9.6.0",
+    "@types/jest": "^24.0.15",
     "benchmarkify": "^2.1.1",
     "coveralls": "3.0.4",
     "eslint": "6.0.1",
@@ -49,6 +51,7 @@
     "node": ">= 8.x.x"
   },
   "dependencies": {
-    "got": "^9.6.0"
+    "got": "^9.6.0",
+    "lodash": "^4.17.11"
   }
 }

@@ -6,13 +6,37 @@
 
 "use strict";
 
+const got = require("got");
+const _ = require("lodash");
+
+const HTTP_METHODS = ["get", "put", "post", "delete"];
+
+const { MoleculerError } = require("moleculer").Errors;
+class MoleculerGotError extends MoleculerError {}
+
 module.exports = {
-  name: "my-project",
+  name: "got",
+
+  /**
+   * Got instance https://github.com/sindresorhus/got#instances
+   *
+   */
+  _client: null,
 
   /**
    * Default settings
    */
-  settings: {},
+  settings: {
+    got: {
+      includeMethods: null,
+      // More about Got default options: https://github.com/sindresorhus/got#instances
+      defaultOptions: {
+        hooks: {
+          afterResponse: []
+        }
+      }
+    }
+  },
 
   /**
    * Actions
@@ -26,12 +50,36 @@ module.exports = {
   /**
    * Methods
    */
-  methods: {},
+  methods: {
+    _get(url, opt, stream = false) {
+      if (stream) return this._client.stream(url, opt);
+
+      return this._client.get(url, opt);
+    },
+
+    _post() {},
+
+    _put() {},
+
+    _delete() {}
+  },
 
   /**
    * Service created lifecycle event handler
    */
-  created() {},
+  created() {
+    // Remove unwanted methods
+    const { includeMethods } = this.settings.got;
+    if (!includeMethods || Array.isArray(includeMethods)) {
+      const methodsToRemove = _.difference(HTTP_METHODS, includeMethods);
+
+      methodsToRemove.forEach(methodName => delete this[`_${methodName}`]);
+    }
+
+    // Create Got client with default options
+    const { defaultOptions } = this.settings.got;
+    this._client = got.extend(defaultOptions);
+  },
 
   /**
    * Service started lifecycle event handler
