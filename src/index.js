@@ -11,19 +11,12 @@ const _ = require("lodash");
 
 const HTTP_METHODS = ["get", "put", "post", "delete"];
 
-const { MoleculerError } = require("moleculer").Errors;
-
-class MoleculerGotError extends MoleculerError {
-  constructor(msg, data) {
-    super(msg || `Got Client HTTP Error.`, 500, "MOLECULER_HTTP_ERROR", data);
-  }
-}
-
 module.exports = {
   name: "got",
 
   /**
    * Got instance https://github.com/sindresorhus/got#instances
+   *
    * @type {import("got").GotInstance} _client
    */
   _client: null,
@@ -37,7 +30,28 @@ module.exports = {
       // More about Got default options: https://github.com/sindresorhus/got#instances
       defaultOptions: {
         hooks: {
-          afterResponse: [],
+          beforeRequest: [
+            options => {
+              // Get Moleculer Logger instance
+              const logger = options.logger;
+              logger.info(`>>> HTTP Request to ${options.href}`);
+            }
+          ],
+          afterResponse: [
+            (response, retryWithMergedOptions) => {
+              // Get Moleculer Logger instance
+              const logger = response.request.gotOptions.logger;
+              const method = response.request.gotOptions.method;
+
+              logger.info(
+                `<<< HTTP ${method} to "${
+                  response.requestUrl
+                }" returned with status code ${response.statusCode}`
+              );
+
+              return response;
+            }
+          ],
           beforeError: []
         }
       }
@@ -57,13 +71,24 @@ module.exports = {
    * Methods
    */
   methods: {
-    _get(url, opt, stream = false) {
-      if (stream) return this._client.stream(url, opt);
+    _get(url, opt) {
+      if (opt.stream) {
+        return this._client.stream(url, opt);
+      }
 
       return this._client.get(url, opt);
     },
 
-    _post() {},
+    _post(url, payload, opt) {
+      /*
+      if (opt && opt.stream) {
+        return payload.pipe(this._client.stream.post(url, opt));
+      }
+      */
+      /*
+        return this._client.post(url, payload);
+      */
+    },
 
     _put() {},
 
@@ -84,6 +109,9 @@ module.exports = {
 
     // Extend Got client with default options
     const { defaultOptions } = this.settings.got;
+
+    // Add Moleculer Logger to Got Params
+    this.settings.got.defaultOptions.logger = this.logger;
 
     /**
      * @type {import("got").GotInstance}

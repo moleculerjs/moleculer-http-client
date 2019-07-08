@@ -1,7 +1,9 @@
 "use strict";
 
-let { ServiceBroker } = require("moleculer");
-let MyService = require("../../index");
+const { ServiceBroker } = require("moleculer");
+const MyService = require("../../index");
+const { MoleculerGotError } = require("../../src/errors");
+
 const fs = require("fs");
 
 // Create broker
@@ -17,22 +19,39 @@ let s = broker.createService({
 
   settings: {
     got: {
-      includeMethods: ["get"]
+      includeMethods: ["get", "post"],
+      defaultOptions: {
+        logger: "LOOGGGGGGERRRR"
+      }
     }
   },
 
   actions: {
     async get() {
       try {
-        let res = await this._get("http://httpbin.org/status/404", {
+        let res = await this._get("http://httpbin.org/status/200", {
           json: true
         });
 
         return res.body;
       } catch (error) {
         // console.log(error);
-        throw "ERRROR";
+        throw "Got an ERROR";
       }
+    },
+
+    getStream() {
+      return new Promise((resolve, reject) => {
+        let streamRequest = this._get("https://httpbin.org/html", {
+          stream: true
+        });
+
+        streamRequest.pipe(fs.createWriteStream("index.html"));
+
+        streamRequest.on("end", () => {
+          resolve("done");
+        });
+      });
     }
   }
 });
@@ -45,6 +64,6 @@ broker.start().then(() => {
   // broker.repl();
   broker
     .call("got.get", { name: "John MIXIN Doe" })
-    .then(broker.logger.info)
+    .then()
     .catch(broker.logger.error);
 });
