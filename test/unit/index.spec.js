@@ -5,6 +5,8 @@ const MoleculerGOT = require("../../src");
 const fs = require("fs");
 const fsPromise = require("fs").promises;
 
+const HTTPMockServer = require("../utils/http-server-mock/http-server");
+
 describe("Test MoleculerGOT base service", () => {
   const broker = new ServiceBroker({
     logger: false
@@ -72,15 +74,15 @@ describe("Test HTTP methods", () => {
     // logger: false
   });
 
+  const HTTPMock = broker.createService(HTTPMockServer);
+
   const service = broker.createService({
     name: "got",
 
     mixins: [MoleculerGOT],
 
     settings: {
-      got: {
-        includeMethods: ["get", "post"]
-      }
+      got: { includeMethods: ["get", "post"] }
     },
 
     actions: {
@@ -95,6 +97,14 @@ describe("Test HTTP methods", () => {
       getStream(ctx) {
         const streamRequest = this._get(ctx.params.url, { stream: true });
         return streamRequest;
+      },
+
+      postStream(ctx) {
+        try {
+          return this._post(ctx.meta.url, ctx.params, { stream: true });
+        } catch (error) {
+          throw error;
+        }
       }
     }
   });
@@ -103,62 +113,79 @@ describe("Test HTTP methods", () => {
   afterAll(() => broker.stop());
 
   it("should GET JSON object", async () => {
+    expect.assertions(1);
+
     let res = await broker.call("got.get", {
-      url: "http://httpbin.org/json"
+      url: "http://localhost:4000/json"
     });
 
-    let expected = {
-      slideshow: {
-        author: "Yours Truly",
-        date: "date of publication",
-        slides: [
-          {
-            title: "Wake up to WonderWidgets!",
-            type: "all"
-          },
-          {
-            items: [
-              "Why <em>WonderWidgets</em> are great",
-              "Who <em>buys</em> WonderWidgets"
-            ],
-            title: "Overview",
-            type: "all"
-          }
-        ],
-        title: "Sample Slide Show"
-      }
-    };
+    let expected = { hello: 200 };
 
     expect(res.body).toEqual(expected);
   });
 
   it("should GET 404 ERROR", async () => {
+    expect.assertions(1);
+
     try {
       let res = await broker.call("got.get", {
-        url: "http://httpbin.org/status/404"
+        url: "http://localhost:4000/statusCode/404"
       });
     } catch (error) {
-      expect(error.message).toEqual("Response code 404 (NOT FOUND)");
+      expect(error.statusCode).toEqual(404);
     }
   });
 
-  it("should GET as stream an HTML page", async () => {
+  it("should GET as stream a Readme file", async done => {
     let res = await broker.call("got.getStream", {
-      url: "http://httpbin.org/html",
+      url: "http://localhost:4000/stream",
       stream: true
     });
 
-    const destination = "./test/utils/stream-data/destination.html";
-    res.pipe(fs.createWriteStream(destination, { encoding: "utf8" }));
+    const actualPath = "./test/utils/stream-data/destination.md";
+    res.pipe(fs.createWriteStream(actualPath, { encoding: "utf8" }));
 
     res.on("end", async () => {
-      const source = "./test/utils/stream-data/source.html";
-      let expected = await fsPromise.readFile(source, { encoding: "utf8" });
+      console.log(res);
 
-      let actual = await fsPromise.readFile(destination, { encoding: "utf8" });
-      await fsPromise.unlink(destination);
+      const expectedPath = "./test/utils/stream-data/expected.md";
+      let expected = await fsPromise.readFile(expectedPath, {
+        encoding: "utf8"
+      });
+
+      let actual = await fsPromise.readFile(actualPath, { encoding: "utf8" });
+      await fsPromise.unlink(actualPath);
 
       expect(actual).toEqual(expected);
+
+      // Exit test
+      done();
     });
+  });
+
+  it("should POST a file as a stream", async () => {
+    const streamFile = "./test/utils/stream-data/toStream.md";
+    const stream = fs.createReadStream(streamFile, { encoding: "utf8" });
+
+    let res = await broker.call("got.postStream", stream, {
+      meta: {
+        url: "http://localhost:4000/stream",
+        stream: true
+      }
+    });
+
+    expect(res.statusCode).toBe(200);
+    expect(res.statusMessage).toBe("OK");
+
+    // Compare files
+    const actualPath = "./test/utils/stream-data/file.md";
+    let actual = await fsPromise.readFile(actualPath, { encoding: "utf8" });
+
+    let expected = await fsPromise.readFile(streamFile, {
+      encoding: "utf8"
+    });
+
+    expect(actual).toEqual(expected);
+    await fsPromise.unlink(actualPath);
   });
 });

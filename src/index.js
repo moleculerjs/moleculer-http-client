@@ -52,7 +52,11 @@ module.exports = {
               return response;
             }
           ],
-          beforeError: []
+          beforeError: [
+            error => {
+              return error;
+            }
+          ]
         }
       }
     }
@@ -72,7 +76,7 @@ module.exports = {
    */
   methods: {
     _get(url, opt) {
-      if (opt.stream) {
+      if (opt && opt.stream) {
         return this._client.stream(url, opt);
       }
 
@@ -80,14 +84,21 @@ module.exports = {
     },
 
     _post(url, payload, opt) {
-      /*
-      if (opt && opt.stream) {
-        return payload.pipe(this._client.stream.post(url, opt));
-      }
-      */
-      /*
-        return this._client.post(url, payload);
-      */
+      // if (opt && opt.stream) {
+      return new Promise((resolve, reject) => {
+        const writeStream = this._client.stream.post(url, opt);
+
+        payload.pipe(writeStream);
+
+        writeStream.on("response", res => resolve(res));
+
+        writeStream.on("error", error => reject(error));
+      });
+
+      // return payload.pipe(this._client.stream.post(url));
+      // }
+
+      // return this._client.post(url, payload);
     },
 
     _put() {},
