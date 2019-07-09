@@ -128,7 +128,7 @@ describe("Test HTTP methods", () => {
     expect.assertions(1);
 
     try {
-      let res = await broker.call("got.get", {
+      await broker.call("got.get", {
         url: "http://localhost:4000/statusCode/404"
       });
     } catch (error) {
@@ -146,6 +146,13 @@ describe("Test HTTP methods", () => {
     res.pipe(fs.createWriteStream(actualPath, { encoding: "utf8" }));
 
     res.on("response", async response => {
+      // Check HTTP headers
+      expect(response.statusCode).toBe(200);
+      expect(response.headers["content-disposition"]).toBe(
+        `attachment; filename=$README.md`
+      );
+
+      // Compare the actual files
       const expectedPath = "./test/utils/stream-data/expected.md";
       let expected = await fsPromise.readFile(expectedPath, {
         encoding: "utf8"
@@ -155,11 +162,6 @@ describe("Test HTTP methods", () => {
       await fsPromise.unlink(actualPath);
 
       expect(actual).toEqual(expected);
-      expect(response.statusCode).toBe(200);
-
-      expect(response.headers["content-disposition"]).toBe(
-        `attachment; filename=$README.md`
-      );
 
       // Exit test
       done();
@@ -177,10 +179,11 @@ describe("Test HTTP methods", () => {
       }
     });
 
+    // Check HTTP headers
     expect(res.statusCode).toBe(200);
     expect(res.statusMessage).toBe("OK");
 
-    // Compare files
+    // Compare the actual files
     const actualPath = "./test/utils/stream-data/file.md";
     let actual = await fsPromise.readFile(actualPath, { encoding: "utf8" });
 

@@ -1,3 +1,10 @@
+/*
+ * moleculer-got
+ * Copyright (c) 2019 André Mazayev (https://github.com/AndreMaz/moleculer-got)
+ * MIT Licensed
+ */
+"use strict";
+
 const chalk = require("chalk");
 
 function coloringStatusCode(code) {
@@ -9,7 +16,7 @@ function coloringStatusCode(code) {
 }
 
 function logOutgoingRequest(options) {
-  return `=> HTTP Request to ${options.href}`;
+  return `=> HTTP ${options.method} to ${options.href}`;
 }
 
 function logIncomingResponse(response) {

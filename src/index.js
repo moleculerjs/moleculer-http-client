@@ -73,7 +73,10 @@ module.exports = {
   methods: {
     _get(url, opt) {
       if (opt && opt.stream) {
-        return this._client.stream(url, opt);
+        return this._client.stream(url, opt).on("response", res => {
+          // Got hooks don't work for Streams
+          this.logger.info(logIncomingResponse(res));
+        });
       }
 
       return this._client.get(url, opt);
@@ -86,7 +89,11 @@ module.exports = {
 
         payload.pipe(writeStream);
 
-        writeStream.on("response", res => resolve(res));
+        writeStream.on("response", res => {
+          // Got hooks don't work for Streams
+          this.logger.info(logIncomingResponse(res));
+          resolve(res);
+        });
 
         writeStream.on("error", error => reject(error));
       });
