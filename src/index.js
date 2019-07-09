@@ -43,7 +43,7 @@ module.exports = {
             (response, retryWithMergedOptions) => {
               // Get Moleculer Logger instance
               const logger = response.request.gotOptions.logger;
-              logger.info(logIncomingResponse(response));
+              logIncomingResponse(logger, response);
 
               return response;
             }
@@ -75,7 +75,7 @@ module.exports = {
       if (opt && opt.stream) {
         return this._client.stream(url, opt).on("response", res => {
           // Got hooks don't work for Streams
-          this.logger.info(logIncomingResponse(res));
+          logIncomingResponse(this.logger, res);
         });
       }
 
@@ -91,7 +91,7 @@ module.exports = {
 
         writeStream.on("response", res => {
           // Got hooks don't work for Streams
-          this.logger.info(logIncomingResponse(res));
+          logIncomingResponse(this.logger, res);
           resolve(res);
         });
 

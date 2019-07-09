@@ -15,16 +15,26 @@ function coloringStatusCode(code) {
   return code;
 }
 
+function loggerLevels(code) {
+  if (code >= 500) return "error";
+  if (code >= 400 && code < 500) return "warn";
+  if (code >= 300 && code < 400) return "info";
+  if (code >= 200 && code < 300) return "info";
+  return code;
+}
+
 function logOutgoingRequest(options) {
   return `=> HTTP ${options.method} to ${options.href}`;
 }
 
-function logIncomingResponse(response) {
+function logIncomingResponse(logger, response) {
   const method = response.request.gotOptions.method;
 
-  return `<= HTTP ${method} to "${
+  const message = `<= HTTP ${method} to "${
     response.requestUrl
   }" returned with status code ${coloringStatusCode(response.statusCode)}`;
+
+  logger[loggerLevels(response.statusCode)](message);
 }
 
 module.exports = {
