@@ -75,7 +75,7 @@ module.exports = {
     getStream(ctx) {
       ctx.meta.$responseType = "text/plain";
       ctx.meta.$responseHeaders = {
-        "Content-Disposition": `attachment; filename=$README.md"`
+        "Content-Disposition": `attachment; filename=$README.md`
       };
 
       return fs.createReadStream("./README.md");

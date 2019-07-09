@@ -145,9 +145,7 @@ describe("Test HTTP methods", () => {
     const actualPath = "./test/utils/stream-data/destination.md";
     res.pipe(fs.createWriteStream(actualPath, { encoding: "utf8" }));
 
-    res.on("end", async () => {
-      console.log(res);
-
+    res.on("response", async response => {
       const expectedPath = "./test/utils/stream-data/expected.md";
       let expected = await fsPromise.readFile(expectedPath, {
         encoding: "utf8"
@@ -157,6 +155,11 @@ describe("Test HTTP methods", () => {
       await fsPromise.unlink(actualPath);
 
       expect(actual).toEqual(expected);
+      expect(response.statusCode).toBe(200);
+
+      expect(response.headers["content-disposition"]).toBe(
+        `attachment; filename=$README.md`
+      );
 
       // Exit test
       done();

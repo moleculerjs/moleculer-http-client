@@ -11,6 +11,8 @@ const _ = require("lodash");
 
 const HTTP_METHODS = ["get", "put", "post", "delete"];
 
+const { logOutgoingRequest, logIncomingResponse } = require("./utils");
+
 module.exports = {
   name: "got",
 
@@ -34,20 +36,14 @@ module.exports = {
             options => {
               // Get Moleculer Logger instance
               const logger = options.logger;
-              logger.info(`>>> HTTP Request to ${options.href}`);
+              logger.info(logOutgoingRequest(options));
             }
           ],
           afterResponse: [
             (response, retryWithMergedOptions) => {
               // Get Moleculer Logger instance
               const logger = response.request.gotOptions.logger;
-              const method = response.request.gotOptions.method;
-
-              logger.info(
-                `<<< HTTP ${method} to "${
-                  response.requestUrl
-                }" returned with status code ${response.statusCode}`
-              );
+              logger.info(logIncomingResponse(response));
 
               return response;
             }
