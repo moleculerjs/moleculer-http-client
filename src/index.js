@@ -72,22 +72,56 @@ module.exports = {
    */
   methods: {
     _get(url, opt) {
+      opt.method = "GET";
+      return this._genericRequest(url, opt);
+    },
+
+    _post(url, opt, streamPayload) {
+      opt.method = "POST";
+      return this._genericRequest(url, opt, streamPayload);
+    },
+
+    _put(url, opt) {
+      if (!_.isObject(opt)) opt = {};
+
+      opt.method = "PUT";
+      return this._genericRequest(url, opt);
+    },
+
+    _patch(url, opt) {
+      if (!_.isObject(opt)) opt = {};
+
+      opt.method = "PATCH";
+      return this._genericRequest(url, opt, streamPayload);
+    },
+
+    _delete(url, opt) {
+      if (!_.isObject(opt)) opt = {};
+
+      opt.method = "DELETE";
+      return this._genericRequest(url, opt);
+    },
+
+    _genericRequest(url, opt, streamPayload) {
       if (opt && opt.stream) {
-        return this._client.stream(url, opt).on("response", res => {
+        return this._streamRequest(url, opt, streamPayload);
+      }
+
+      return this._client(url, opt);
+    },
+
+    _streamRequest(url, opt, streamPayload) {
+      if (opt.method == "GET") {
+        return this._client(url, opt).on("response", res => {
           // Got hooks don't work for Streams
           logIncomingResponse(this.logger, res);
         });
       }
 
-      return this._client.get(url, opt);
-    },
-
-    _post(url, payload, opt) {
-      // if (opt && opt.stream) {
       return new Promise((resolve, reject) => {
-        const writeStream = this._client.stream.post(url, opt);
+        const writeStream = this._client(url, opt);
 
-        payload.pipe(writeStream);
+        streamPayload.pipe(writeStream);
 
         writeStream.on("response", res => {
           // Got hooks don't work for Streams
@@ -97,16 +131,7 @@ module.exports = {
 
         writeStream.on("error", error => reject(error));
       });
-
-      // return payload.pipe(this._client.stream.post(url));
-      // }
-
-      // return this._client.post(url, payload);
-    },
-
-    _put() {},
-
-    _delete() {}
+    }
   },
 
   /**

@@ -82,13 +82,29 @@ describe("Test HTTP methods", () => {
     mixins: [MoleculerGOT],
 
     settings: {
-      got: { includeMethods: ["get", "post"] }
+      got: { includeMethods: ["get", "post", "put", "delete"] }
     },
 
     actions: {
       async get(ctx) {
         try {
           return this._get(ctx.params.url, { json: true });
+        } catch (error) {
+          throw error;
+        }
+      },
+
+      async put(ctx) {
+        try {
+          return this._put(ctx.params.url, ctx.params.opt);
+        } catch (error) {
+          throw error;
+        }
+      },
+
+      async delete(ctx) {
+        try {
+          return this._delete(ctx.params.url, ctx.params.opt);
         } catch (error) {
           throw error;
         }
@@ -101,7 +117,7 @@ describe("Test HTTP methods", () => {
 
       postStream(ctx) {
         try {
-          return this._post(ctx.meta.url, ctx.params, { stream: true });
+          return this._post(ctx.meta.url, { stream: true }, ctx.params);
         } catch (error) {
           throw error;
         }
@@ -121,6 +137,34 @@ describe("Test HTTP methods", () => {
 
     let expected = { hello: 200 };
 
+    expect(res.body).toEqual(expected);
+  });
+
+  it("should PUT JSON object", async () => {
+    expect.assertions(2);
+
+    let res = await broker.call("got.put", {
+      url: "http://localhost:4000/json",
+      opt: { json: true }
+    });
+
+    let expected = { updated: "something" };
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual(expected);
+  });
+
+  it("should DELETE JSON object", async () => {
+    expect.assertions(2);
+
+    let res = await broker.call("got.delete", {
+      url: "http://localhost:4000/json/123",
+      opt: { json: true }
+    });
+
+    let expected = { deleted: "something", id: 123 };
+
+    expect(res.statusCode).toEqual(200);
     expect(res.body).toEqual(expected);
   });
 

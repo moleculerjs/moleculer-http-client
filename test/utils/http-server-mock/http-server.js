@@ -31,7 +31,9 @@ module.exports = {
 
         aliases: {
           "GET /": "api.get",
-          "POST /": "api.post"
+          "POST /": "api.post",
+          "PUT /": "api.put",
+          "DELETE /:id": "api.delete"
         }
       },
       {
@@ -74,6 +76,17 @@ module.exports = {
     post(ctx) {
       return { id: 123 };
     },
+    put(ctx) {
+      ctx.meta.$statusCode = 200;
+
+      return { updated: "something" };
+    },
+    delete(ctx) {
+      ctx.meta.$statusCode = 200;
+
+      return { deleted: "something", id: Number(ctx.params.id) };
+    },
+
     /**
      * STREAMING RELATED ACTIONS
      */
