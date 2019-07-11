@@ -43,17 +43,18 @@ module.exports = {
             function outgoingLogger(options) {
               const { logger } = options;
               const { logOutgoingRequest } = options;
-
-              logOutgoingRequest(logger, options);
+              if (logger && logOutgoingRequest) {
+                logOutgoingRequest(logger, options);
+              }
             }
           ],
           afterResponse: [
             function incomingLogger(response, retryWithMergedOptions) {
-              // Get Moleculer Logger instance
               const { logger } = response.request.gotOptions;
               const { logIncomingResponse } = response.request.gotOptions;
-
-              logIncomingResponse(logger, response);
+              if (logger && logIncomingResponse) {
+                logIncomingResponse(logger, response);
+              }
 
               return response;
             }
@@ -158,17 +159,18 @@ module.exports = {
       methodsToRemove.forEach(methodName => delete this[`_${methodName}`]);
     }
 
-    // Extend Got client with default options
-    const { defaultOptions } = this.settings.got;
+    // Add Logging functions got Got's default options
+    let defaultOptions = this.settings.got.defaultOptions;
+
     if (this.settings.got.logging) {
       defaultOptions.logger = this.logger;
       defaultOptions.logIncomingResponse = this.settings.got.logIncomingResponse;
       defaultOptions.logOutgoingRequest = this.settings.got.logOutgoingRequest;
     } else {
       /**
-       * This is a hack.
+       * This is a dirty fix.
        *
-       * ToDo:
+       * Explanation:
        * For some reason when using this service as a mixin
        * logging params are set event if `logging` is false
        *

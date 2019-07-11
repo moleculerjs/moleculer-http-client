@@ -63,7 +63,7 @@ module.exports = {
       // https://moleculer.services/docs/0.13/moleculer-web.html#Response-type-amp-status-code
       ctx.meta.$statusCode = ctx.params.statusCode;
 
-      return { statusCodeReceived: ctx.params.statusCode };
+      return { statusCodeReceived: Number(ctx.params.statusCode) };
     },
     /**
      *

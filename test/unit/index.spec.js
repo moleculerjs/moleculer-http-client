@@ -217,7 +217,7 @@ describe("Test HTTP methods", () => {
 
     try {
       await broker.call("got.get", {
-        url: "http://localhost:4000/statusCode/404"
+        url: "http://localhost:4000/status/404"
       });
     } catch (error) {
       expect(error.statusCode).toEqual(404);
@@ -285,12 +285,12 @@ describe("Test HTTP methods", () => {
 });
 
 describe("Test Moleculer Got Logging", () => {
-  const broker = new ServiceBroker({
-    logger: false
-  });
+  const broker = new ServiceBroker({});
 
-  beforeEach(() => broker.start());
-  afterEach(() => broker.stop());
+  const HTTPMock = broker.createService(HTTPMockServer);
+
+  let logIncomingResponse = jest.fn();
+  let logOutgoingRequest = jest.fn();
 
   let service = broker.createService({
     name: "gotMixed",
@@ -299,12 +299,25 @@ describe("Test Moleculer Got Logging", () => {
     settings: {
       got: {
         includeMethods: ["get"],
-        logger: jest.fn(),
-        logIncomingResponse: jest.fn(),
-        logOutgoingRequest: jest.fn()
+
+        logIncomingResponse: logIncomingResponse,
+        logOutgoingRequest: logOutgoingRequest
+      }
+    },
+
+    actions: {
+      async get(ctx) {
+        try {
+          return this._get(ctx.params.url, { json: true });
+        } catch (error) {
+          throw error;
+        }
       }
     }
   });
+
+  beforeEach(() => broker.start());
+  afterEach(() => broker.stop());
 
   it("should include log related data", async () => {
     expect(service).toBeDefined();
@@ -313,5 +326,24 @@ describe("Test Moleculer Got Logging", () => {
     expect(defaultOptions.logger).toBeDefined();
     expect(defaultOptions.logIncomingResponse).toBeDefined();
     expect(defaultOptions.logOutgoingRequest).toBeDefined();
+  });
+
+  it("should use log messages 2 times each", async () => {
+    let response = await broker.call("gotMixed.get", {
+      url: "http://localhost:4000/status/200"
+    });
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toEqual({ statusCodeReceived: 200 });
+
+    const { defaultOptions } = service.settings.got;
+    expect(defaultOptions.logOutgoingRequest).toHaveBeenCalledTimes(1);
+    expect(defaultOptions.logIncomingResponse).toHaveBeenCalledTimes(1);
+
+    await broker.call("gotMixed.get", {
+      url: "http://localhost:4000/status/200"
+    });
+
+    expect(defaultOptions.logOutgoingRequest).toHaveBeenCalledTimes(2);
+    expect(defaultOptions.logIncomingResponse).toHaveBeenCalledTimes(2);
   });
 });
