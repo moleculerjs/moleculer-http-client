@@ -1,9 +1,24 @@
+/*
+ * moleculer-got
+ * Copyright (c) 2019 André Mazayev (https://github.com/AndreMaz/moleculer-got)
+ * MIT Licensed
+ */
+"use strict";
 const { MoleculerError } = require("moleculer").Errors;
 
-class MoleculerGotError extends MoleculerError {
+class MoleculerHTTPClientError extends MoleculerError {
   constructor(msg, data) {
-    super(msg || `Got Client HTTP Error.`, 500, "MOLECULER_HTTP_ERROR", data);
+    super(
+      msg || `HTTP Client Error.`,
+      500,
+      "MOLECULER_HTTP_CLIENT_ERROR",
+      data
+    );
   }
 }
 
-module.exports = { MoleculerGotError };
+function errorFormatter(error) {
+  return error;
+}
+
+module.exports = { MoleculerHTTPClientError, errorFormatter };

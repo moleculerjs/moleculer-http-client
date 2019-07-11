@@ -8,16 +8,18 @@
 
 const got = require("got");
 const _ = require("lodash");
+const stream = require("stream");
 
 const HTTP_METHODS = ["get", "put", "post", "delete"];
 
 const { logOutgoingRequest, logIncomingResponse } = require("./utils");
+const { errorFormatter } = require("./errors");
 
 module.exports = {
   /**
    * @type {string} service name
    */
-  name: "got",
+  name: "http-client",
 
   /**
    * Got instance https://github.com/sindresorhus/got#instances
@@ -54,12 +56,12 @@ module.exports = {
       /**
        * @type {string | Function} Function to formatting the HTTP response
        */
-      responseFormater: "something",
+      responseFormatter: "something",
 
       /**
-       *
+       * @type {Function} Error handler
        */
-      errorFormater: null,
+      errorFormatter: errorFormatter,
 
       // More about Got default options: https://github.com/sindresorhus/got#instances
       defaultOptions: {
@@ -85,13 +87,53 @@ module.exports = {
             }
           ],
           beforeError: [
-            error => {
+            /*error => {
               // Wait for a new (>v9.6.0) Got release
               // https://github.com/sindresorhus/got/issues/781
               return error;
-            }
+            }*/
           ]
         }
+      }
+    }
+  },
+
+  actions: {
+    async get(ctx) {
+      try {
+        return this._get(ctx.params.url, ctx.params.opt);
+      } catch (error) {
+        throw _httpErrorHandler(error);
+      }
+    },
+
+    async post(ctx) {
+      try {
+        if (ctx.params instanceof stream.Readable) {
+          return this._post(ctx.meta.url, { stream: true }, ctx.params);
+        }
+        return this._post(ctx.params.url, ctx.params.opt);
+      } catch (error) {
+        throw _httpErrorHandler(error);
+      }
+    },
+
+    async put(ctx) {
+      try {
+        if (ctx.params instanceof stream.Readable) {
+          return this._put(ctx.meta.url, { stream: true }, ctx.params);
+        }
+        return this._put(ctx.params.url, ctx.params.opt);
+      } catch (error) {
+        throw _httpErrorHandler(error);
+      }
+    },
+
+    async delete(ctx) {
+      try {
+        return this._delete(ctx.params.url, ctx.params.opt);
+      } catch (error) {
+        throw _httpErrorHandler(error);
       }
     }
   },
@@ -160,6 +202,14 @@ module.exports = {
 
         writeStream.on("error", error => reject(error));
       });
+    },
+
+    _httpErrorHandler(error) {
+      if (!this.settings.errorFormatter) {
+        return error;
+      }
+
+      return error;
     }
   },
 
@@ -167,12 +217,14 @@ module.exports = {
    * Service created lifecycle event handler
    */
   created() {
-    // Remove unwanted methods
+    // Remove unwanted actions from the service
     const { includeMethods } = this.settings.got;
     if (!includeMethods || Array.isArray(includeMethods)) {
       const methodsToRemove = _.difference(HTTP_METHODS, includeMethods);
 
-      methodsToRemove.forEach(methodName => delete this[`_${methodName}`]);
+      methodsToRemove.forEach(methodName => {
+        delete this.actions[`${methodName}`];
+      });
     }
 
     // Add Logging functions got Got's default options

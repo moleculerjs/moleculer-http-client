@@ -6,7 +6,6 @@ const fs = require("fs");
 const fsPromise = require("fs").promises;
 const _ = require("lodash");
 
-const stream = require("stream");
 const HTTPMockServer = require("../utils/http-server-mock/http-server");
 
 describe("Test MoleculerGOT base service", () => {
@@ -22,7 +21,7 @@ describe("Test MoleculerGOT base service", () => {
 
   it("service should be created", () => {
     expect(service).toBeDefined();
-    expect(service.name).toBe("got");
+    expect(service.name).toBe("http-client");
   });
 
   it("settings field should be an Object", () => {
@@ -35,11 +34,21 @@ describe("Test MoleculerGOT base service", () => {
     expect(service._client).toBeDefined();
   });
 
-  it("should NOT have any methods (default config)", () => {
-    expect(service._get).toBeUndefined();
-    expect(service._post).toBeUndefined();
-    expect(service._put).toBeUndefined();
-    expect(service._delete).toBeUndefined();
+  it("should NOT have any actions (default config)", () => {
+    expect(service.actions.get).toBeUndefined();
+    expect(service.actions.post).toBeUndefined();
+    expect(service.actions.put).toBeUndefined();
+    expect(service.actions.delete).toBeUndefined();
+  });
+
+  it("should have the methods (default config)", () => {
+    expect(service._get).toBeDefined();
+    expect(service._post).toBeDefined();
+    expect(service._put).toBeDefined();
+    expect(service._delete).toBeDefined();
+    expect(service._streamRequest).toBeDefined();
+    expect(service._genericRequest).toBeDefined();
+    expect(service._httpErrorHandler).toBeDefined();
   });
 });
 
@@ -73,13 +82,13 @@ describe("Test mixin Moleculer Got", () => {
 
   it("should NOT include any HTTP method", () => {
     expect(service).toBeDefined();
-    expect(service._get).toBeUndefined();
-    expect(service._post).toBeUndefined();
-    expect(service._put).toBeUndefined();
-    expect(service._delete).toBeUndefined();
+    expect(service.actions.get).toBeUndefined();
+    expect(service.actions.post).toBeUndefined();
+    expect(service.actions.put).toBeUndefined();
+    expect(service.actions.delete).toBeUndefined();
   });
 
-  it("should only include GET & POST methods", () => {
+  it("should only include GET & POST actions", () => {
     const service = broker.createService({
       name: "gotMixed",
       mixins: [MoleculerGOT],
@@ -91,13 +100,13 @@ describe("Test mixin Moleculer Got", () => {
 
     expect(service).toBeDefined();
 
-    expect(service._get).toBeDefined();
-    expect(service._post).toBeDefined();
-    expect(service._put).toBeUndefined();
-    expect(service._delete).toBeUndefined();
+    expect(service.actions.get).toBeDefined();
+    expect(service.actions.post).toBeDefined();
+    expect(service.actions.put).toBeUndefined();
+    expect(service.actions.delete).toBeUndefined();
   });
 
-  it("should only include ALL methods", () => {
+  it("should only include ALL actions", () => {
     const service = broker.createService({
       name: "gotMixed",
       mixins: [MoleculerGOT],
@@ -109,10 +118,10 @@ describe("Test mixin Moleculer Got", () => {
 
     expect(service).toBeDefined();
 
-    expect(service._get).toBeDefined();
-    expect(service._post).toBeDefined();
-    expect(service._put).toBeDefined();
-    expect(service._delete).toBeDefined();
+    expect(service.actions.get).toBeDefined();
+    expect(service.actions.post).toBeDefined();
+    expect(service.actions.put).toBeDefined();
+    expect(service.actions.delete).toBeDefined();
   });
 });
 
@@ -130,48 +139,6 @@ describe("Test HTTP methods", () => {
 
     settings: {
       got: { includeMethods: ["get", "post", "put", "delete"] }
-    },
-
-    actions: {
-      async get(ctx) {
-        try {
-          return this._get(ctx.params.url, ctx.params.opt);
-        } catch (error) {
-          throw error;
-        }
-      },
-
-      async post(ctx) {
-        try {
-          if (ctx.params instanceof stream.Readable) {
-            return this._post(ctx.meta.url, { stream: true }, ctx.params);
-          }
-
-          return this._post(ctx.params.url, ctx.params.opt);
-        } catch (error) {
-          throw error;
-        }
-      },
-
-      async put(ctx) {
-        try {
-          if (ctx.params instanceof stream.Readable) {
-            return this._put(ctx.meta.url, { stream: true }, ctx.params);
-          }
-
-          return this._put(ctx.params.url, ctx.params.opt);
-        } catch (error) {
-          throw error;
-        }
-      },
-
-      async delete(ctx) {
-        try {
-          return this._delete(ctx.params.url, ctx.params.opt);
-        } catch (error) {
-          throw error;
-        }
-      }
     }
   });
 
