@@ -29,20 +29,30 @@ module.exports = {
   settings: {
     got: {
       includeMethods: null,
+
+      logging: true,
+      logOutgoingRequest: logOutgoingRequest,
+      logIncomingResponse: logIncomingResponse,
+
+      responseFormater: "something",
+
       // More about Got default options: https://github.com/sindresorhus/got#instances
       defaultOptions: {
         hooks: {
           beforeRequest: [
-            options => {
-              // Get Moleculer Logger instance
-              const logger = options.logger;
-              logger.info(logOutgoingRequest(options));
+            function outgoingLogger(options) {
+              const { logger } = options;
+              const { logOutgoingRequest } = options;
+
+              logOutgoingRequest(logger, options);
             }
           ],
           afterResponse: [
-            (response, retryWithMergedOptions) => {
+            function incomingLogger(response, retryWithMergedOptions) {
               // Get Moleculer Logger instance
-              const logger = response.request.gotOptions.logger;
+              const { logger } = response.request.gotOptions;
+              const { logIncomingResponse } = response.request.gotOptions;
+
               logIncomingResponse(logger, response);
 
               return response;
@@ -61,11 +71,13 @@ module.exports = {
   /**
    * Actions
    */
+  /*
   actions: {
     test(ctx) {
       return "Hello " + (ctx.params.name || "Anonymous");
     }
   },
+  */
 
   /**
    * Methods
@@ -148,9 +160,30 @@ module.exports = {
 
     // Extend Got client with default options
     const { defaultOptions } = this.settings.got;
-
-    // Add Moleculer Logger to Got Params
-    this.settings.got.defaultOptions.logger = this.logger;
+    if (this.settings.got.logging) {
+      defaultOptions.logger = this.logger;
+      defaultOptions.logIncomingResponse = this.settings.got.logIncomingResponse;
+      defaultOptions.logOutgoingRequest = this.settings.got.logOutgoingRequest;
+    } else {
+      /**
+       * This is a hack.
+       *
+       * ToDo:
+       * For some reason when using this service as a mixin
+       * logging params are set event if `logging` is false
+       *
+       * Example:
+       *
+       *  This service
+       * `this.settings.got.logging = true`
+       *
+       *  Another service
+       * `this.settings.got.logging = false`
+       */
+      defaultOptions.logger = undefined;
+      defaultOptions.logIncomingResponse = undefined;
+      defaultOptions.logOutgoingRequest = undefined;
+    }
 
     /**
      * @type {import("got").GotInstance}

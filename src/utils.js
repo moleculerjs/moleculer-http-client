@@ -23,8 +23,8 @@ function loggerLevels(code) {
   return code;
 }
 
-function logOutgoingRequest(options) {
-  return `=> HTTP ${options.method} to ${options.href}`;
+function logOutgoingRequest(logger, options) {
+  logger.info(`=> HTTP ${options.method} to ${options.href}`);
 }
 
 function logIncomingResponse(logger, response) {

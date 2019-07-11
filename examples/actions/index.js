@@ -13,27 +13,30 @@ let broker = new ServiceBroker({
 
 // Load my service
 let s = broker.createService({
-  name: "got",
+  name: "gotMixed",
 
   mixins: [MyService],
 
   settings: {
     got: {
+      logging: false,
       includeMethods: ["get", "post"],
-      defaultOptions: {
-        logger: "LOOGGGGGGERRRR"
-      }
+      defaultOptions: {}
     }
   },
 
   actions: {
     async get() {
       try {
+        console.log(this.settings.got.defaultOptions);
+
+        /*
         let res = await this._get("http://httpbin.org/status/200", {
           json: true
         });
+        */
 
-        return res.body;
+        return this.settings.got.defaultOptions;
       } catch (error) {
         // console.log(error);
         throw "Got an ERROR";
@@ -56,14 +59,12 @@ let s = broker.createService({
   }
 });
 
-// console.log(s);
-
 // Start server
 broker.start().then(() => {
   // Call action
   // broker.repl();
   broker
-    .call("got.get", { name: "John MIXIN Doe" })
+    .call("gotMixed.get", { name: "John MIXIN Doe" })
     .then()
     .catch(broker.logger.error);
 });

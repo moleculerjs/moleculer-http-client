@@ -19,6 +19,7 @@ describe("Test MoleculerGOT base service", () => {
 
   it("service should be created", () => {
     expect(service).toBeDefined();
+    expect(service.name).toBe("got");
   });
 
   it("settings field should be an Object", () => {
@@ -39,33 +40,76 @@ describe("Test MoleculerGOT base service", () => {
   });
 });
 
-describe("Test MoleculerGOT as a Mixin", () => {
+describe("Test mixin Moleculer Got", () => {
   const broker = new ServiceBroker({
     logger: false
   });
 
-  const service = broker.createService({
-    name: "got",
+  beforeEach(() => broker.start());
+  afterEach(() => broker.stop());
 
+  let service = broker.createService({
+    name: "gotMixed",
     mixins: [MoleculerGOT],
 
     settings: {
-      got: {
-        includeMethods: ["get", "post"]
-      }
+      got: { logging: false }
     }
   });
 
-  beforeAll(() => broker.start());
-  afterAll(() => broker.stop());
+  it("should NOT include log related data", async () => {
+    expect(service).toBeDefined();
 
-  it("should only include GET & POST method", () => {
+    expect(service.name).toBe("gotMixed");
+    const { defaultOptions } = service.settings.got;
+
+    expect(defaultOptions.logger).toBeUndefined();
+    expect(defaultOptions.logIncomingResponse).toBeUndefined();
+    expect(defaultOptions.logOutgoingRequest).toBeUndefined();
+  });
+
+  it("should NOT include any HTTP method", () => {
+    expect(service).toBeDefined();
+    expect(service._get).toBeUndefined();
+    expect(service._post).toBeUndefined();
+    expect(service._put).toBeUndefined();
+    expect(service._delete).toBeUndefined();
+  });
+
+  it("should only include GET & POST methods", () => {
+    const service = broker.createService({
+      name: "gotMixed",
+      mixins: [MoleculerGOT],
+
+      settings: {
+        got: { includeMethods: ["get", "post"] }
+      }
+    });
+
     expect(service).toBeDefined();
 
     expect(service._get).toBeDefined();
     expect(service._post).toBeDefined();
     expect(service._put).toBeUndefined();
     expect(service._delete).toBeUndefined();
+  });
+
+  it("should only include ALL methods", () => {
+    const service = broker.createService({
+      name: "gotMixed",
+      mixins: [MoleculerGOT],
+
+      settings: {
+        got: { includeMethods: ["get", "post", "put", "delete"] }
+      }
+    });
+
+    expect(service).toBeDefined();
+
+    expect(service._get).toBeDefined();
+    expect(service._post).toBeDefined();
+    expect(service._put).toBeDefined();
+    expect(service._delete).toBeDefined();
   });
 });
 
@@ -154,7 +198,7 @@ describe("Test HTTP methods", () => {
     expect(res.body).toEqual(expected);
   });
 
-  it("should DELETE JSON object", async () => {
+  it("should DELETE object", async () => {
     expect.assertions(2);
 
     let res = await broker.call("got.delete", {
@@ -237,5 +281,37 @@ describe("Test HTTP methods", () => {
 
     expect(actual).toEqual(expected);
     await fsPromise.unlink(actualPath);
+  });
+});
+
+describe("Test Moleculer Got Logging", () => {
+  const broker = new ServiceBroker({
+    logger: false
+  });
+
+  beforeEach(() => broker.start());
+  afterEach(() => broker.stop());
+
+  let service = broker.createService({
+    name: "gotMixed",
+    mixins: [MoleculerGOT],
+
+    settings: {
+      got: {
+        includeMethods: ["get"],
+        logger: jest.fn(),
+        logIncomingResponse: jest.fn(),
+        logOutgoingRequest: jest.fn()
+      }
+    }
+  });
+
+  it("should include log related data", async () => {
+    expect(service).toBeDefined();
+    const { defaultOptions } = service.settings.got;
+
+    expect(defaultOptions.logger).toBeDefined();
+    expect(defaultOptions.logIncomingResponse).toBeDefined();
+    expect(defaultOptions.logOutgoingRequest).toBeDefined();
   });
 });
