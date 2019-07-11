@@ -166,25 +166,6 @@ module.exports = {
       defaultOptions.logger = this.logger;
       defaultOptions.logIncomingResponse = this.settings.got.logIncomingResponse;
       defaultOptions.logOutgoingRequest = this.settings.got.logOutgoingRequest;
-    } else {
-      /**
-       * This is a dirty fix.
-       *
-       * Explanation:
-       * For some reason when using this service as a mixin
-       * logging params are set event if `logging` is false
-       *
-       * Example:
-       *
-       *  This service
-       * `this.settings.got.logging = true`
-       *
-       *  Another service
-       * `this.settings.got.logging = false`
-       */
-      defaultOptions.logger = undefined;
-      defaultOptions.logIncomingResponse = undefined;
-      defaultOptions.logOutgoingRequest = undefined;
     }
 
     /**

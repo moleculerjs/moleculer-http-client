@@ -4,7 +4,7 @@ const { ServiceBroker } = require("moleculer");
 const MoleculerGOT = require("../../src");
 const fs = require("fs");
 const fsPromise = require("fs").promises;
-
+const _ = require("lodash");
 const HTTPMockServer = require("../utils/http-server-mock/http-server");
 
 describe("Test MoleculerGOT base service", () => {
@@ -12,7 +12,8 @@ describe("Test MoleculerGOT base service", () => {
     logger: false
   });
 
-  const service = broker.createService(MoleculerGOT);
+  // Pass the cloned object to avoid interfering with other tests
+  const service = broker.createService(_.cloneDeep(MoleculerGOT));
 
   beforeAll(() => broker.start());
   afterAll(() => broker.stop());
@@ -45,8 +46,8 @@ describe("Test mixin Moleculer Got", () => {
     logger: false
   });
 
-  beforeEach(() => broker.start());
-  afterEach(() => broker.stop());
+  beforeAll(() => broker.start());
+  afterAll(() => broker.stop());
 
   let service = broker.createService({
     name: "gotMixed",
@@ -59,8 +60,8 @@ describe("Test mixin Moleculer Got", () => {
 
   it("should NOT include log related data", async () => {
     expect(service).toBeDefined();
-
     expect(service.name).toBe("gotMixed");
+
     const { defaultOptions } = service.settings.got;
 
     expect(defaultOptions.logger).toBeUndefined();
