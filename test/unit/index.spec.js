@@ -5,6 +5,8 @@ const MoleculerGOT = require("../../src");
 const fs = require("fs");
 const fsPromise = require("fs").promises;
 const _ = require("lodash");
+
+const stream = require("stream");
 const HTTPMockServer = require("../utils/http-server-mock/http-server");
 
 describe("Test MoleculerGOT base service", () => {
@@ -133,7 +135,19 @@ describe("Test HTTP methods", () => {
     actions: {
       async get(ctx) {
         try {
-          return this._get(ctx.params.url, { json: true });
+          return this._get(ctx.params.url, ctx.params.opt);
+        } catch (error) {
+          throw error;
+        }
+      },
+
+      async post(ctx) {
+        try {
+          if (ctx.params instanceof stream.Readable) {
+            return this._post(ctx.meta.url, { stream: true }, ctx.params);
+          }
+
+          return this._post(ctx.params.url, ctx.params.opt);
         } catch (error) {
           throw error;
         }
@@ -141,6 +155,10 @@ describe("Test HTTP methods", () => {
 
       async put(ctx) {
         try {
+          if (ctx.params instanceof stream.Readable) {
+            return this._put(ctx.meta.url, { stream: true }, ctx.params);
+          }
+
           return this._put(ctx.params.url, ctx.params.opt);
         } catch (error) {
           throw error;
@@ -150,19 +168,6 @@ describe("Test HTTP methods", () => {
       async delete(ctx) {
         try {
           return this._delete(ctx.params.url, ctx.params.opt);
-        } catch (error) {
-          throw error;
-        }
-      },
-
-      getStream(ctx) {
-        const streamRequest = this._get(ctx.params.url, { stream: true });
-        return streamRequest;
-      },
-
-      postStream(ctx) {
-        try {
-          return this._post(ctx.meta.url, { stream: true }, ctx.params);
         } catch (error) {
           throw error;
         }
@@ -177,7 +182,8 @@ describe("Test HTTP methods", () => {
     expect.assertions(1);
 
     let res = await broker.call("got.get", {
-      url: "http://localhost:4000/json"
+      url: "http://localhost:4000/json",
+      opt: { json: true }
     });
 
     let expected = { hello: 200 };
@@ -218,7 +224,8 @@ describe("Test HTTP methods", () => {
 
     try {
       await broker.call("got.get", {
-        url: "http://localhost:4000/status/404"
+        url: "http://localhost:4000/status/404",
+        opt: { json: true }
       });
     } catch (error) {
       expect(error.statusCode).toEqual(404);
@@ -226,9 +233,9 @@ describe("Test HTTP methods", () => {
   });
 
   it("should GET as stream a Readme file", async done => {
-    let res = await broker.call("got.getStream", {
+    let res = await broker.call("got.get", {
       url: "http://localhost:4000/stream",
-      stream: true
+      opt: { stream: true }
     });
 
     const actualPath = "./test/utils/stream-data/destination.md";
@@ -261,7 +268,7 @@ describe("Test HTTP methods", () => {
     const streamFile = "./test/utils/stream-data/toStream.md";
     const stream = fs.createReadStream(streamFile, { encoding: "utf8" });
 
-    let res = await broker.call("got.postStream", stream, {
+    let res = await broker.call("got.post", stream, {
       meta: {
         url: "http://localhost:4000/stream",
         stream: true

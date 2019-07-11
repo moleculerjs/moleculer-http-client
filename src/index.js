@@ -14,6 +14,9 @@ const HTTP_METHODS = ["get", "put", "post", "delete"];
 const { logOutgoingRequest, logIncomingResponse } = require("./utils");
 
 module.exports = {
+  /**
+   * @type {string} service name
+   */
   name: "got",
 
   /**
@@ -28,13 +31,35 @@ module.exports = {
    */
   settings: {
     got: {
+      /**
+       *  @type {Array<String>} Array with HTTP methods to include
+       */
       includeMethods: null,
 
+      /**
+       *  @type {Boolean} Whether to log or not the requests
+       */
       logging: true,
+
+      /**
+       * @type {Function} Logger function with outgoing info
+       */
       logOutgoingRequest: logOutgoingRequest,
+
+      /**
+       *  @type {Function} Logger function with incoming info
+       */
       logIncomingResponse: logIncomingResponse,
 
+      /**
+       * @type {string | Function} Function to formatting the HTTP response
+       */
       responseFormater: "something",
+
+      /**
+       *
+       */
+      errorFormater: null,
 
       // More about Got default options: https://github.com/sindresorhus/got#instances
       defaultOptions: {
@@ -61,6 +86,8 @@ module.exports = {
           ],
           beforeError: [
             error => {
+              // Wait for a new (>v9.6.0) Got release
+              // https://github.com/sindresorhus/got/issues/781
               return error;
             }
           ]
@@ -68,17 +95,6 @@ module.exports = {
       }
     }
   },
-
-  /**
-   * Actions
-   */
-  /*
-  actions: {
-    test(ctx) {
-      return "Hello " + (ctx.params.name || "Anonymous");
-    }
-  },
-  */
 
   /**
    * Methods
@@ -94,14 +110,14 @@ module.exports = {
       return this._genericRequest(url, opt, streamPayload);
     },
 
-    _put(url, opt) {
+    _put(url, opt, streamPayload) {
       if (!_.isObject(opt)) opt = {};
 
       opt.method = "PUT";
-      return this._genericRequest(url, opt);
+      return this._genericRequest(url, opt, streamPayload);
     },
 
-    _patch(url, opt) {
+    _patch(url, opt, streamPayload) {
       if (!_.isObject(opt)) opt = {};
 
       opt.method = "PATCH";
