@@ -158,45 +158,16 @@ describe("Test HTTP methods", () => {
     expect(res.body).toEqual(expected);
   });
 
-  it("should PUT JSON object", async () => {
-    expect.assertions(2);
-
-    let res = await broker.call("got.put", {
-      url: "http://localhost:4000/json",
-      opt: { json: true }
-    });
-
-    let expected = { updated: "something" };
-
-    expect(res.statusCode).toEqual(200);
-    expect(res.body).toEqual(expected);
-  });
-
-  it("should DELETE object", async () => {
-    expect.assertions(2);
-
-    let res = await broker.call("got.delete", {
-      url: "http://localhost:4000/json/123",
-      opt: { json: true }
-    });
-
-    let expected = { deleted: "something", id: 123 };
-
-    expect(res.statusCode).toEqual(200);
-    expect(res.body).toEqual(expected);
-  });
-
-  it("should GET 404 ERROR", async () => {
+  it("should GET JSON without Options field", async () => {
     expect.assertions(1);
 
-    try {
-      await broker.call("got.get", {
-        url: "http://localhost:4000/status/404",
-        opt: { json: true }
-      });
-    } catch (error) {
-      expect(error.statusCode).toEqual(404);
-    }
+    let res = await broker.call("got.get", {
+      url: "http://localhost:4000/json"
+    });
+
+    let expected = { hello: 200 };
+
+    expect(res.body).toEqual(JSON.stringify(expected));
   });
 
   it("should GET as stream a Readme file", async done => {
@@ -231,6 +202,36 @@ describe("Test HTTP methods", () => {
     });
   });
 
+  it("should POST a JSON object", async () => {
+    expect.assertions(2);
+
+    let res = await broker.call("got.post", {
+      url: "http://localhost:4000/json",
+      opt: {
+        body: { data: "POST From unit test" },
+        json: true
+      }
+    });
+
+    let expected = { id: 123, data: "POST From unit test" };
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual(expected);
+  });
+
+  it("should POST without Options field and no Body", async () => {
+    expect.assertions(2);
+
+    let res = await broker.call("got.post", {
+      url: "http://localhost:4000/json"
+    });
+
+    let expected = { id: 123 };
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual(JSON.stringify(expected));
+  });
+
   it("should POST a file as a stream", async () => {
     const streamFile = "./test/utils/stream-data/toStream.md";
     const stream = fs.createReadStream(streamFile, { encoding: "utf8" });
@@ -256,6 +257,93 @@ describe("Test HTTP methods", () => {
 
     expect(actual).toEqual(expected);
     await fsPromise.unlink(actualPath);
+  });
+
+  it("should PUT JSON object", async () => {
+    expect.assertions(2);
+
+    let res = await broker.call("got.put", {
+      url: "http://localhost:4000/json",
+      opt: {
+        body: { data: "PUT From unit test" },
+        json: true
+      }
+    });
+
+    let expected = { updated: "something" };
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual(expected);
+  });
+
+  it("should PUT without Options field and no Body", async () => {
+    expect.assertions(2);
+
+    let res = await broker.call("got.put", {
+      url: "http://localhost:4000/json"
+    });
+
+    let expected = { updated: "something" };
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual(JSON.stringify(expected));
+  });
+
+  it("should PATCH JSON object", async () => {
+    expect.assertions(2);
+
+    let res = await broker.call("got.patch", {
+      url: "http://localhost:4000/json",
+      opt: {
+        body: { data: "PATCH From unit test" },
+        json: true
+      }
+    });
+
+    let expected = { patched: "something" };
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual(expected);
+  });
+
+  it("should PATCH without Options field and no Body", async () => {
+    expect.assertions(2);
+
+    let res = await broker.call("got.patch", {
+      url: "http://localhost:4000/json"
+    });
+
+    let expected = { patched: "something" };
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual(JSON.stringify(expected));
+  });
+
+  it("should DELETE object", async () => {
+    expect.assertions(2);
+
+    let res = await broker.call("got.delete", {
+      url: "http://localhost:4000/json/123",
+      opt: { json: true }
+    });
+
+    let expected = { deleted: "something", id: 123 };
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual(expected);
+  });
+
+  it("should GET 404 ERROR", async () => {
+    expect.assertions(1);
+
+    try {
+      await broker.call("got.get", {
+        url: "http://localhost:4000/status/404",
+        opt: { json: true }
+      });
+    } catch (error) {
+      expect(error.statusCode).toEqual(404);
+    }
   });
 });
 

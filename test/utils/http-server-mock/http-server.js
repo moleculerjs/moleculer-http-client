@@ -33,6 +33,7 @@ module.exports = {
           "GET /": "api.get",
           "POST /": "api.post",
           "PUT /": "api.put",
+          "PATCH /": "api.patch",
           "DELETE /:id": "api.delete"
         }
       },
@@ -74,12 +75,19 @@ module.exports = {
       return { hello: 200 };
     },
     post(ctx) {
-      return { id: 123 };
+      ctx.meta.$statusCode = 200;
+
+      return { id: 123, data: ctx.params.data };
     },
     put(ctx) {
       ctx.meta.$statusCode = 200;
 
       return { updated: "something" };
+    },
+    patch(ctx) {
+      ctx.meta.$statusCode = 200;
+
+      return { patched: "something" };
     },
     delete(ctx) {
       ctx.meta.$statusCode = 200;

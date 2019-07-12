@@ -103,7 +103,7 @@ module.exports = {
       try {
         return this._get(ctx.params.url, ctx.params.opt);
       } catch (error) {
-        throw _httpErrorHandler(error);
+        throw this._httpErrorHandler(error);
       }
     },
 
@@ -114,7 +114,7 @@ module.exports = {
         }
         return this._post(ctx.params.url, ctx.params.opt);
       } catch (error) {
-        throw _httpErrorHandler(error);
+        throw this._httpErrorHandler(error);
       }
     },
 
@@ -125,7 +125,18 @@ module.exports = {
         }
         return this._put(ctx.params.url, ctx.params.opt);
       } catch (error) {
-        throw _httpErrorHandler(error);
+        throw this._httpErrorHandler(error);
+      }
+    },
+
+    async patch(ctx) {
+      try {
+        if (ctx.params instanceof stream.Readable) {
+          return this._patch(ctx.meta.url, { stream: true }, ctx.params);
+        }
+        return this._patch(ctx.params.url, ctx.params.opt);
+      } catch (error) {
+        throw this._httpErrorHandler(error);
       }
     },
 
@@ -133,7 +144,7 @@ module.exports = {
       try {
         return this._delete(ctx.params.url, ctx.params.opt);
       } catch (error) {
-        throw _httpErrorHandler(error);
+        throw this._httpErrorHandler(error);
       }
     }
   },
@@ -143,11 +154,15 @@ module.exports = {
    */
   methods: {
     _get(url, opt) {
+      if (!_.isObject(opt)) opt = {};
+
       opt.method = "GET";
       return this._genericRequest(url, opt);
     },
 
     _post(url, opt, streamPayload) {
+      if (!_.isObject(opt)) opt = {};
+
       opt.method = "POST";
       return this._genericRequest(url, opt, streamPayload);
     },
