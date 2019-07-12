@@ -5,16 +5,19 @@ const HTTPClientService = require("../../index");
 
 // Create broker
 let broker = new ServiceBroker({
-  logger: console
+  namespace: "client",
+  nodeID: "namespace"
 });
 
-// Load my service
+// Create a service
 broker.createService({
   name: "http",
 
+  // Load HTTP Client Service
   mixins: [HTTPClientService],
 
   settings: {
+    // Only load HTTP action
     got: { includeMethods: ["get"] }
   }
 });
@@ -22,6 +25,7 @@ broker.createService({
 // Start server
 broker.start().then(() => {
   broker
+    // Make a HTTP GET request
     .call("http.get", {
       url: "https://httpbin.org/json",
       opt: { json: true }
