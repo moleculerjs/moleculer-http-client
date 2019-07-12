@@ -21,7 +21,7 @@ describe("Test MoleculerGOT base service", () => {
 
   it("service should be created", () => {
     expect(service).toBeDefined();
-    expect(service.name).toBe("http-client");
+    expect(service.name).toBe("http");
   });
 
   it("settings field should be an Object", () => {

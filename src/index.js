@@ -1,6 +1,6 @@
 /*
  * moleculer-got
- * Copyright (c) 2019 André Mazayev (https://github.com/AndreMaz/moleculer-got)
+ * Copyright (c) 2019 André Mazayev (https://github.com/AndreMaz/moleculer-http-client)
  * MIT Licensed
  */
 
@@ -19,7 +19,7 @@ module.exports = {
   /**
    * @type {string} service name
    */
-  name: "http-client",
+  name: "http",
 
   /**
    * Got instance https://github.com/sindresorhus/got#instances
@@ -209,7 +209,7 @@ module.exports = {
         return error;
       }
 
-      return error;
+      return errorFormatter(error);
     }
   },
 

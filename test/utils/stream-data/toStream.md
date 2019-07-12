@@ -1,6 +1,6 @@
 ![Moleculer logo](http://moleculer.services/images/banner.png)
 
-[![Build Status](https://travis-ci.org/AndreMaz/moleculer-got.svg?branch=master)](https://travis-ci.org/AndreMaz/moleculer-got)
+[![Build Status](https://travis-ci.org/AndreMaz/moleculer-http-client.svg?branch=master)](https://travis-ci.org/AndreMaz/moleculer-http-client)
 
 A tiny wrapper around [got](https://github.com/sindresorhus/got) HTTP client. Allows Moleculer Services to communicate with REST APIs.
 
