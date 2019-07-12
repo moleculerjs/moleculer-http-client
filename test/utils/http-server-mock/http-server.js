@@ -47,7 +47,9 @@ module.exports = {
 
         aliases: {
           "GET /": "api.getStream",
-          "POST /": "stream:api.postStream"
+          "POST /": "stream:api.postStream",
+          "PUT /": "stream:api.putStream",
+          "PATCH /": "stream:api.patchStream"
         }
       }
     ]
@@ -108,10 +110,50 @@ module.exports = {
     },
     postStream(ctx) {
       return new Promise((resolve, reject) => {
-        const stream = fs.createWriteStream(`./test/utils/stream-data/file.md`);
+        const stream = fs.createWriteStream(
+          `./test/utils/http-server-mock/POSTfile.md`
+        );
 
         stream.on("close", async () => {
-          resolve({ fileName: `file.md` });
+          resolve({ fileName: `file.md`, method: "POST" });
+        });
+
+        // Return error to the user
+        stream.on("error", err => {
+          reject(err);
+        });
+
+        // Pipe the data
+        ctx.params.pipe(stream);
+      });
+    },
+    putStream(ctx) {
+      return new Promise((resolve, reject) => {
+        const stream = fs.createWriteStream(
+          `./test/utils/http-server-mock/PUTfile.md`
+        );
+
+        stream.on("close", async () => {
+          resolve({ fileName: `file.md`, method: "PUT" });
+        });
+
+        // Return error to the user
+        stream.on("error", err => {
+          reject(err);
+        });
+
+        // Pipe the data
+        ctx.params.pipe(stream);
+      });
+    },
+    patchStream(ctx) {
+      return new Promise((resolve, reject) => {
+        const stream = fs.createWriteStream(
+          `./test/utils/http-server-mock/PATCHfile.md`
+        );
+
+        stream.on("close", async () => {
+          resolve({ fileName: `file.md`, method: "PATCH" });
         });
 
         // Return error to the user

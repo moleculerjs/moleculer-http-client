@@ -1,20 +1,20 @@
 "use strict";
 
 const { ServiceBroker } = require("moleculer");
-const MoleculerGOT = require("../../src");
+const MoleculerHTTP = require("../../src");
 const fs = require("fs");
 const fsPromise = require("fs").promises;
 const _ = require("lodash");
 
 const HTTPMockServer = require("../utils/http-server-mock/http-server");
 
-describe("Test MoleculerGOT base service", () => {
+describe("Test Moleculer HTTP Client base service", () => {
   const broker = new ServiceBroker({
     logger: false
   });
 
   // Pass the cloned object to avoid interfering with other tests
-  const service = broker.createService(_.cloneDeep(MoleculerGOT));
+  const service = broker.createService(_.cloneDeep(MoleculerHTTP));
 
   beforeAll(() => broker.start());
   afterAll(() => broker.stop());
@@ -30,7 +30,7 @@ describe("Test MoleculerGOT base service", () => {
     expect(service.settings.got.defaultOptions).toBeInstanceOf(Object);
   });
 
-  it("should have a Got client", () => {
+  it("should have a HTTP client", () => {
     expect(service._client).toBeDefined();
   });
 
@@ -52,7 +52,7 @@ describe("Test MoleculerGOT base service", () => {
   });
 });
 
-describe("Test mixin Moleculer Got", () => {
+describe("Test mixin Moleculer HTTP", () => {
   const broker = new ServiceBroker({
     logger: false
   });
@@ -62,7 +62,7 @@ describe("Test mixin Moleculer Got", () => {
 
   let service = broker.createService({
     name: "gotMixed",
-    mixins: [MoleculerGOT],
+    mixins: [MoleculerHTTP],
 
     settings: {
       got: { logging: false }
@@ -91,7 +91,7 @@ describe("Test mixin Moleculer Got", () => {
   it("should only include GET & POST actions", () => {
     const service = broker.createService({
       name: "gotMixed",
-      mixins: [MoleculerGOT],
+      mixins: [MoleculerHTTP],
 
       settings: {
         got: { includeMethods: ["get", "post"] }
@@ -109,7 +109,7 @@ describe("Test mixin Moleculer Got", () => {
   it("should only include ALL actions", () => {
     const service = broker.createService({
       name: "gotMixed",
-      mixins: [MoleculerGOT],
+      mixins: [MoleculerHTTP],
 
       settings: {
         got: { includeMethods: ["get", "post", "put", "delete"] }
@@ -133,9 +133,9 @@ describe("Test HTTP methods", () => {
   const HTTPMock = broker.createService(HTTPMockServer);
 
   const service = broker.createService({
-    name: "got",
+    name: "http",
 
-    mixins: [MoleculerGOT],
+    mixins: [MoleculerHTTP],
 
     settings: {
       got: { includeMethods: ["get", "post", "put", "delete"] }
@@ -148,7 +148,7 @@ describe("Test HTTP methods", () => {
   it("should GET JSON object", async () => {
     expect.assertions(1);
 
-    let res = await broker.call("got.get", {
+    let res = await broker.call("http.get", {
       url: "http://localhost:4000/json",
       opt: { json: true }
     });
@@ -161,7 +161,7 @@ describe("Test HTTP methods", () => {
   it("should GET JSON without Options field", async () => {
     expect.assertions(1);
 
-    let res = await broker.call("got.get", {
+    let res = await broker.call("http.get", {
       url: "http://localhost:4000/json"
     });
 
@@ -171,7 +171,7 @@ describe("Test HTTP methods", () => {
   });
 
   it("should GET as stream a Readme file", async done => {
-    let res = await broker.call("got.get", {
+    let res = await broker.call("http.get", {
       url: "http://localhost:4000/stream",
       opt: { stream: true }
     });
@@ -205,7 +205,7 @@ describe("Test HTTP methods", () => {
   it("should POST a JSON object", async () => {
     expect.assertions(2);
 
-    let res = await broker.call("got.post", {
+    let res = await broker.call("http.post", {
       url: "http://localhost:4000/json",
       opt: {
         body: { data: "POST From unit test" },
@@ -222,7 +222,7 @@ describe("Test HTTP methods", () => {
   it("should POST without Options field and no Body", async () => {
     expect.assertions(2);
 
-    let res = await broker.call("got.post", {
+    let res = await broker.call("http.post", {
       url: "http://localhost:4000/json"
     });
 
@@ -233,10 +233,10 @@ describe("Test HTTP methods", () => {
   });
 
   it("should POST a file as a stream", async () => {
-    const streamFile = "./test/utils/stream-data/toPOSTStream.md";
+    const streamFile = "./test/utils/stream-data/toStream.md";
     const stream = fs.createReadStream(streamFile, { encoding: "utf8" });
 
-    let res = await broker.call("got.post", stream, {
+    let res = await broker.call("http.post", stream, {
       meta: {
         url: "http://localhost:4000/stream",
         stream: true
@@ -248,7 +248,7 @@ describe("Test HTTP methods", () => {
     expect(res.statusMessage).toBe("OK");
 
     // Compare the actual files
-    const actualPath = "./test/utils/stream-data/file.md";
+    const actualPath = "./test/utils/http-server-mock/POSTfile.md";
     let actual = await fsPromise.readFile(actualPath, { encoding: "utf8" });
 
     let expected = await fsPromise.readFile(streamFile, {
@@ -262,7 +262,7 @@ describe("Test HTTP methods", () => {
   it("should PUT JSON object", async () => {
     expect.assertions(2);
 
-    let res = await broker.call("got.put", {
+    let res = await broker.call("http.put", {
       url: "http://localhost:4000/json",
       opt: {
         body: { data: "PUT From unit test" },
@@ -279,7 +279,7 @@ describe("Test HTTP methods", () => {
   it("should PUT without Options field and no Body", async () => {
     expect.assertions(2);
 
-    let res = await broker.call("got.put", {
+    let res = await broker.call("http.put", {
       url: "http://localhost:4000/json"
     });
 
@@ -289,10 +289,37 @@ describe("Test HTTP methods", () => {
     expect(res.body).toEqual(JSON.stringify(expected));
   });
 
+  it("should PUT a file as a stream", async () => {
+    const streamFile = "./test/utils/stream-data/toStream.md";
+    const stream = fs.createReadStream(streamFile, { encoding: "utf8" });
+
+    let res = await broker.call("http.put", stream, {
+      meta: {
+        url: "http://localhost:4000/stream",
+        stream: true
+      }
+    });
+
+    // Checka HTTP headers
+    expect(res.statusCode).toBe(200);
+    expect(res.statusMessage).toBe("OK");
+
+    // Compare the actual files
+    const actualPath = "./test/utils/http-server-mock/PUTfile.md";
+    let actual = await fsPromise.readFile(actualPath, { encoding: "utf8" });
+
+    let expected = await fsPromise.readFile(streamFile, {
+      encoding: "utf8"
+    });
+
+    expect(actual).toEqual(expected);
+    await fsPromise.unlink(actualPath);
+  });
+
   it("should PATCH JSON object", async () => {
     expect.assertions(2);
 
-    let res = await broker.call("got.patch", {
+    let res = await broker.call("http.patch", {
       url: "http://localhost:4000/json",
       opt: {
         body: { data: "PATCH From unit test" },
@@ -309,7 +336,7 @@ describe("Test HTTP methods", () => {
   it("should PATCH without Options field and no Body", async () => {
     expect.assertions(2);
 
-    let res = await broker.call("got.patch", {
+    let res = await broker.call("http.patch", {
       url: "http://localhost:4000/json"
     });
 
@@ -319,10 +346,37 @@ describe("Test HTTP methods", () => {
     expect(res.body).toEqual(JSON.stringify(expected));
   });
 
+  it("should PATCH a file as a stream", async () => {
+    const streamFile = "./test/utils/stream-data/toStream.md";
+    const stream = fs.createReadStream(streamFile, { encoding: "utf8" });
+
+    let res = await broker.call("http.patch", stream, {
+      meta: {
+        url: "http://localhost:4000/stream",
+        stream: true
+      }
+    });
+
+    // Check HTTP headers
+    expect(res.statusCode).toBe(200);
+    expect(res.statusMessage).toBe("OK");
+
+    // Compare the actual files
+    const actualPath = "./test/utils/http-server-mock/PATCHfile.md";
+    let actual = await fsPromise.readFile(actualPath, { encoding: "utf8" });
+
+    let expected = await fsPromise.readFile(streamFile, {
+      encoding: "utf8"
+    });
+
+    expect(actual).toEqual(expected);
+    await fsPromise.unlink(actualPath);
+  });
+
   it("should DELETE object", async () => {
     expect.assertions(2);
 
-    let res = await broker.call("got.delete", {
+    let res = await broker.call("http.delete", {
       url: "http://localhost:4000/json/123",
       opt: { json: true }
     });
@@ -333,11 +387,45 @@ describe("Test HTTP methods", () => {
     expect(res.body).toEqual(expected);
   });
 
+  it("should DELETE without Options field", async () => {
+    expect.assertions(2);
+
+    let res = await broker.call("http.delete", {
+      url: "http://localhost:4000/json/123"
+    });
+
+    let expected = { deleted: "something", id: 123 };
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual(JSON.stringify(expected));
+  });
+});
+
+describe("Test Error Handling", () => {
+  const broker = new ServiceBroker({
+    // logger: false
+  });
+
+  const HTTPMock = broker.createService(HTTPMockServer);
+
+  const service = broker.createService({
+    name: "http",
+
+    mixins: [MoleculerHTTP],
+
+    settings: {
+      got: { includeMethods: ["get", "post", "put", "delete"] }
+    }
+  });
+
+  beforeAll(() => broker.start());
+  afterAll(() => broker.stop());
+
   it("should GET 404 ERROR", async () => {
     expect.assertions(1);
 
     try {
-      await broker.call("got.get", {
+      await broker.call("http.get", {
         url: "http://localhost:4000/status/404",
         opt: { json: true }
       });
@@ -347,7 +435,7 @@ describe("Test HTTP methods", () => {
   });
 });
 
-describe("Test Moleculer Got Logging", () => {
+describe("Test Moleculer HTTP Client Logging", () => {
   const broker = new ServiceBroker({});
 
   const HTTPMock = broker.createService(HTTPMockServer);
@@ -357,7 +445,7 @@ describe("Test Moleculer Got Logging", () => {
 
   let service = broker.createService({
     name: "gotMixed",
-    mixins: [MoleculerGOT],
+    mixins: [MoleculerHTTP],
 
     settings: {
       got: {
