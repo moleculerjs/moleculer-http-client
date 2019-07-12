@@ -51,7 +51,7 @@ broker.start().then(() => {
 
 **Result**
 ```bash
-INFO  node/HTTP: => HTTP GET to https://httpbin.org/json
+INFO  node/HTTP: => HTTP GET to "https://httpbin.org/json"
 INFO  node/HTTP: <= HTTP GET to "https://httpbin.org/json" returned with status code 200
 INFO  node/BROKER: { slideshow: { author: 'Yours Truly', date: 'date of publication', slides: [ [Object], [Object] ], title: 'Sample Slide Show' } }
 

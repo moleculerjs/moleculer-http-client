@@ -24,7 +24,7 @@ function loggerLevels(code) {
 }
 
 function logOutgoingRequest(logger, options) {
-  logger.info(`=> HTTP ${options.method} to ${options.href}`);
+  logger.info(`=> HTTP ${options.method} to "${options.href}"`);
 }
 
 function logIncomingResponse(logger, response) {
