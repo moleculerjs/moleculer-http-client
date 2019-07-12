@@ -22,7 +22,7 @@ module.exports = {
   name: "http",
 
   /**
-   * Got instance https://github.com/sindresorhus/got#instances
+   * Raw Got Client instance https://github.com/sindresorhus/got#instances
    *
    * @type {import("got").GotInstance} _client
    */
@@ -32,7 +32,7 @@ module.exports = {
    * Default settings
    */
   settings: {
-    got: {
+    httpClient: {
       /**
        *  @type {Array<String>} Array with HTTP methods to include
        */
@@ -233,7 +233,7 @@ module.exports = {
    */
   created() {
     // Remove unwanted actions from the service
-    const { includeMethods } = this.settings.got;
+    const { includeMethods } = this.settings.httpClient;
     if (!includeMethods || Array.isArray(includeMethods)) {
       const methodsToRemove = _.difference(HTTP_METHODS, includeMethods);
 
@@ -243,12 +243,12 @@ module.exports = {
     }
 
     // Add Logging functions got Got's default options
-    const defaultOptions = this.settings.got.defaultOptions;
+    const defaultOptions = this.settings.httpClient.defaultOptions;
 
-    if (this.settings.got.logging) {
+    if (this.settings.httpClient.logging) {
       defaultOptions.logger = this.logger;
-      defaultOptions.logIncomingResponse = this.settings.got.logIncomingResponse;
-      defaultOptions.logOutgoingRequest = this.settings.got.logOutgoingRequest;
+      defaultOptions.logIncomingResponse = this.settings.httpClient.logIncomingResponse;
+      defaultOptions.logOutgoingRequest = this.settings.httpClient.logOutgoingRequest;
     }
 
     /**

@@ -31,8 +31,8 @@ broker.createService({
   mixins: [HTTPClientService],
   
   settings: {
-    // Only load HTTP action
-    got: { includeMethods: ["get"] }
+    // Only load HTTP GET action
+    httpClient: { includeMethods: ["get"] }
   }
 });
 

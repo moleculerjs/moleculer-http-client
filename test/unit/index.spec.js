@@ -25,9 +25,9 @@ describe("Test Moleculer HTTP Client base service", () => {
   });
 
   it("settings field should be an Object", () => {
-    expect(service.settings.got).toBeInstanceOf(Object);
-    expect(service.settings.got.includeMethods).toEqual(null);
-    expect(service.settings.got.defaultOptions).toBeInstanceOf(Object);
+    expect(service.settings.httpClient).toBeInstanceOf(Object);
+    expect(service.settings.httpClient.includeMethods).toEqual(null);
+    expect(service.settings.httpClient.defaultOptions).toBeInstanceOf(Object);
   });
 
   it("should have a HTTP client", () => {
@@ -65,7 +65,7 @@ describe("Test mixin Moleculer HTTP", () => {
     mixins: [MoleculerHTTP],
 
     settings: {
-      got: { logging: false }
+      httpClient: { logging: false }
     }
   });
 
@@ -73,7 +73,7 @@ describe("Test mixin Moleculer HTTP", () => {
     expect(service).toBeDefined();
     expect(service.name).toBe("gotMixed");
 
-    const { defaultOptions } = service.settings.got;
+    const { defaultOptions } = service.settings.httpClient;
 
     expect(defaultOptions.logger).toBeUndefined();
     expect(defaultOptions.logIncomingResponse).toBeUndefined();
@@ -94,7 +94,7 @@ describe("Test mixin Moleculer HTTP", () => {
       mixins: [MoleculerHTTP],
 
       settings: {
-        got: { includeMethods: ["get", "post"] }
+        httpClient: { includeMethods: ["get", "post"] }
       }
     });
 
@@ -112,7 +112,7 @@ describe("Test mixin Moleculer HTTP", () => {
       mixins: [MoleculerHTTP],
 
       settings: {
-        got: { includeMethods: ["get", "post", "put", "delete"] }
+        httpClient: { includeMethods: ["get", "post", "put", "delete"] }
       }
     });
 
@@ -138,7 +138,7 @@ describe("Test HTTP methods", () => {
     mixins: [MoleculerHTTP],
 
     settings: {
-      got: { includeMethods: ["get", "post", "put", "delete"] }
+      httpClient: { includeMethods: ["get", "post", "put", "delete"] }
     }
   });
 
@@ -414,7 +414,7 @@ describe("Test Error Handling", () => {
     mixins: [MoleculerHTTP],
 
     settings: {
-      got: { includeMethods: ["get", "post", "put", "delete"] }
+      httpClient: { includeMethods: ["get", "post", "put", "delete"] }
     }
   });
 
@@ -448,7 +448,7 @@ describe("Test Moleculer HTTP Client Logging", () => {
     mixins: [MoleculerHTTP],
 
     settings: {
-      got: {
+      httpClient: {
         includeMethods: ["get"],
 
         logIncomingResponse: logIncomingResponse,
@@ -472,7 +472,7 @@ describe("Test Moleculer HTTP Client Logging", () => {
 
   it("should include log related functions", async () => {
     expect(service).toBeDefined();
-    const { defaultOptions } = service.settings.got;
+    const { defaultOptions } = service.settings.httpClient;
 
     expect(defaultOptions.logger).toBeDefined();
     expect(defaultOptions.logIncomingResponse).toBeDefined();
@@ -486,7 +486,7 @@ describe("Test Moleculer HTTP Client Logging", () => {
     expect(response.statusCode).toBe(200);
     expect(response.body).toEqual({ statusCodeReceived: 200 });
 
-    const { defaultOptions } = service.settings.got;
+    const { defaultOptions } = service.settings.httpClient;
     expect(defaultOptions.logOutgoingRequest).toHaveBeenCalledTimes(1);
     expect(defaultOptions.logIncomingResponse).toHaveBeenCalledTimes(1);
 
