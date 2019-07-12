@@ -233,7 +233,7 @@ describe("Test HTTP methods", () => {
   });
 
   it("should POST a file as a stream", async () => {
-    const streamFile = "./test/utils/stream-data/toStream.md";
+    const streamFile = "./test/utils/stream-data/toPOSTStream.md";
     const stream = fs.createReadStream(streamFile, { encoding: "utf8" });
 
     let res = await broker.call("got.post", stream, {
@@ -382,7 +382,7 @@ describe("Test Moleculer Got Logging", () => {
   beforeEach(() => broker.start());
   afterEach(() => broker.stop());
 
-  it("should include log related data", async () => {
+  it("should include log related functions", async () => {
     expect(service).toBeDefined();
     const { defaultOptions } = service.settings.got;
 

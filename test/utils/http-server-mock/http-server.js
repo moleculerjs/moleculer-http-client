@@ -104,7 +104,7 @@ module.exports = {
         "Content-Disposition": `attachment; filename=$README.md`
       };
 
-      return fs.createReadStream("./README.md");
+      return fs.createReadStream("././test/utils/http-server-mock/toStream.md");
     },
     postStream(ctx) {
       return new Promise((resolve, reject) => {

@@ -243,7 +243,7 @@ module.exports = {
     }
 
     // Add Logging functions got Got's default options
-    let defaultOptions = this.settings.got.defaultOptions;
+    const defaultOptions = this.settings.got.defaultOptions;
 
     if (this.settings.got.logging) {
       defaultOptions.logger = this.logger;
