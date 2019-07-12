@@ -9,7 +9,7 @@ A tiny wrapper around [got](https://github.com/sindresorhus/got) HTTP client. Al
 ## Install
 
 ```
-npm install moleculer-got --save
+npm install moleculer-http-client --save
 ```
 
 ## Usage
