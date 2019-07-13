@@ -2,9 +2,12 @@
 
 # moleculer-http-client [![Build Status](https://travis-ci.org/AndreMaz/moleculer-http-client.svg?branch=master)](https://travis-ci.org/AndreMaz/moleculer-http-client)
 
-A tiny wrapper around [got](https://github.com/sindresorhus/got) HTTP client that allows Moleculer services to communicate with REST APIs.
+[WIP] A tiny wrapper around [got](https://github.com/sindresorhus/got) HTTP client that allows Moleculer services to communicate with REST APIs.
 
 ## Features
+
+- Make HTTP requests from Actions and Events
+- Stream data
 
 ## Install
 ```
@@ -111,6 +114,41 @@ INFO  http-client/HTTP: => HTTP GET to "https://httpbin.org/json"
 INFO  http-client/HTTP: <= HTTP GET to "https://httpbin.org/json" returned with status code 200
 INFO  http-client/HTTP: Printing Payload
 INFO  http-client/HTTP: { slideshow: { author: 'Yours Truly', date: 'date of publication', slides: [ [Object], [Object] ], title: 'Sample Slide Show' } }
+```
+
+## Default Configs
+```js
+module.exports = {
+  name: "http",
+
+   // Raw Got Client instance https://github.com/sindresorhus/got#instances
+  _client: null,
+
+  /**
+   * Default settings
+   */
+  settings: {
+    httpClient: {
+      // HTTP methods to include as Moleculer Actions  
+      includeMethods: null,
+
+      // Boolean value indicating whether request should be logged or not
+      logging: true,
+
+      // Log request function
+      logOutgoingRequest: logOutgoingRequest,
+
+      // Log response function
+      logIncomingResponse: logIncomingResponse,
+
+      // Format the response
+      responseFormatter: "headers", // get only the headers
+
+      // Format the Errors
+      errorFormatter: errorFormatter,
+    }
+  },
+};
 ```
 
 ## Actions
