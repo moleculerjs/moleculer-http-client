@@ -3,7 +3,14 @@
 const { ServiceBroker } = require("moleculer");
 const MoleculerHTTP = require("../../src");
 const fs = require("fs");
-const fsPromise = require("fs").promises;
+// Node 8 don't like this
+// const fsPromise = require("fs").promises;
+
+const util = require("util");
+const readFile = util.promisify(fs.readFile);
+const writeFile = util.promisify(fs.writeFile);
+const unlink = util.promisify(fs.unlink);
+
 const _ = require("lodash");
 
 const HTTPMockServer = require("../utils/http-server-mock/http-server");
@@ -188,12 +195,12 @@ describe("Test HTTP methods", () => {
 
       // Compare the actual files
       const expectedPath = "./test/utils/stream-data/expected.md";
-      let expected = await fsPromise.readFile(expectedPath, {
+      let expected = await readFile(expectedPath, {
         encoding: "utf8"
       });
 
-      let actual = await fsPromise.readFile(actualPath, { encoding: "utf8" });
-      await fsPromise.unlink(actualPath);
+      let actual = await readFile(actualPath, { encoding: "utf8" });
+      await unlink(actualPath);
 
       expect(actual).toEqual(expected);
 
@@ -249,14 +256,14 @@ describe("Test HTTP methods", () => {
 
     // Compare the actual files
     const actualPath = "./test/utils/http-server-mock/POSTfile.md";
-    let actual = await fsPromise.readFile(actualPath, { encoding: "utf8" });
+    let actual = await readFile(actualPath, { encoding: "utf8" });
 
-    let expected = await fsPromise.readFile(streamFile, {
+    let expected = await readFile(streamFile, {
       encoding: "utf8"
     });
 
     expect(actual).toEqual(expected);
-    await fsPromise.unlink(actualPath);
+    await unlink(actualPath);
   });
 
   it("should PUT JSON object", async () => {
@@ -306,14 +313,14 @@ describe("Test HTTP methods", () => {
 
     // Compare the actual files
     const actualPath = "./test/utils/http-server-mock/PUTfile.md";
-    let actual = await fsPromise.readFile(actualPath, { encoding: "utf8" });
+    let actual = await readFile(actualPath, { encoding: "utf8" });
 
-    let expected = await fsPromise.readFile(streamFile, {
+    let expected = await readFile(streamFile, {
       encoding: "utf8"
     });
 
     expect(actual).toEqual(expected);
-    await fsPromise.unlink(actualPath);
+    await unlink(actualPath);
   });
 
   it("should PATCH JSON object", async () => {
@@ -363,14 +370,14 @@ describe("Test HTTP methods", () => {
 
     // Compare the actual files
     const actualPath = "./test/utils/http-server-mock/PATCHfile.md";
-    let actual = await fsPromise.readFile(actualPath, { encoding: "utf8" });
+    let actual = await readFile(actualPath, { encoding: "utf8" });
 
-    let expected = await fsPromise.readFile(streamFile, {
+    let expected = await readFile(streamFile, {
       encoding: "utf8"
     });
 
     expect(actual).toEqual(expected);
-    await fsPromise.unlink(actualPath);
+    await unlink(actualPath);
   });
 
   it("should DELETE object", async () => {
