@@ -12,8 +12,9 @@ const stream = require("stream");
 
 const HTTP_METHODS = ["get", "put", "post", "delete"];
 
-const { logOutgoingRequest, logIncomingResponse } = require("./utils");
+const { logOutgoingRequest, logIncomingResponse } = require("./logger-utils");
 const { errorFormatter } = require("./errors");
+const { formatter, formatOptions } = require("./response-formatter");
 
 module.exports = {
   /**
@@ -56,7 +57,7 @@ module.exports = {
       /**
        * @type {string | Function} Function to formatting the HTTP response
        */
-      responseFormatter: "something",
+      responseFormatter: null,
 
       /**
        * @type {Function} Error handler
@@ -83,7 +84,16 @@ module.exports = {
                 logIncomingResponse(logger, response);
               }
 
+              // console.log(response);
+
               return response;
+            },
+            function formatter(response, retryWithMergedOptions) {
+              const { responseFormatter } = response.request.gotOptions;
+              const { json } = response.request.gotOptions;
+
+              return responseFormatter(response, json);
+              // return response;
             }
           ],
           beforeError: [
@@ -243,12 +253,23 @@ module.exports = {
     }
 
     // Add Logging functions got Got's default options
-    const defaultOptions = this.settings.httpClient.defaultOptions;
+    const { defaultOptions } = this.settings.httpClient;
 
     if (this.settings.httpClient.logging) {
       defaultOptions.logger = this.logger;
       defaultOptions.logIncomingResponse = this.settings.httpClient.logIncomingResponse;
       defaultOptions.logOutgoingRequest = this.settings.httpClient.logOutgoingRequest;
+    }
+
+    // Set Response formatting function
+    const { responseFormatter } = this.settings.httpClient;
+    if (
+      _.isString(responseFormatter) &&
+      formatOptions.includes(responseFormatter)
+    ) {
+      defaultOptions.responseFormatter = formatter[responseFormatter];
+    } else {
+      defaultOptions.responseFormatter = formatter["raw"];
     }
 
     /**

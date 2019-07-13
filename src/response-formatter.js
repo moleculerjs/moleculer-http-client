@@ -5,6 +5,25 @@
  */
 "use strict";
 
-function responseFormatter() {}
+const formatter = {
+  body: (req, json) => {
+    if (json === true) {
+      try {
+        return JSON.parse(req.body);
+        // return req.body;
+      } catch (error) {
+        throw error;
+      }
+    }
+    return req.body;
+  },
+  headers: req => {
+    return req.headers;
+  },
+  status: req => req.statusCode,
+  raw: req => req
+};
 
-module.exports = { responseFormatter };
+const formatOptions = Object.keys(formatter);
+
+module.exports = { formatter, formatOptions };

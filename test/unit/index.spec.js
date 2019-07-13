@@ -454,16 +454,6 @@ describe("Test Moleculer HTTP Client Logging", () => {
         logIncomingResponse: logIncomingResponse,
         logOutgoingRequest: logOutgoingRequest
       }
-    },
-
-    actions: {
-      async get(ctx) {
-        try {
-          return this._get(ctx.params.url, { json: true });
-        } catch (error) {
-          throw error;
-        }
-      }
     }
   });
 
@@ -481,7 +471,8 @@ describe("Test Moleculer HTTP Client Logging", () => {
 
   it("should use log messages 2 times each", async () => {
     let response = await broker.call("gotMixed.get", {
-      url: "http://localhost:4000/status/200"
+      url: "http://localhost:4000/status/200",
+      opt: { json: true }
     });
     expect(response.statusCode).toBe(200);
     expect(response.body).toEqual({ statusCodeReceived: 200 });
@@ -496,5 +487,140 @@ describe("Test Moleculer HTTP Client Logging", () => {
 
     expect(defaultOptions.logOutgoingRequest).toHaveBeenCalledTimes(2);
     expect(defaultOptions.logIncomingResponse).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe("Test Response Formatter", () => {
+  const broker = new ServiceBroker({});
+
+  const HTTPMock = broker.createService(HTTPMockServer);
+
+  let serviceSchema = {
+    name: "http",
+    mixins: [MoleculerHTTP],
+
+    settings: {
+      httpClient: {
+        includeMethods: ["get"]
+      }
+    }
+  };
+
+  afterEach(async () => {
+    let s = broker.getLocalService("http");
+    await broker.destroyService(s);
+    return broker.stop();
+  });
+
+  it("should return JSON body", async () => {
+    let schema = _.cloneDeep(serviceSchema);
+    schema.settings.httpClient.responseFormatter = "body";
+    broker.createService(schema);
+    await broker.start();
+
+    expect.assertions(1);
+
+    let res = await broker.call("http.get", {
+      url: "http://localhost:4000/json",
+      opt: { json: true }
+    });
+
+    let expected = { hello: 200 };
+
+    expect(res).toEqual(expected);
+  });
+
+  it("should return String body", async () => {
+    let schema = _.cloneDeep(serviceSchema);
+    schema.settings.httpClient.responseFormatter = "body";
+    broker.createService(schema);
+    await broker.start();
+
+    expect.assertions(1);
+
+    let res = await broker.call("http.get", {
+      url: "http://localhost:4000/json"
+    });
+
+    let expected = { hello: 200 };
+
+    expect(res).toEqual(JSON.stringify(expected));
+  });
+
+  it("should return Headers", async () => {
+    let schema = _.cloneDeep(serviceSchema);
+    schema.settings.httpClient.responseFormatter = "headers";
+    broker.createService(schema);
+    await broker.start();
+
+    expect.assertions(1);
+
+    let res = await broker.call("http.get", {
+      url: "http://localhost:4000/json",
+      opt: { json: true }
+    });
+
+    let expected = {
+      connection: "close",
+      "content-length": "13",
+      "content-type": "application/json; charset=utf-8"
+    };
+
+    // Delete
+    delete res.date;
+
+    expect(res).toEqual(expected);
+  });
+
+  it("should return Status Code", async () => {
+    let schema = _.cloneDeep(serviceSchema);
+    schema.settings.httpClient.responseFormatter = "status";
+    broker.createService(schema);
+    await broker.start();
+
+    expect.assertions(1);
+
+    let res = await broker.call("http.get", {
+      url: "http://localhost:4000/json",
+      opt: { json: true }
+    });
+
+    expect(res).toEqual(200);
+  });
+
+  it("should return full Got Response Object - null ", async () => {
+    let schema = _.cloneDeep(serviceSchema);
+    schema.settings.httpClient.responseFormatter = null;
+    broker.createService(schema);
+    await broker.start();
+
+    expect.assertions(3);
+
+    let res = await broker.call("http.get", {
+      url: "http://localhost:4000/json",
+      opt: { json: true }
+    });
+
+    expect(res.httpVersionMajor).toEqual(1);
+    expect(res.httpVersionMinor).toEqual(1);
+    expect(res.httpVersion).toEqual("1.1");
+  });
+
+  it("should return full Got Response Object - raw", async () => {
+    let schema = _.cloneDeep(serviceSchema);
+    schema.settings.httpClient.responseFormatter = "raw";
+    broker.createService(schema);
+    await broker.start();
+
+    expect.assertions(3);
+
+    let res = await broker.call("http.get", {
+      url: "http://localhost:4000/json",
+      opt: { json: true }
+    });
+
+    expect(res.httpVersionMajor).toEqual(1);
+    expect(res.httpVersionMinor).toEqual(1);
+    expect(res.httpVersion).toEqual("1.1");
   });
 });
