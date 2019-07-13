@@ -5,8 +5,7 @@ const HTTPClientService = require("../../index");
 
 // Create broker
 let broker = new ServiceBroker({
-  namespace: "client",
-  nodeID: "namespace"
+  nodeID: "http-client"
 });
 
 // Create a service

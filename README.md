@@ -2,7 +2,7 @@
 
 # moleculer-http-client [![Build Status](https://travis-ci.org/AndreMaz/moleculer-http-client.svg?branch=master)](https://travis-ci.org/AndreMaz/moleculer-http-client)
 
-[WIP] A tiny wrapper around [got](https://github.com/sindresorhus/got) HTTP client that allows Moleculer services to communicate with REST APIs.
+[WIP] A tiny wrapper around [got](https://github.com/sindresorhus/got) HTTP client that allows [Moleculer](https://moleculer.services/) services to communicate with REST APIs.
 
 ## Features
 
@@ -22,10 +22,7 @@ const { ServiceBroker } = require("moleculer");
 const HTTPClientService = require("../../index");
 
 // Create broker
-let broker = new ServiceBroker({
-  namespace: 'client',
-  nodeID: "namespace"
-});
+let broker = new ServiceBroker();
 
 // Create a service
 broker.createService({
@@ -67,10 +64,7 @@ const { ServiceBroker } = require("moleculer");
 const HTTPClientService = require("../../index");
 
 // Create broker
-let broker = new ServiceBroker({
-  namespace: "client",
-  nodeID: "namespace"
-});
+let broker = new ServiceBroker();
 
 // Create a service
 broker.createService({
@@ -91,7 +85,7 @@ broker.createService({
       // Make a request
       const res = await this._get(request.url, request.opt);
       this.logger.info("Printing Payload");
-      // Print the incoming payload
+      // Print the response data
       this.logger.info(res.body);
     }
   }
@@ -100,7 +94,7 @@ broker.createService({
 // Start server
 broker.start().then(() => {
   broker
-    // Emit some event
+    // Emit an event
     .emit("some.Event", {
       url: "https://httpbin.org/json",
       opt: { json: true }
@@ -129,8 +123,8 @@ module.exports = {
    */
   settings: {
     httpClient: {
-      // HTTP methods to include as Moleculer Actions  
-      includeMethods: null,
+      // HTTP methods to include as Moleculer Actions
+      includeMethods: null, // ['get', 'post', 'put', 'patch', 'delete' ]
 
       // Boolean value indicating whether request should be logged or not
       logging: true,
@@ -142,7 +136,7 @@ module.exports = {
       logIncomingResponse: logIncomingResponse,
 
       // Format the response
-      responseFormatter: "headers", // get only the headers
+      responseFormatter: "headers", // one of "body", "headers", "status", "raw"
 
       // Format the Errors
       errorFormatter: errorFormatter,
@@ -151,9 +145,9 @@ module.exports = {
 };
 ```
 
-## Actions
+## Service Actions
 
-## Methods
+## Service Methods
 
 ## Test
 ```
