@@ -24,23 +24,22 @@ function loggerLevels(code) {
   return code;
 }
 
-function logOutgoingRequest(logger, options) {
-  logger.info(
-    `=> HTTP ${options.method} to "${chalk.underline(options.href)}"`
-  );
+function logOutgoingRequest(options) {
+  return `=> HTTP ${options.method} to "${chalk.underline(options.href)}"`;
 }
 
-function logIncomingResponse(logger, response) {
+function logIncomingResponse(response) {
   const method = response.request.gotOptions.method;
 
   const message = `<= HTTP ${method} to "${chalk.underline(
     response.requestUrl
   )}" returned with status code ${coloringStatusCode(response.statusCode)}`;
 
-  logger[loggerLevels(response.statusCode)](message);
+  return message;
 }
 
 module.exports = {
   logOutgoingRequest,
-  logIncomingResponse
+  logIncomingResponse,
+  loggerLevels
 };

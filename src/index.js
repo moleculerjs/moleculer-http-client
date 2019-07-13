@@ -12,7 +12,11 @@ const stream = require("stream");
 
 const HTTP_METHODS = ["get", "put", "post", "delete"];
 
-const { logOutgoingRequest, logIncomingResponse } = require("./logger-utils");
+const {
+  logOutgoingRequest,
+  logIncomingResponse,
+  loggerLevels
+} = require("./logger-utils");
 const { errorFormatter } = require("./errors");
 const { formatter, formatOptions } = require("./response-formatter");
 
@@ -72,7 +76,7 @@ module.exports = {
               const { logger } = options;
               const { logOutgoingRequest } = options;
               if (logger && logOutgoingRequest) {
-                logOutgoingRequest(logger, options);
+                logger.info(logOutgoingRequest(options));
               }
             }
           ],
@@ -81,7 +85,9 @@ module.exports = {
               const { logger } = response.request.gotOptions;
               const { logIncomingResponse } = response.request.gotOptions;
               if (logger && logIncomingResponse) {
-                logIncomingResponse(logger, response);
+                logger[loggerLevels(response.statusCode)](
+                  logIncomingResponse(response)
+                );
               }
 
               // console.log(response);
@@ -210,7 +216,7 @@ module.exports = {
       if (opt.method == "GET") {
         return this._client(url, opt).on("response", res => {
           // Got hooks don't work for Streams
-          logIncomingResponse(this.logger, res);
+          logIncomingResponse(res);
         });
       }
 
@@ -221,7 +227,7 @@ module.exports = {
 
         writeStream.on("response", res => {
           // Got hooks don't work for Streams
-          logIncomingResponse(this.logger, res);
+          logIncomingResponse(res);
           resolve(res);
         });
 
