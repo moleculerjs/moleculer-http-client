@@ -6,11 +6,19 @@
 
 "use strict";
 
+/**
+ * @typedef {import("got").GotInstance} GotInstance
+ * @typedef {import("got").GotOptions} GotOptions
+ * @typedef {import("got").GotBodyOptions} GotBodyOptions
+ * @typedef {import("got").GotError} GotError
+ * @typedef {import("moleculer").Context} Context
+ */
+
 const got = require("got");
 const _ = require("lodash");
 const stream = require("stream");
 
-const HTTP_METHODS = ["get", "put", "post", "delete"];
+const HTTP_METHODS = ["get", "post", "put", "patch", "delete"];
 
 const {
   logOutgoingRequest,
@@ -29,7 +37,7 @@ module.exports = {
   /**
    * Raw Got Client instance https://github.com/sindresorhus/got#instances
    *
-   * @type {import("got").GotInstance} _client
+   * @type {GotInstance} _client
    */
   _client: null,
 
@@ -68,44 +76,57 @@ module.exports = {
        */
       errorFormatter: errorFormatter,
 
-      // More about Got default options: https://github.com/sindresorhus/got#instances
+      /**
+       * @param {GotBodyOptions}
+       *
+       * More about Got default options: https://github.com/sindresorhus/got#instances
+       */
       defaultOptions: {
         hooks: {
+          /**
+           * More info: https://github.com/sindresorhus/got#hooksbeforerequest
+           */
           beforeRequest: [
             function outgoingLogger(options) {
               const { logger } = options;
               const { logOutgoingRequest } = options;
+
               if (logger && logOutgoingRequest) {
                 logger.info(logOutgoingRequest(options));
               }
             }
           ],
+          /**
+           * More info: https://github.com/sindresorhus/got#hooksafterresponse
+           */
           afterResponse: [
-            function incomingLogger(response, retryWithMergedOptions) {
+            function incomingLogger(response) {
               const { logger } = response.request.gotOptions;
               const { logIncomingResponse } = response.request.gotOptions;
+
               if (logger && logIncomingResponse) {
                 logger[loggerLevels(response.statusCode)](
                   logIncomingResponse(response)
                 );
               }
 
-              // console.log(response);
-
               return response;
             },
-            function formatter(response, retryWithMergedOptions) {
+            function formatter(response) {
               const { responseFormatter } = response.request.gotOptions;
               const { json } = response.request.gotOptions;
 
               return responseFormatter(response, json);
-              // return response;
             }
           ],
+          /**
+           * More info: https://github.com/sindresorhus/got#hooksbeforeerror
+           */
           beforeError: [
             /*error => {
               // Wait for a new (>v9.6.0) Got release
               // https://github.com/sindresorhus/got/issues/781
+              // When released do error handling here instead of `_httpErrorHandler()` method
               return error;
             }*/
           ]
@@ -115,52 +136,81 @@ module.exports = {
   },
 
   actions: {
-    async get(ctx) {
-      try {
-        return await this._get(ctx.params.url, ctx.params.opt);
-      } catch (error) {
-        throw this._httpErrorHandler(error);
-      }
-    },
-
-    async post(ctx) {
-      try {
-        if (ctx.params instanceof stream.Readable) {
-          return await this._post(ctx.meta.url, { stream: true }, ctx.params);
+    get: {
+      /**
+       * @param {Context} ctx
+       */
+      async handler(ctx) {
+        try {
+          return await this._get(ctx.params.url, ctx.params.opt);
+        } catch (error) {
+          throw this._httpErrorHandler(error);
         }
-        return await this._post(ctx.params.url, ctx.params.opt);
-      } catch (error) {
-        throw this._httpErrorHandler(error);
       }
     },
 
-    async put(ctx) {
-      try {
-        if (ctx.params instanceof stream.Readable) {
-          return await this._put(ctx.meta.url, { stream: true }, ctx.params);
+    post: {
+      /**
+       * @param {Context} ctx
+       */
+      async handler(ctx) {
+        try {
+          if (ctx.params instanceof stream.Readable) {
+            return await this._post(ctx.meta.url, { stream: true }, ctx.params);
+          }
+          return await this._post(ctx.params.url, ctx.params.opt);
+        } catch (error) {
+          throw this._httpErrorHandler(error);
         }
-        return await this._put(ctx.params.url, ctx.params.opt);
-      } catch (error) {
-        throw this._httpErrorHandler(error);
       }
     },
 
-    async patch(ctx) {
-      try {
-        if (ctx.params instanceof stream.Readable) {
-          return await this._patch(ctx.meta.url, { stream: true }, ctx.params);
+    put: {
+      /**
+       * @param {Context} ctx
+       */
+      async handler(ctx) {
+        try {
+          if (ctx.params instanceof stream.Readable) {
+            return await this._put(ctx.meta.url, { stream: true }, ctx.params);
+          }
+          return await this._put(ctx.params.url, ctx.params.opt);
+        } catch (error) {
+          throw this._httpErrorHandler(error);
         }
-        return await this._patch(ctx.params.url, ctx.params.opt);
-      } catch (error) {
-        throw await this._httpErrorHandler(error);
       }
     },
 
-    async delete(ctx) {
-      try {
-        return await this._delete(ctx.params.url, ctx.params.opt);
-      } catch (error) {
-        throw await this._httpErrorHandler(error);
+    patch: {
+      /**
+       * @param {Context} ctx
+       */
+      async handler(ctx) {
+        try {
+          if (ctx.params instanceof stream.Readable) {
+            return await this._patch(
+              ctx.meta.url,
+              { stream: true },
+              ctx.params
+            );
+          }
+          return await this._patch(ctx.params.url, ctx.params.opt);
+        } catch (error) {
+          throw await this._httpErrorHandler(error);
+        }
+      }
+    },
+
+    delete: {
+      /**
+       * @param {Context} ctx
+       */
+      async handler(ctx) {
+        try {
+          return await this._delete(ctx.params.url, ctx.params.opt);
+        } catch (error) {
+          throw await this._httpErrorHandler(error);
+        }
       }
     }
   },
@@ -169,6 +219,11 @@ module.exports = {
    * Methods
    */
   methods: {
+    /**
+     * HTTP GET method
+     * @param {string} url
+     * @param {GotOptions} opt
+     */
     _get(url, opt) {
       if (!_.isObject(opt)) opt = {};
 
@@ -176,6 +231,12 @@ module.exports = {
       return this._genericRequest(url, opt);
     },
 
+    /**
+     * HTTP POST method
+     * @param {string} url
+     * @param {GotOptions} opt
+     * @param {stream.Readable} streamPayload
+     */
     _post(url, opt, streamPayload) {
       if (!_.isObject(opt)) opt = {};
 
@@ -183,6 +244,12 @@ module.exports = {
       return this._genericRequest(url, opt, streamPayload);
     },
 
+    /**
+     * HTTP PUT method
+     * @param {string} url
+     * @param {GotOptions} opt
+     * @param {stream.Readable} streamPayload
+     */
     _put(url, opt, streamPayload) {
       if (!_.isObject(opt)) opt = {};
 
@@ -190,6 +257,12 @@ module.exports = {
       return this._genericRequest(url, opt, streamPayload);
     },
 
+    /**
+     * HTTP PUT method
+     * @param {string} url
+     * @param {GotOptions} opt
+     * @param {stream.Readable} streamPayload
+     */
     _patch(url, opt, streamPayload) {
       if (!_.isObject(opt)) opt = {};
 
@@ -197,6 +270,11 @@ module.exports = {
       return this._genericRequest(url, opt, streamPayload);
     },
 
+    /**
+     * HTTP DELETE method
+     * @param {string} url
+     * @param {GotOptions} opt
+     */
     _delete(url, opt) {
       if (!_.isObject(opt)) opt = {};
 
@@ -212,6 +290,12 @@ module.exports = {
       return this._client(url, opt);
     },
 
+    /**
+     * Handles incoming and outgoing stream requests
+     * @param {string} url
+     * @param {GotOptions} opt
+     * @param {stream.Readable} streamPayload
+     */
     _streamRequest(url, opt, streamPayload) {
       if (opt.method == "GET") {
         return this._client(url, opt).on("response", res => {
@@ -235,6 +319,11 @@ module.exports = {
       });
     },
 
+    /**
+     * Error handling function that wraps Got's errors with Moleculer Errors
+     * @param {GotError|Error} error
+     * @returns {Error}
+     */
     _httpErrorHandler(error) {
       if (!this.settings.httpClient.errorFormatter) {
         return error;
@@ -279,18 +368,8 @@ module.exports = {
     }
 
     /**
-     * @type {import("got").GotInstance}
+     * @type {GotInstance}
      */
     this._client = got.extend(defaultOptions);
-  },
-
-  /**
-   * Service started lifecycle event handler
-   */
-  async started() {},
-
-  /**
-   * Service stopped lifecycle event handler
-   */
-  async stopped() {}
+  }
 };

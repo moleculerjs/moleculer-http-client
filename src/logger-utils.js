@@ -24,10 +24,24 @@ function loggerLevels(code) {
   return code;
 }
 
+/**
+ * Build a log message about outgoing request
+ * This is a Got's BeforeRequest Hook Function. More info: `https://github.com/sindresorhus/got#hooksbeforerequest`
+ *
+ * @param {object} response Got Options object
+ * @returns {string}
+ */
 function logOutgoingRequest(options) {
   return `=> HTTP ${options.method} to "${chalk.underline(options.href)}"`;
 }
 
+/**
+ * Builds a log message about incoming request
+ * This is a Got's afterResponse Hook Function. More info: `https://github.com/sindresorhus/got#hooksafterresponse`
+ *
+ * @param {object} response Got Request option.
+ * @returns {string}
+ */
 function logIncomingResponse(response) {
   const method = response.request.gotOptions.method;
 
