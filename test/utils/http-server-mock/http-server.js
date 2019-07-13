@@ -22,7 +22,11 @@ module.exports = {
         bodyParsers: { json: true },
 
         aliases: {
-          "GET /:statusCode": "api.statusCode"
+          "GET /:statusCode": "api.statusCode",
+          "POST /:statusCode": "api.statusCode",
+          "PUT /:statusCode": "api.statusCode",
+          "PATCH /:statusCode": "api.statusCode",
+          "DELETE /:statusCode": "api.statusCode"
         }
       },
       {

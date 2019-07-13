@@ -27,7 +27,7 @@ broker.start().then(() => {
   broker
     // Make a HTTP GET request
     .call("http.get", {
-      url: "https://httpbin.org/json",
+      url: "https://httpbin.org/status/404",
       opt: { json: true }
     })
     .then(res => broker.logger.info(res.body))

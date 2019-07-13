@@ -111,7 +111,7 @@ module.exports = {
   actions: {
     async get(ctx) {
       try {
-        return this._get(ctx.params.url, ctx.params.opt);
+        return await this._get(ctx.params.url, ctx.params.opt);
       } catch (error) {
         throw this._httpErrorHandler(error);
       }
@@ -120,9 +120,9 @@ module.exports = {
     async post(ctx) {
       try {
         if (ctx.params instanceof stream.Readable) {
-          return this._post(ctx.meta.url, { stream: true }, ctx.params);
+          return await this._post(ctx.meta.url, { stream: true }, ctx.params);
         }
-        return this._post(ctx.params.url, ctx.params.opt);
+        return await this._post(ctx.params.url, ctx.params.opt);
       } catch (error) {
         throw this._httpErrorHandler(error);
       }
@@ -131,9 +131,9 @@ module.exports = {
     async put(ctx) {
       try {
         if (ctx.params instanceof stream.Readable) {
-          return this._put(ctx.meta.url, { stream: true }, ctx.params);
+          return await this._put(ctx.meta.url, { stream: true }, ctx.params);
         }
-        return this._put(ctx.params.url, ctx.params.opt);
+        return await this._put(ctx.params.url, ctx.params.opt);
       } catch (error) {
         throw this._httpErrorHandler(error);
       }
@@ -142,19 +142,19 @@ module.exports = {
     async patch(ctx) {
       try {
         if (ctx.params instanceof stream.Readable) {
-          return this._patch(ctx.meta.url, { stream: true }, ctx.params);
+          return await this._patch(ctx.meta.url, { stream: true }, ctx.params);
         }
-        return this._patch(ctx.params.url, ctx.params.opt);
+        return await this._patch(ctx.params.url, ctx.params.opt);
       } catch (error) {
-        throw this._httpErrorHandler(error);
+        throw await this._httpErrorHandler(error);
       }
     },
 
     async delete(ctx) {
       try {
-        return this._delete(ctx.params.url, ctx.params.opt);
+        return await this._delete(ctx.params.url, ctx.params.opt);
       } catch (error) {
-        throw this._httpErrorHandler(error);
+        throw await this._httpErrorHandler(error);
       }
     }
   },
@@ -230,7 +230,7 @@ module.exports = {
     },
 
     _httpErrorHandler(error) {
-      if (!this.settings.errorFormatter) {
+      if (!this.settings.httpClient.errorFormatter) {
         return error;
       }
 

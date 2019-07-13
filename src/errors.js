@@ -8,17 +8,13 @@ const { MoleculerError } = require("moleculer").Errors;
 
 class MoleculerHTTPClientError extends MoleculerError {
   constructor(msg, data) {
-    super(
-      msg || `HTTP Client Error.`,
-      500,
-      "MOLECULER_HTTP_CLIENT_ERROR",
-      data
-    );
+    super(msg, 500, "MOLECULER_HTTP_CLIENT_ERROR", data);
   }
 }
 
 function errorFormatter(error) {
-  return error;
+  // ToDo: Parse the Got Error. Extract only what's needed
+  return new MoleculerHTTPClientError(`Moleculer HTTP Client Error.`, error);
 }
 
 module.exports = { MoleculerHTTPClientError, errorFormatter };

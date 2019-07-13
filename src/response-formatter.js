@@ -9,6 +9,8 @@ const formatter = {
   body: (req, json) => {
     if (json === true) {
       try {
+        // Wait for a new (>v9.6.0) Got release
+        // https://github.com/sindresorhus/got/pull/704
         return JSON.parse(req.body);
         // return req.body;
       } catch (error) {
