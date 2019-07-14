@@ -8,6 +8,7 @@
 
 - Make HTTP requests from Actions and Events
 - Stream data
+- Customizable log messages and errors
 
 ## Install
 ```
