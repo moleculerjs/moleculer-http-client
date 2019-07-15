@@ -5,25 +5,26 @@
  */
 "use strict";
 
+// Wait for a new (>v9.6.0) Got release
+// https://github.com/sindresorhus/got/pull/704
 const formatter = {
-  body: (req, json) => {
+  body: (response) => {
+    const { json } = response.request.gotOptions;
     if (json === true) {
       try {
-        // Wait for a new (>v9.6.0) Got release
-        // https://github.com/sindresorhus/got/pull/704
-        return JSON.parse(req.body);
+        return JSON.parse(response.body);
         // return req.body;
       } catch (error) {
         throw error;
       }
     }
-    return req.body;
+    return response.body;
   },
-  headers: req => {
-    return req.headers;
+  headers: response => {
+    return response.headers;
   },
-  status: req => req.statusCode,
-  raw: req => req
+  status: response => response.statusCode,
+  raw: response => response
 };
 
 const formatOptions = Object.keys(formatter);

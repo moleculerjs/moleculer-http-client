@@ -114,9 +114,8 @@ module.exports = {
             },
             function formatter(response) {
               const { responseFormatter } = response.request.gotOptions;
-              const { json } = response.request.gotOptions;
-
-              return responseFormatter(response, json);
+              
+              return responseFormatter(response);
             }
           ],
           /**

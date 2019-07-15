@@ -13,7 +13,9 @@
   },
   "keywords": [
     "moleculer",
-    "microservice"
+    "microservice",
+    "http-client",
+    "http-request"
   ],
   "repository": {
     "type": "git",
