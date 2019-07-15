@@ -47,7 +47,8 @@ module.exports = {
   settings: {
     httpClient: {
       /**
-       *  @type {Array<String>} Array with HTTP methods to include
+       *  @type {Array<String>} Array with HTTP methods to include.
+       *  If set to `null` no actions handlers will be created.
        */
       includeMethods: null,
 
@@ -69,7 +70,7 @@ module.exports = {
       /**
        * @type {string | Function} Function to formatting the HTTP response
        */
-      responseFormatter: null,
+      responseFormatter: "raw",
 
       /**
        * @type {Function} Error handler
@@ -137,6 +138,8 @@ module.exports = {
   actions: {
     get: {
       /**
+       * HTTP GET Action
+       * 
        * @param {Context} ctx
        */
       async handler(ctx) {
@@ -150,6 +153,7 @@ module.exports = {
 
     post: {
       /**
+       * HTTP POST Action
        * @param {Context} ctx
        */
       async handler(ctx) {
@@ -166,6 +170,7 @@ module.exports = {
 
     put: {
       /**
+       * HTTP PUT Action
        * @param {Context} ctx
        */
       async handler(ctx) {
@@ -182,6 +187,7 @@ module.exports = {
 
     patch: {
       /**
+       * HTTP PATCH Action
        * @param {Context} ctx
        */
       async handler(ctx) {
@@ -202,6 +208,7 @@ module.exports = {
 
     delete: {
       /**
+       * HTTP DELETE Action
        * @param {Context} ctx
        */
       async handler(ctx) {

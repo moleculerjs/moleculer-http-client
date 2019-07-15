@@ -106,12 +106,15 @@ INFO  http-client/HTTP: Printing Payload
 INFO  http-client/HTTP: { slideshow: { author: 'Yours Truly', date: 'date of publication', slides: [ [Object], [Object] ], title: 'Sample Slide Show' } }
 ```
 
-## Default Configs
+## Service Configs
 ```js
 module.exports = {
   name: "http",
 
-   // Raw Got Client instance https://github.com/sindresorhus/got#instances
+   /**
+    * Raw Got Client instance https://github.com/sindresorhus/got#instances
+    * Created with `httpClient` settings
+    */
   _client: null,
 
   /**
@@ -131,11 +134,16 @@ module.exports = {
       // Log response function
       logIncomingResponse: logIncomingResponse,
 
-      // Format the response
-      responseFormatter: "headers", // one of "body", "headers", "status", "raw"
+      // Format the Response
+      responseFormatter: "body", // one of "body", "headers", "status", "raw"
 
       // Format the Errors
       errorFormatter: errorFormatter,
+
+      // Got Client options
+      defaultOptions: {
+        // Put here any Got available option that can be used to extend Got client
+      }
     }
   },
 };
