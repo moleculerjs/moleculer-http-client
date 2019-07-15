@@ -13,11 +13,6 @@ broker.createService({
   // Load HTTP Client Service
   mixins: [HTTPClientService],
 
-  settings: {
-    // Only load HTTP GET action
-    httpClient: { includeMethods: ["get"] }
-  },
-
   events: {
     // Register an event listener
     async "some.Event"(request) {
