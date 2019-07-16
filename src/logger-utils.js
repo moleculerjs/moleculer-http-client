@@ -45,11 +45,14 @@ function logOutgoingRequest(options) {
 function logIncomingResponse(response) {
   const method = response.request.gotOptions.method;
 
-  const message = `<= HTTP ${method} to "${chalk.underline(
+  if (response.fromCache) {
+    return `**CACHED** HTTP ${method} to "${chalk.underline(
+      response.requestUrl
+    )}" returned with status code ${coloringStatusCode(response.statusCode)}`;
+  }
+  return `<= HTTP ${method} to "${chalk.underline(
     response.requestUrl
   )}" returned with status code ${coloringStatusCode(response.statusCode)}`;
-
-  return message;
 }
 
 module.exports = {

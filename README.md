@@ -196,7 +196,7 @@ broker.createService({
     // Only load HTTP GET action
     httpClient: {
       includeMethods: ["get"],
-      logging: false,
+
       defaultOptions: {
         // Set Got's built-in cache
         // More info: https://github.com/sindresorhus/got#cache-1
@@ -227,8 +227,13 @@ broker.start().then(() => {
 ```
 
 ```bash
-Request ->  INFO  http-client/BROKER: false
-Cache   ->  INFO  http-client/BROKER: true
+INFO  http-client/HTTP: => HTTP GET to "https://httpbin.org/cache/150"
+INFO  http-client/HTTP: <= HTTP GET to "https://httpbin.org/cache/150" returned with status code 200
+INFO  http-client/BROKER: false
+INFO  http-client/HTTP: => HTTP GET to "https://httpbin.org/cache/150"
+INFO  http-client/HTTP: **CACHED** HTTP GET to "https://httpbin.org/cache/150" returned with status code 200
+INFO  http-client/BROKER: true
+
 ```
 
 ## Service Configs
