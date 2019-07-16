@@ -28,6 +28,12 @@ const {
 const { errorFormatter } = require("./errors");
 const { formatter, formatOptions } = require("./response-formatter");
 
+/**
+ * Service mixin allowing Moleculer services to make HTTP requests
+ *
+ * @name moleculer-http-client
+ * @module Service
+ */
 module.exports = {
   /**
    * @type {string} service name
@@ -115,7 +121,7 @@ module.exports = {
             },
             function formatter(response) {
               const { responseFormatter } = response.request.gotOptions;
-              
+
               return responseFormatter(response);
             }
           ],
@@ -139,7 +145,6 @@ module.exports = {
     get: {
       /**
        * HTTP GET Action
-       * 
        * @param {Context} ctx
        */
       async handler(ctx) {
@@ -205,7 +210,6 @@ module.exports = {
         }
       }
     },
-
     delete: {
       /**
        * HTTP DELETE Action
@@ -288,6 +292,12 @@ module.exports = {
       return this._genericRequest(url, opt);
     },
 
+    /**
+     * Request handler
+     * @param {string} url
+     * @param {GotOptions} opt
+     * @param {stream.Readable} streamPayload
+     */
     _genericRequest(url, opt, streamPayload) {
       if (opt && opt.stream) {
         return this._streamRequest(url, opt, streamPayload);

@@ -5,6 +5,10 @@
  */
 "use strict";
 
+/**
+ * @typedef {import("got").Response} Response
+ */
+
 const chalk = require("chalk");
 
 /* istanbul ignore next */
@@ -28,7 +32,7 @@ function loggerLevels(code) {
  * Build a log message about outgoing request
  * This is a Got's BeforeRequest Hook Function. More info: `https://github.com/sindresorhus/got#hooksbeforerequest`
  *
- * @param {object} response Got Options object
+ * @param {any} options Got Options object
  * @returns {string}
  */
 function logOutgoingRequest(options) {
@@ -39,14 +43,16 @@ function logOutgoingRequest(options) {
  * Builds a log message about incoming request
  * This is a Got's afterResponse Hook Function. More info: `https://github.com/sindresorhus/got#hooksafterresponse`
  *
- * @param {object} response Got Request option.
+ * @param {Response} response Got Request option.
  * @returns {string}
  */
 function logIncomingResponse(response) {
   const method = response.request.gotOptions.method;
 
   if (response.fromCache) {
-    return `**CACHED** HTTP ${method} to "${chalk.underline(
+    return `${chalk.bgYellow(
+      `**CACHED**`
+    )} HTTP ${method} to "${chalk.underline(
       response.requestUrl
     )}" returned with status code ${coloringStatusCode(response.statusCode)}`;
   }

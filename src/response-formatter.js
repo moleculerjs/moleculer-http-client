@@ -5,10 +5,10 @@
  */
 "use strict";
 
-// Wait for a new (>v9.6.0) Got release
-// https://github.com/sindresorhus/got/pull/704
 const formatter = {
-  body: (response) => {
+  // Wait for a new (>v9.6.0) Got release
+  // https://github.com/sindresorhus/got/pull/704
+  body: response => {
     const { json } = response.request.gotOptions;
     if (json === true) {
       try {

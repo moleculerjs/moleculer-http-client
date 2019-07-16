@@ -12,6 +12,12 @@ class MoleculerHTTPClientError extends MoleculerError {
   }
 }
 
+/**
+ * Function wrapping Got's errors with Moleculer errors
+ *
+ * @param {import("got").GotError | Error} error
+ * @returns {MoleculerHTTPClientError}
+ */
 function errorFormatter(error) {
   // ToDo: Parse the Got Error. Extract only what's needed
   return new MoleculerHTTPClientError(`Moleculer HTTP Client Error.`, error);
