@@ -784,3 +784,123 @@ describe("Test Response Formatter", () => {
     expect(res.httpVersion).toEqual("1.1");
   });
 });
+
+describe("Test Cache", () => {
+  describe("Test Moleculer cache", () => {
+    const broker = new ServiceBroker({
+      cacher: "Memory"
+    });
+
+    const mockFn = jest.fn(ctx => {
+      return Promise.resolve({ cache: 200 });
+    });
+
+    broker.createService({
+      name: "api",
+
+      mixins: [HTTPMockServer],
+
+      actions: {
+        // Mock the action
+        getCache: mockFn
+      }
+    });
+
+    broker.createService({
+      name: "http",
+
+      mixins: [MoleculerHTTP],
+
+      settings: {
+        httpClient: { includeMethods: ["get"] }
+      },
+
+      actions: {
+        get: {
+          cache: true
+        }
+      }
+    });
+
+    beforeAll(() => broker.start());
+    afterAll(() => broker.stop());
+
+    it("should use Moleculer's cache", async () => {
+      expect.assertions(2);
+
+      let res1 = await broker.call("http.get", {
+        url: "http://localhost:4000/cache",
+        opt: { json: true }
+      });
+
+      let res2 = await broker.call("http.get", {
+        url: "http://localhost:4000/cache",
+        opt: { json: true }
+      });
+
+      let expected = { cache: 200 };
+
+      expect(res1.body).toEqual(expected);
+      expect(mockFn).toBeCalledTimes(1);
+    });
+  });
+
+  describe("Test Got's internal cache", () => {
+    const broker = new ServiceBroker();
+
+    const mockFn = jest.fn(ctx => {
+      ctx.meta.$responseHeaders = {
+        "Cache-Control": `public, max-age=120`
+      };
+
+      return Promise.resolve({ cache: 200 });
+    });
+
+    const mapCache = new Map();
+
+    broker.createService({
+      name: "api",
+
+      mixins: [HTTPMockServer],
+
+      actions: { getCache: mockFn }
+    });
+
+    broker.createService({
+      name: "http",
+
+      mixins: [MoleculerHTTP],
+
+      settings: {
+        httpClient: {
+          includeMethods: ["get"],
+          defaultOptions: {
+            cache: mapCache
+          }
+        }
+      }
+    });
+
+    beforeAll(() => broker.start());
+    afterAll(() => broker.stop());
+
+    it("should use Got's internal cache", async () => {
+      expect.assertions(2);
+
+      let res1 = await broker.call("http.get", {
+        url: "http://localhost:4000/cache",
+        opt: { json: true }
+      });
+
+      let res2 = await broker.call("http.get", {
+        url: "http://localhost:4000/cache",
+        opt: { json: true }
+      });
+
+      let expected = { cache: 200 };
+
+      expect(res1.body).toEqual(expected);
+      expect(mockFn).toBeCalledTimes(1);
+    });
+  });
+});

@@ -2,6 +2,7 @@
 
 const { ServiceBroker } = require("moleculer");
 const HTTPClientService = require("../../index");
+const cacheMap = new Map();
 
 // Create broker
 let broker = new ServiceBroker({
@@ -17,7 +18,15 @@ broker.createService({
 
   settings: {
     // Only load HTTP GET action
-    httpClient: { includeMethods: ["get"] }
+    httpClient: {
+      includeMethods: ["get"],
+      logging: false,
+      defaultOptions: {
+        // Set Got's built-in cache
+        // More info: https://github.com/sindresorhus/got#cache-1
+        cache: cacheMap
+      }
+    }
   }
 });
 
@@ -26,9 +35,16 @@ broker.start().then(() => {
   broker
     // Make a HTTP GET request
     .call("http.get", {
-      url: "https://httpbin.org/json",
+      url: "https://httpbin.org/cache/150",
       opt: { json: true }
     })
-    .then(res => broker.logger.info(res.body))
+    .then(res => broker.logger.info(res.fromCache))
+    .then(() =>
+      broker.call("http.get", {
+        url: "https://httpbin.org/cache/150",
+        opt: { json: true }
+      })
+    )
+    .then(res => broker.logger.info(res.fromCache))
     .catch(error => broker.logger.error(error));
 });

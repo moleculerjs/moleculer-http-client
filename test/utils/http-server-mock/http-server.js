@@ -42,6 +42,14 @@ module.exports = {
         }
       },
       {
+        path: "/cache",
+        bodyParsers: { json: true },
+
+        aliases: {
+          "GET /": "api.getCache"
+        }
+      },
+      {
         path: "/stream",
         // Disable body parsers for streams
         bodyParsers: {
@@ -79,6 +87,13 @@ module.exports = {
      */
     get(ctx) {
       return { hello: 200 };
+    },
+    getCache(ctx) {
+      ctx.meta.$responseHeaders = {
+        "Cache-Control": `public, max-age=120`
+      };
+
+      return { cache: 200 };
     },
     post(ctx) {
       ctx.meta.$statusCode = 200;
