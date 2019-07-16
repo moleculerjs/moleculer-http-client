@@ -2,7 +2,7 @@
 
 # moleculer-http-client [![Build Status](https://travis-ci.org/AndreMaz/moleculer-http-client.svg?branch=master)](https://travis-ci.org/AndreMaz/moleculer-http-client)
 
-[WIP] A tiny wrapper around [got](https://github.com/sindresorhus/got) HTTP client that allows [Moleculer](https://moleculer.services/) services to communicate with REST APIs.
+A tiny wrapper around [got](https://github.com/sindresorhus/got) HTTP client that allows [Moleculer](https://moleculer.services/) services to communicate with REST APIs.
 
 ## Features
 
@@ -98,6 +98,7 @@ broker.start().then(() => {
 });
 ```
 
+**Result**
 ```bash
 INFO  http-client/HTTP: Caught an Event
 INFO  http-client/HTTP: => HTTP GET to "https://httpbin.org/json"
@@ -109,6 +110,8 @@ INFO  http-client/HTTP: { slideshow: { author: 'Yours Truly', date: 'date of pub
 ## Cache
 ### Moleculer Cache
 If you are using [actions](#Service-Actions) to make HTTP requests then you can use [Moleculer's cache](https://moleculer.services/docs/0.13/caching.html) to cache responses.
+
+> Please note that when using Moleculer's cache you will be ignoring [`Cache-Control` header field](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control).
 
 **Example of Moleculer Cache**
 ```js
@@ -162,7 +165,7 @@ broker.start().then(() => {
     .catch(error => broker.logger.error(error));
 });
 ```
-
+**Result**
 ```bash
             INFO  http-client/HTTP: => HTTP GET to "https://httpbin.org/json"
             INFO  http-client/HTTP: <= HTTP GET to "https://httpbin.org/json" returned with status code 200
@@ -227,6 +230,7 @@ broker.start().then(() => {
 });
 ```
 
+**Result**
 ```bash
 INFO  http-client/HTTP: => HTTP GET to "https://httpbin.org/cache/150"
 INFO  http-client/HTTP: <= HTTP GET to "https://httpbin.org/cache/150" returned with status code 200
