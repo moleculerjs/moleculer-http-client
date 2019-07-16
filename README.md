@@ -108,8 +108,9 @@ INFO  http-client/HTTP: { slideshow: { author: 'Yours Truly', date: 'date of pub
 
 ## Cache
 ### Moleculer Cache
+If you are using [actions](#Service-Actions) to make HTTP requests then you can use [Moleculer's cache](https://moleculer.services/docs/0.13/caching.html) to cache responses.
+
 **Example of Moleculer Cache**
-If you are making HTTP requests from Moleculer's [actions](#Service-Actions) then you can use [Moleculer's cache](https://moleculer.services/docs/0.13/caching.html) to cache responses.
 ```js
 const { ServiceBroker } = require("moleculer");
 const HTTPClientService = require("../../index");
@@ -170,9 +171,9 @@ Cache   ->  INFO  http-client/BROKER: { slideshow: { author: 'Yours Truly', date
 ```
 
 ### Got's Cache
-If you are using only the [methods](#Service-Methods) then you should use [Got's cache](https://github.com/sindresorhus/got#cache-1).
+If you are using [methods](#Service-Methods) then you should use [Got's cache](https://github.com/sindresorhus/got#cache-1).
 
-**Example of Got Cache**
+**Example of Got cache**
 ```js
 const { ServiceBroker } = require("moleculer");
 const HTTPClientService = require("../../index");
