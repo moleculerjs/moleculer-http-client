@@ -314,9 +314,11 @@ module.exports = {
      */
     _streamRequest(url, opt, streamPayload) {
       if (opt.method == "GET") {
-        return this._client(url, opt).on("response", res => {
+        return this._client(url, opt).on("response", response => {
           // Got hooks don't work for Streams
-          logIncomingResponse(res);
+          this.logger[loggerLevels(response.statusCode)](
+            logIncomingResponse(response)
+          );
         });
       }
 
@@ -325,10 +327,12 @@ module.exports = {
 
         streamPayload.pipe(writeStream);
 
-        writeStream.on("response", res => {
+        writeStream.on("response", response => {
           // Got hooks don't work for Streams
-          logIncomingResponse(res);
-          resolve(res);
+          this.logger[loggerLevels(response.statusCode)](
+            logIncomingResponse(response)
+          );
+          resolve(response);
         });
 
         writeStream.on("error", error => reject(error));

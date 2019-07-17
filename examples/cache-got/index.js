@@ -29,7 +29,7 @@ broker.createService({
   }
 });
 
-// Start server
+// Start the broker
 broker.start().then(() => {
   broker
     // Make a HTTP GET request

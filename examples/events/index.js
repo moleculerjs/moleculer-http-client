@@ -26,7 +26,7 @@ broker.createService({
   }
 });
 
-// Start server
+// Start the broker
 broker.start().then(() => {
   broker
     // Emit some event

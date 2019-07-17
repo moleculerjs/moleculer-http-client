@@ -4,6 +4,15 @@
 
 A tiny wrapper around [got](https://github.com/sindresorhus/got) HTTP client that allows [Moleculer](https://moleculer.services/) services to communicate with REST APIs.
 
+  - [Usage](#Usage)
+    - [Actions](#Actions)
+    - [Events](#Methods)
+    - [Stream](#Stream)
+    - [Cache](#Cache)
+  - [Service Settings](#Service-Settings)
+  - [Service Actions](#Service-Actions)
+  - [Service Methods](#Service-Methods)
+
 ## Features
 
 - Make HTTP requests from Actions and Events
@@ -16,6 +25,7 @@ A tiny wrapper around [got](https://github.com/sindresorhus/got) HTTP client tha
 npm install moleculer-http-client --save
 ```
 
+# Usage
 ## Actions
 **Action Example**
 ```js
@@ -38,7 +48,7 @@ broker.createService({
   }
 });
 
-// Start server
+// Start the broker
 broker.start().then(() => {
   broker
     // Make a HTTP GET request
@@ -87,7 +97,7 @@ broker.createService({
   }
 });
 
-// Start server
+// Start the broker
 broker.start().then(() => {
   broker
     // Emit an event
@@ -105,6 +115,132 @@ INFO  http-client/HTTP: => HTTP GET to "https://httpbin.org/json"
 INFO  http-client/HTTP: <= HTTP GET to "https://httpbin.org/json" returned with status code 200
 INFO  http-client/HTTP: Printing Payload
 INFO  http-client/HTTP: { slideshow: { author: 'Yours Truly', date: 'date of publication', slides: [ [Object], [Object] ], title: 'Sample Slide Show' } }
+```
+
+## Stream
+### GET Stream
+```js
+const { ServiceBroker } = require("moleculer");
+const HTTPClientService = require("../../index");
+const fs = require("fs");
+
+// Create broker
+let broker = new ServiceBroker({
+  nodeID: "http-client"
+});
+
+// Create a service
+broker.createService({
+  name: "http",
+
+  // Load HTTP Client Service
+  mixins: [HTTPClientService],
+
+  settings: {
+    // Only load HTTP GET action
+    httpClient: { includeMethods: ["get"] }
+  }
+});
+
+// Start the broker
+broker.start().then(() => {
+  broker
+    // Make a HTTP GET request
+    .call("http.get", {
+      url: "https://sindresorhus.com/",
+      opt: { stream: true }
+    })
+    .then(res => {
+      const filePath = "./examples/stream/file.md";
+      // Write stream into file
+      res.pipe(fs.createWriteStream(filePath, { encoding: "utf8" }));
+
+      res.on("response", response => {
+        broker.logger.info(response.statusCode);
+      });
+    })
+    .catch(error => broker.logger.error(error));
+});
+```
+
+### POST Stream
+```js
+const { ServiceBroker } = require("moleculer");
+const HTTPClientService = require("../../index");
+const ApiGateway = require("moleculer-web");
+const fs = require("fs");
+
+// Create broker
+let broker = new ServiceBroker({
+  nodeID: "http-client"
+});
+
+// Create a HTTP Client Service
+broker.createService({
+  name: "http",
+
+  // Load HTTP Client Service
+  mixins: [HTTPClientService],
+
+  settings: {
+    // Only load HTTP GET action
+    httpClient: { includeMethods: ["post"] }
+  }
+});
+
+// Create HTTP Server Services
+broker.createService({
+  name: "api",
+  mixins: [ApiGateway],
+  settings: {
+    port: 4000,
+    routes: [
+      {
+        path: "/stream",
+        bodyParsers: { json: false, urlencoded: false },
+        aliases: { "POST /": "stream:api.postStream" }
+      }
+    ]
+  },
+
+  actions: {
+    postStream(ctx) {
+      return new Promise((resolve, reject) => {
+        const stream = fs.createWriteStream(
+          "./examples/stream-post/stored-data.md"
+        );
+
+        stream.on("close", async () => {
+          resolve({ fileName: `file.md`, method: "POST" });
+        });
+
+        // Return error to the user
+        stream.on("error", err => {
+          reject(err);
+        });
+
+        // Pipe the data
+        ctx.params.pipe(stream);
+      });
+    }
+  }
+});
+
+// Start the broker
+broker.start().then(() => {
+  const streamFile = "./examples/stream-post/data-to-stream.md";
+  const stream = fs.createReadStream(streamFile, { encoding: "utf8" });
+
+  // Pass stream as ctx.params
+  // Pass URL and options in ctx.meta
+  const req = broker.call("http.post", stream, {
+    meta: { url: "http://localhost:4000/stream", stream: true }
+  });
+
+  req.then(res => {
+    broker.logger.info(res.statusCode);
+  });
+});
 ```
 
 ## Cache
@@ -146,7 +282,7 @@ broker.createService({
   }
 });
 
-// Start server
+// Start the broker
 broker.start().then(() => {
   broker
     // Make a HTTP GET request
@@ -210,7 +346,7 @@ broker.createService({
   }
 });
 
-// Start server
+// Start the broker
 broker.start().then(() => {
   broker
     // Make a HTTP GET request
@@ -238,20 +374,13 @@ INFO  http-client/BROKER: false
 INFO  http-client/HTTP: => HTTP GET to "https://httpbin.org/cache/150"
 INFO  http-client/HTTP: **CACHED** HTTP GET to "https://httpbin.org/cache/150" returned with status code 200
 INFO  http-client/BROKER: true
-
 ```
 
-## Service Configs
+## Service Settings
 ```js
 module.exports = {
   name: "http",
-
-   /**
-    * Raw Got Client instance https://github.com/sindresorhus/got#instances
-    * Created with `httpClient` settings
-    */
-  _client: null,
-
+  
   /**
    * Default settings
    */
@@ -285,15 +414,156 @@ module.exports = {
 ```
 
 ## Service Actions
+Use `includeMethods` field in service settings to create the desired service actions.
 
-```js
-// ToDo
-```
+> **Note:** By default no actions are created. This is done to avoid any potential conflicts with other service actions when `moleculer-http-client` is used as a mixin.
+
+## `get`
+HTTP GET action
+
+### Parameters
+| Property | Type | Default | Description |
+| -------- | ---- | ------- | ----------- |
+| `url` | `String`| **required** | URL |
+| `opt` | `Object`| **optional** | Request options |
+
+### Returns
+**Type:** `Promise`, `Stream`
+
+## `post` 
+
+HTTP POST action
+
+### Parameters
+| Property | Type | Default | Description |
+| -------- | ---- | ------- | ----------- |
+| `url` | `String`| **required** | URL |
+| `opt` | `Object`| **optional** | Request options |
+| `streamPayload` | `Stream`| **optional** | Stream payload |
+
+> **Note:** When streaming use `ctx.meta` to pass `url` and `opt` and `ctx.params` to pass stream data
+
+### Returns
+**Type:** `Promise`
+
+## `put` 
+
+HTTP PUT action
+
+### Parameters
+| Property | Type | Default | Description |
+| -------- | ---- | ------- | ----------- |
+| `url` | `String`| **required** | URL |
+| `opt` | `Object`| **optional** | Request options |
+| `streamPayload` | `Stream`| **optional** | Stream payload |
+
+> **Note:** When streaming use `ctx.meta` to pass `url` and `opt` and `ctx.params` to pass stream data
+
+### Returns
+**Type:** `Promise`
+
+## `patch` 
+
+HTTP PATCH action
+
+### Parameters
+| Property | Type | Default | Description |
+| -------- | ---- | ------- | ----------- |
+| `url` | `String`| **required** | URL |
+| `opt` | `Object`| **optional** | Request options |
+| `streamPayload` | `Stream`| **optional** | Stream payload |
+
+> **Note:** When streaming use `ctx.meta` to pass `url` and `opt` and `ctx.params` to pass stream data
+
+### Returns
+**Type:** `Promise`
+
+## `delete` 
+
+HTTP DELETE action
+
+### Parameters
+| Property | Type | Default | Description |
+| -------- | ---- | ------- | ----------- |
+| `url` | `String`| **required** | URL |
+| `opt` | `Object`| **optional** | Request options |
+| `streamPayload` | `Stream`| **optional** | Stream payload |
+
+> **Note:** When streaming use `ctx.meta` to pass `url` and `opt` and `ctx.params` to pass stream data
+
+### Returns
+**Type:** `Promise`
 
 ## Service Methods
-```js
-// ToDo
-```
+## `_get` 
+
+HTTP GET method
+
+### Parameters
+| Property | Type | Default | Description |
+| -------- | ---- | ------- | ----------- |
+| `url` | `String`| **required** | URL |
+| `opt` | `Object`| **optional** | Request options |
+
+### Returns
+**Type:** `Promise`, `Stream`
+
+## `_post` 
+
+HTTP POST method
+
+### Parameters
+| Property | Type | Default | Description |
+| -------- | ---- | ------- | ----------- |
+| `url` | `String`| **required** | URL |
+| `opt` | `Object`| **optional** | Request options |
+| `streamPayload` | `Stream`| **optional** | Stream payload |
+
+### Returns
+**Type:** `Promise`
+
+
+## `_put` 
+
+HTTP PUT method
+
+### Parameters
+| Property | Type | Default | Description |
+| -------- | ---- | ------- | ----------- |
+| `url` | `String`| **required** | URL |
+| `opt` | `Object`| **optional** | Request options |
+| `streamPayload` | `Stream`| **optional** | Stream payload |
+
+### Returns
+**Type:** `Promise`
+
+
+## `_patch` 
+
+HTTP PATCH method
+
+### Parameters
+| Property | Type | Default | Description |
+| -------- | ---- | ------- | ----------- |
+| `url` | `String`| **required** | URL |
+| `opt` | `Object`| **optional** | Request options |
+| `streamPayload` | `Stream`| **optional** | Stream payload |
+
+### Returns
+**Type:** `Promise`
+
+## `_delete` 
+
+HTTP DELETE method
+
+### Parameters
+| Property | Type | Default | Description |
+| -------- | ---- | ------- | ----------- |
+| `url` | `String`| **required** | URL |
+| `opt` | `Object`| **optional** | Request options |
+
+### Returns
+**Type:** `Promise`
 
 ## Test
 ```

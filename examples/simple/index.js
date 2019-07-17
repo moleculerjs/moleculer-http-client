@@ -11,7 +11,7 @@ let broker = new ServiceBroker({
 // Load my service
 broker.createService(MyService);
 
-// Start server
+// Start the broker
 broker.start().then(() => {
   // Call action
   broker

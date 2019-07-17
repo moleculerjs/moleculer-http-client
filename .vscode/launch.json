@@ -10,7 +10,7 @@
       "name": "Launch demo",
       "program": "${workspaceRoot}/examples/index.js",
       "cwd": "${workspaceRoot}",
-      "args": ["actions"]
+      "args": ["stream-post"]
     },
     {
       "type": "node",
