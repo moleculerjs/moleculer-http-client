@@ -1,7 +1,7 @@
 {
   "name": "moleculer-http-client",
   "version": "0.1.0",
-  "description": "A tiny wrapper of GOT (HTTP client) package",
+  "description": "HTTP client mixin that allows Moleculer services to communicate with remote REST APIs",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon examples/index.js",
