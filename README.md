@@ -1,6 +1,8 @@
 ![Moleculer logo](http://moleculer.services/images/banner.png)
 
-# moleculer-http-client [![Build Status](https://travis-ci.org/AndreMaz/moleculer-http-client.svg?branch=master)](https://travis-ci.org/AndreMaz/moleculer-http-client)
+[![Build Status](https://travis-ci.org/AndreMaz/moleculer-http-client.svg?branch=master)](https://travis-ci.org/AndreMaz/moleculer-http-client) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/AndreMaz/moleculer-http-client/master/LICENSE) [![npm](https://img.shields.io/npm/v/moleculer-http-client.svg)](https://www.npmjs.com/package/moleculer-http-client) [![Downloads](https://img.shields.io/npm/dm/moleculer-http-client.svg)](https://www.npmjs.com/package/moleculer-http-client)
+
+# moleculer-http-client
 
 A tiny wrapper around [got](https://github.com/sindresorhus/got) HTTP client that allows [Moleculer](https://moleculer.services/) services to communicate with REST APIs.
 
@@ -12,6 +14,9 @@ A tiny wrapper around [got](https://github.com/sindresorhus/got) HTTP client tha
   - [Service Settings](#Service-Settings)
   - [Service Actions](#Service-Actions)
   - [Service Methods](#Service-Methods)
+  - [Customization](#Customization)
+    - [Log Messages](#Log-Messages)
+    - [Errors](#Errors)
 
 ## Features
 
@@ -30,7 +35,7 @@ npm install moleculer-http-client --save
 **Action Example**
 ```js
 const { ServiceBroker } = require("moleculer");
-const HTTPClientService = require("../../index");
+const HTTPClientService = require("moleculer-http-client");
 
 // Create broker
 let broker = new ServiceBroker();
@@ -72,7 +77,7 @@ INFO  http-client/BROKER: { slideshow: { author: 'Yours Truly', date: 'date of p
 **Event Example**
 ```js
 const { ServiceBroker } = require("moleculer");
-const HTTPClientService = require("../../index");
+const HTTPClientService = require("moleculer-http-client");
 
 // Create broker
 let broker = new ServiceBroker();
@@ -121,7 +126,7 @@ INFO  http-client/HTTP: { slideshow: { author: 'Yours Truly', date: 'date of pub
 ### GET Stream
 ```js
 const { ServiceBroker } = require("moleculer");
-const HTTPClientService = require("../../index");
+const HTTPClientService = require("moleculer-http-client");
 const fs = require("fs");
 
 // Create broker
@@ -166,7 +171,7 @@ broker.start().then(() => {
 ### POST Stream
 ```js
 const { ServiceBroker } = require("moleculer");
-const HTTPClientService = require("../../index");
+const HTTPClientService = require("moleculer-http-client");
 const ApiGateway = require("moleculer-web");
 const fs = require("fs");
 
@@ -247,12 +252,13 @@ broker.start().then(() => {
 ### Moleculer Cache
 If you are using [actions](#Service-Actions) to make HTTP requests then you can use [Moleculer's cache](https://moleculer.services/docs/0.13/caching.html) to cache responses.
 
-> Please note that when using Moleculer's cache you will be ignoring [`Cache-Control` header field](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control).
+> Please note that when using Moleculer's cache you will be ignoring [`Cache-Control` header field](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control). If you care about `Cache-Control` then you should use [Got's cache](#gots-cache).
+
 
 **Example of Moleculer Cache**
 ```js
 const { ServiceBroker } = require("moleculer");
-const HTTPClientService = require("../../index");
+const HTTPClientService = require("moleculer-http-client");
 
 // Create broker
 let broker = new ServiceBroker({
@@ -310,12 +316,12 @@ Cache   ->  INFO  http-client/BROKER: { slideshow: { author: 'Yours Truly', date
 ```
 
 ### Got's Cache
-If you are using [methods](#Service-Methods) then you should use [Got's cache](https://github.com/sindresorhus/got#cache-1).
+If you are using [methods](#Service-Methods) or you care about `Cache-Control` header option then you should use [Got's cache](https://github.com/sindresorhus/got#cache-1).
 
 **Example of Got cache**
 ```js
 const { ServiceBroker } = require("moleculer");
-const HTTPClientService = require("../../index");
+const HTTPClientService = require("moleculer-http-client");
 
 // Using JS Map as cache
 const cacheMap = new Map();
@@ -425,7 +431,7 @@ HTTP GET action
 | Property | Type | Default | Description |
 | -------- | ---- | ------- | ----------- |
 | `url` | `String`| **required** | URL |
-| `opt` | `Object`| **optional** | Request options |
+| `opt` | `Object`| **optional** | [Request options](https://www.npmjs.com/package/got#options) |
 
 ### Returns
 **Type:** `Promise`, `Stream`
@@ -438,7 +444,7 @@ HTTP POST action
 | Property | Type | Default | Description |
 | -------- | ---- | ------- | ----------- |
 | `url` | `String`| **required** | URL |
-| `opt` | `Object`| **optional** | Request options |
+| `opt` | `Object`| **optional** | [Request options](https://www.npmjs.com/package/got#options) |
 | `streamPayload` | `Stream`| **optional** | Stream payload |
 
 > **Note:** When streaming use `ctx.meta` to pass `url` and `opt` and `ctx.params` to pass stream data
@@ -454,7 +460,7 @@ HTTP PUT action
 | Property | Type | Default | Description |
 | -------- | ---- | ------- | ----------- |
 | `url` | `String`| **required** | URL |
-| `opt` | `Object`| **optional** | Request options |
+| `opt` | `Object`| **optional** | [Request options](https://www.npmjs.com/package/got#options) |
 | `streamPayload` | `Stream`| **optional** | Stream payload |
 
 > **Note:** When streaming use `ctx.meta` to pass `url` and `opt` and `ctx.params` to pass stream data
@@ -470,7 +476,7 @@ HTTP PATCH action
 | Property | Type | Default | Description |
 | -------- | ---- | ------- | ----------- |
 | `url` | `String`| **required** | URL |
-| `opt` | `Object`| **optional** | Request options |
+| `opt` | `Object`| **optional** | [Request options](https://www.npmjs.com/package/got#options) |
 | `streamPayload` | `Stream`| **optional** | Stream payload |
 
 > **Note:** When streaming use `ctx.meta` to pass `url` and `opt` and `ctx.params` to pass stream data
@@ -486,7 +492,7 @@ HTTP DELETE action
 | Property | Type | Default | Description |
 | -------- | ---- | ------- | ----------- |
 | `url` | `String`| **required** | URL |
-| `opt` | `Object`| **optional** | Request options |
+| `opt` | `Object`| **optional** | [Request options](https://www.npmjs.com/package/got#options) |
 | `streamPayload` | `Stream`| **optional** | Stream payload |
 
 > **Note:** When streaming use `ctx.meta` to pass `url` and `opt` and `ctx.params` to pass stream data
@@ -503,7 +509,7 @@ HTTP GET method
 | Property | Type | Default | Description |
 | -------- | ---- | ------- | ----------- |
 | `url` | `String`| **required** | URL |
-| `opt` | `Object`| **optional** | Request options |
+| `opt` | `Object`| **optional** | [Request options](https://www.npmjs.com/package/got#options) |
 
 ### Returns
 **Type:** `Promise`, `Stream`
@@ -516,7 +522,7 @@ HTTP POST method
 | Property | Type | Default | Description |
 | -------- | ---- | ------- | ----------- |
 | `url` | `String`| **required** | URL |
-| `opt` | `Object`| **optional** | Request options |
+| `opt` | `Object`| **optional** | [Request options](https://www.npmjs.com/package/got#options) |
 | `streamPayload` | `Stream`| **optional** | Stream payload |
 
 ### Returns
@@ -531,7 +537,7 @@ HTTP PUT method
 | Property | Type | Default | Description |
 | -------- | ---- | ------- | ----------- |
 | `url` | `String`| **required** | URL |
-| `opt` | `Object`| **optional** | Request options |
+| `opt` | `Object`| **optional** | [Request options](https://www.npmjs.com/package/got#options) |
 | `streamPayload` | `Stream`| **optional** | Stream payload |
 
 ### Returns
@@ -546,7 +552,7 @@ HTTP PATCH method
 | Property | Type | Default | Description |
 | -------- | ---- | ------- | ----------- |
 | `url` | `String`| **required** | URL |
-| `opt` | `Object`| **optional** | Request options |
+| `opt` | `Object`| **optional** | [Request options](https://www.npmjs.com/package/got#options) |
 | `streamPayload` | `Stream`| **optional** | Stream payload |
 
 ### Returns
@@ -560,10 +566,58 @@ HTTP DELETE method
 | Property | Type | Default | Description |
 | -------- | ---- | ------- | ----------- |
 | `url` | `String`| **required** | URL |
-| `opt` | `Object`| **optional** | Request options |
+| `opt` | `Object`| **optional** | [Request options](https://www.npmjs.com/package/got#options) |
 
 ### Returns
 **Type:** `Promise`
+
+
+## Customization
+### Log Messages
+```js
+    const service = broker.createService({
+      name: "http",
+
+      mixins: [MoleculerHTTP],
+
+      settings: {
+        httpClient: {
+          includeMethods: ["get"],
+
+          // Input is Got's options object. More info: https://github.com/sindresorhus/got#options
+          logOutgoingRequest: options => {
+            console.log(`-----> Request ${options.href}`);
+          },
+
+          // Input is Got's response object: More info: https://github.com/sindresorhus/got#response
+          logIncomingResponse: response => {
+            console.log(`<----- Request ${response.statusCode}`);
+          }
+        }
+      }
+    });
+```
+
+### Errors
+```js
+    const service = broker.createService({
+      name: "http",
+
+      mixins: [MoleculerHTTP],
+
+      settings: {
+        httpClient: {
+          includeMethods: ["get"],
+
+          // Custom error handler function
+          // Input error is Got's error. More info: https://github.com/sindresorhus/got#errors 
+          errorFormatter: error => {
+            return new Error("Custom Error");
+          }
+        }
+      }
+    });
+```
 
 ## Test
 ```

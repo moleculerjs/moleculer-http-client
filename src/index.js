@@ -345,11 +345,13 @@ module.exports = {
      * @returns {Error}
      */
     _httpErrorHandler(error) {
-      if (!this.settings.httpClient.errorFormatter) {
-        return error;
+      const { errorFormatter } = this.settings.httpClient;
+
+      if (_.isFunction(errorFormatter)) {
+        return errorFormatter(error);
       }
 
-      return errorFormatter(error);
+      return error;
     }
   },
 

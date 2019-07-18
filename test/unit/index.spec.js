@@ -528,7 +528,7 @@ describe("Test Error Handling", () => {
     beforeAll(() => broker.start());
     afterAll(() => broker.stop());
 
-    it("should respond with 404 ERROR to HTTP GET", async () => {
+    it("should respond with Got's 404 ERROR to HTTP GET", async () => {
       expect.assertions(1);
 
       try {
@@ -541,7 +541,7 @@ describe("Test Error Handling", () => {
       }
     });
 
-    it("should respond with 404 ERROR to HTTP POST", async () => {
+    it("should respond with Got's 404 ERROR to HTTP POST", async () => {
       expect.assertions(1);
 
       try {
@@ -554,7 +554,7 @@ describe("Test Error Handling", () => {
       }
     });
 
-    it("should respond with 404 ERROR to HTTP PUT", async () => {
+    it("should respond with Got's 404 ERROR to HTTP PUT", async () => {
       expect.assertions(1);
 
       try {
@@ -567,7 +567,7 @@ describe("Test Error Handling", () => {
       }
     });
 
-    it("should respond with 404 ERROR to HTTP PATCH", async () => {
+    it("should respond with Got's 404 ERROR to HTTP PATCH", async () => {
       expect.assertions(1);
 
       try {
@@ -580,7 +580,7 @@ describe("Test Error Handling", () => {
       }
     });
 
-    it("should respond with 404 ERROR to HTTP DELETE", async () => {
+    it("should respond with Got's 404 ERROR to HTTP DELETE", async () => {
       expect.assertions(1);
 
       try {
@@ -590,6 +590,98 @@ describe("Test Error Handling", () => {
         });
       } catch (error) {
         expect(error.statusCode).toEqual(404);
+      }
+    });
+  });
+
+  describe("Custom Error Handling", () => {
+    const broker = new ServiceBroker({
+      // logger: false
+    });
+
+    const HTTPMock = broker.createService(HTTPMockServer);
+
+    const service = broker.createService({
+      name: "http",
+
+      mixins: [MoleculerHTTP],
+
+      settings: {
+        httpClient: {
+          includeMethods: ["get", "post", "put", "delete"],
+
+          errorFormatter: error => {
+            return new Error("Custom Error");
+          }
+        }
+      }
+    });
+
+    beforeAll(() => broker.start());
+    afterAll(() => broker.stop());
+
+    it("should respond with Custom Error to HTTP GET", async () => {
+      expect.assertions(1);
+
+      try {
+        await broker.call("http.get", {
+          url: "http://localhost:4000/status/404",
+          opt: { json: true }
+        });
+      } catch (error) {
+        expect(error.message).toEqual(`Custom Error`);
+      }
+    });
+
+    it("should respond with Custom Error to HTTP POST", async () => {
+      expect.assertions(1);
+
+      try {
+        await broker.call("http.post", {
+          url: "http://localhost:4000/status/404",
+          opt: { json: true }
+        });
+      } catch (error) {
+        expect(error.message).toEqual(`Custom Error`);
+      }
+    });
+
+    it("should respond with Custom Error to HTTP PUT", async () => {
+      expect.assertions(1);
+
+      try {
+        await broker.call("http.put", {
+          url: "http://localhost:4000/status/404",
+          opt: { json: true }
+        });
+      } catch (error) {
+        expect(error.message).toEqual(`Custom Error`);
+      }
+    });
+
+    it("should respond with Custom Error to HTTP PATCH", async () => {
+      expect.assertions(1);
+
+      try {
+        await broker.call("http.patch", {
+          url: "http://localhost:4000/status/404",
+          opt: { json: true }
+        });
+      } catch (error) {
+        expect(error.message).toEqual(`Custom Error`);
+      }
+    });
+
+    it("should respond with Custom Error to HTTP DELETE", async () => {
+      expect.assertions(1);
+
+      try {
+        await broker.call("http.delete", {
+          url: "http://localhost:4000/status/404",
+          opt: { json: true }
+        });
+      } catch (error) {
+        expect(error.message).toEqual(`Custom Error`);
       }
     });
   });
