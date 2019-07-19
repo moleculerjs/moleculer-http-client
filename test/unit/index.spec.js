@@ -113,13 +113,31 @@ describe("Test mixin Moleculer HTTP", () => {
     expect(service.actions.delete).toBeUndefined();
   });
 
-  it("should only include ALL actions", () => {
+  it("should include ALL actions - lower case case", () => {
     const service = broker.createService({
       name: "gotMixed",
       mixins: [MoleculerHTTP],
 
       settings: {
         httpClient: { includeMethods: ["get", "post", "put", "delete"] }
+      }
+    });
+
+    expect(service).toBeDefined();
+
+    expect(service.actions.get).toBeDefined();
+    expect(service.actions.post).toBeDefined();
+    expect(service.actions.put).toBeDefined();
+    expect(service.actions.delete).toBeDefined();
+  });
+
+  it("should include ALL actions - upper case", () => {
+    const service = broker.createService({
+      name: "gotMixed",
+      mixins: [MoleculerHTTP],
+
+      settings: {
+        httpClient: { includeMethods: ["GET", "POST", "PUT", "DELETE"] }
       }
     });
 
@@ -429,7 +447,7 @@ describe("Test Error Handling", () => {
     beforeAll(() => broker.start());
     afterAll(() => broker.stop());
 
-    it("should respond with 404 ERROR to HTTP GET", async () => {
+    it("should respond with Moleculer ERROR to HTTP GET", async () => {
       expect.assertions(3);
 
       try {
@@ -444,7 +462,7 @@ describe("Test Error Handling", () => {
       }
     });
 
-    it("should respond with 404 ERROR to HTTP POST", async () => {
+    it("should respond with Moleculer ERROR to HTTP POST", async () => {
       expect.assertions(3);
 
       try {
@@ -459,7 +477,7 @@ describe("Test Error Handling", () => {
       }
     });
 
-    it("should respond with 404 ERROR to HTTP PUT", async () => {
+    it("should respond with Moleculer ERROR to HTTP PUT", async () => {
       expect.assertions(3);
 
       try {
@@ -474,7 +492,7 @@ describe("Test Error Handling", () => {
       }
     });
 
-    it("should respond with 404 ERROR to HTTP PATCH", async () => {
+    it("should respond with Moleculer ERROR to HTTP PATCH", async () => {
       expect.assertions(3);
 
       try {
@@ -489,7 +507,7 @@ describe("Test Error Handling", () => {
       }
     });
 
-    it("should respond with 404 ERROR to HTTP DELETE", async () => {
+    it("should respond with Moleculer ERROR to HTTP DELETE", async () => {
       expect.assertions(3);
 
       try {

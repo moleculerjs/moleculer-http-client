@@ -360,9 +360,11 @@ module.exports = {
    */
   created() {
     // Remove unwanted actions from the service
-    const { includeMethods } = this.settings.httpClient;
+    let { includeMethods } = this.settings.httpClient;
     if (!includeMethods || Array.isArray(includeMethods)) {
-      const methodsToRemove = _.difference(HTTP_METHODS, includeMethods);
+      if(_.isNil(includeMethods)) includeMethods = []
+
+      const methodsToRemove = _.difference(HTTP_METHODS, includeMethods.map(name => name.toLowerCase()));
 
       methodsToRemove.forEach(methodName => {
         delete this.actions[`${methodName}`];
