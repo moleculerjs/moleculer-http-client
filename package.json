@@ -1,6 +1,6 @@
 {
   "name": "moleculer-http-client",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "HTTP client mixin that allows Moleculer services to communicate with remote REST APIs",
   "main": "index.js",
   "scripts": {
@@ -27,9 +27,8 @@
     "moleculer": "^0.13.0"
   },
   "devDependencies": {
-    "@types/got": "^9.6.1",
+    "@types/got": "^9.6.2",
     "@types/jest": "^24.0.15",
-    "benchmarkify": "^2.1.1",
     "coveralls": "3.0.5",
     "eslint": "6.0.1",
     "jest": "24.8.0",
@@ -56,6 +55,6 @@
   "dependencies": {
     "chalk": "^2.4.2",
     "got": "^9.6.0",
-    "lodash": "^4.17.14"
+    "lodash": "^4.17.15"
   }
 }

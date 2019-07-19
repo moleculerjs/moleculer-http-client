@@ -43,7 +43,7 @@ module.exports = {
   /**
    * Raw Got Client instance https://github.com/sindresorhus/got#instances
    *
-   * @type {GotInstance} _client
+   * @type {GotInstance} A reference to Got's client
    */
   _client: null,
 

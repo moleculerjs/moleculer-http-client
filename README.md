@@ -6,17 +6,17 @@
 
 A tiny wrapper around [got](https://github.com/sindresorhus/got) HTTP client that allows [Moleculer](https://moleculer.services/) services to communicate with REST APIs.
 
-  - [Usage](#Usage)
-    - [Actions](#Actions)
-    - [Events](#Methods)
-    - [Stream](#Stream)
-    - [Cache](#Cache)
-  - [Service Settings](#Service-Settings)
-  - [Service Actions](#Service-Actions)
-  - [Service Methods](#Service-Methods)
-  - [Customization](#Customization)
-    - [Log Messages](#Log-Messages)
-    - [Errors](#Errors)
+  - [Usage](#usage)
+    - [Actions](#actions)
+    - [Events](#methods)
+    - [Stream](#stream)
+    - [Cache](#cache)
+  - [Service Settings](#service-settings)
+  - [Service Actions](#service-actions)
+  - [Service Methods](#service-methods)
+  - [Customization](#customization)
+    - [Log Messages](#log-messages)
+    - [Errors](#errors)
 
 ## Features
 
