@@ -4,16 +4,17 @@
 
 # moleculer-http-client
 
-A tiny wrapper around [got](https://github.com/sindresorhus/got) HTTP client that allows [Moleculer](https://moleculer.services/) services to communicate with REST APIs.
+A tiny wrapper around [got](https://www.npmjs.com/package/got) HTTP client that allows [Moleculer](https://moleculer.services/) services to communicate with REST APIs.
 
+  - [Service Settings](#service-settings)
+  - [Service Actions](#service-actions)
+  - [Service Methods](#service-methods)
   - [Usage](#usage)
     - [Actions](#actions)
     - [Events](#events)
     - [Stream](#stream)
     - [Cache](#cache)
-  - [Service Settings](#service-settings)
-  - [Service Actions](#service-actions)
-  - [Service Methods](#service-methods)
+    - [Got Instance](#got-instance)
   - [Customization](#customization)
     - [Log Messages](#log-messages)
     - [Errors](#errors)
@@ -29,6 +30,198 @@ A tiny wrapper around [got](https://github.com/sindresorhus/got) HTTP client tha
 ```
 npm install moleculer-http-client --save
 ```
+
+## Service Settings
+Use `httpClient` field to configure your got client.
+
+> **Note:** By default no [actions](#service-actions) are created. This is done to avoid any potential conflicts with other service actions when `moleculer-http-client` is used as a mixin.
+
+```js
+module.exports = {
+  name: "http",
+  
+  /**
+   * Moleculer settings
+   */
+  settings: {
+    // HTTP client settings
+    httpClient: {
+      // HTTP methods to include as Moleculer Actions
+      includeMethods: null, // ['get', 'post', 'put', 'patch', 'delete' ]
+
+      // Boolean value indicating whether request should be logged or not
+      logging: true,
+
+      // Log request function
+      logOutgoingRequest: logOutgoingRequest,
+
+      // Log response function
+      logIncomingResponse: logIncomingResponse,
+
+      // Format the Response
+      responseFormatter: "body", // one of "body", "headers", "status", "raw"
+
+      // Format the Errors
+      errorFormatter: errorFormatter,
+
+      // Got Client options
+      defaultOptions: {
+        // Put here any Got available option that can be used to extend Got client
+      }
+    }
+  },
+};
+```
+
+## Service Actions
+Use `includeMethods` field in service settings to create the desired service actions.
+
+## `get`
+HTTP GET action
+
+### Parameters
+| Property | Type | Default | Description |
+| -------- | ---- | ------- | ----------- |
+| `url` | `String`| **required** | URL |
+| `opt` | `Object`| **optional** | [Request options](https://www.npmjs.com/package/got#options) |
+
+### Returns
+**Type:** `Promise`, `Stream`
+
+## `post` 
+
+HTTP POST action
+
+### Parameters
+| Property | Type | Default | Description |
+| -------- | ---- | ------- | ----------- |
+| `url` | `String`| **required** | URL |
+| `opt` | `Object`| **optional** | [Request options](https://www.npmjs.com/package/got#options) |
+| `streamPayload` | `Stream`| **optional** | Stream payload |
+
+> **Note:** When streaming use `ctx.meta` to pass `url` and `opt` and `ctx.params` to pass stream data
+
+### Returns
+**Type:** `Promise`
+
+## `put` 
+
+HTTP PUT action
+
+### Parameters
+| Property | Type | Default | Description |
+| -------- | ---- | ------- | ----------- |
+| `url` | `String`| **required** | URL |
+| `opt` | `Object`| **optional** | [Request options](https://www.npmjs.com/package/got#options) |
+| `streamPayload` | `Stream`| **optional** | Stream payload |
+
+> **Note:** When streaming use `ctx.meta` to pass `url` and `opt` and `ctx.params` to pass stream data
+
+### Returns
+**Type:** `Promise`
+
+## `patch` 
+
+HTTP PATCH action
+
+### Parameters
+| Property | Type | Default | Description |
+| -------- | ---- | ------- | ----------- |
+| `url` | `String`| **required** | URL |
+| `opt` | `Object`| **optional** | [Request options](https://www.npmjs.com/package/got#options) |
+| `streamPayload` | `Stream`| **optional** | Stream payload |
+
+> **Note:** When streaming use `ctx.meta` to pass `url` and `opt` and `ctx.params` to pass stream data
+
+### Returns
+**Type:** `Promise`
+
+## `delete` 
+
+HTTP DELETE action
+
+### Parameters
+| Property | Type | Default | Description |
+| -------- | ---- | ------- | ----------- |
+| `url` | `String`| **required** | URL |
+| `opt` | `Object`| **optional** | [Request options](https://www.npmjs.com/package/got#options) |
+| `streamPayload` | `Stream`| **optional** | Stream payload |
+
+> **Note:** When streaming use `ctx.meta` to pass `url` and `opt` and `ctx.params` to pass stream data
+
+### Returns
+**Type:** `Promise`
+
+## Service Methods
+## `_get` 
+
+HTTP GET method
+
+### Parameters
+| Property | Type | Default | Description |
+| -------- | ---- | ------- | ----------- |
+| `url` | `String`| **required** | URL |
+| `opt` | `Object`| **optional** | [Request options](https://www.npmjs.com/package/got#options) |
+
+### Returns
+**Type:** `Promise`, `Stream`
+
+## `_post` 
+
+HTTP POST method
+
+### Parameters
+| Property | Type | Default | Description |
+| -------- | ---- | ------- | ----------- |
+| `url` | `String`| **required** | URL |
+| `opt` | `Object`| **optional** | [Request options](https://www.npmjs.com/package/got#options) |
+| `streamPayload` | `Stream`| **optional** | Stream payload |
+
+### Returns
+**Type:** `Promise`
+
+
+## `_put` 
+
+HTTP PUT method
+
+### Parameters
+| Property | Type | Default | Description |
+| -------- | ---- | ------- | ----------- |
+| `url` | `String`| **required** | URL |
+| `opt` | `Object`| **optional** | [Request options](https://www.npmjs.com/package/got#options) |
+| `streamPayload` | `Stream`| **optional** | Stream payload |
+
+### Returns
+**Type:** `Promise`
+
+
+## `_patch` 
+
+HTTP PATCH method
+
+### Parameters
+| Property | Type | Default | Description |
+| -------- | ---- | ------- | ----------- |
+| `url` | `String`| **required** | URL |
+| `opt` | `Object`| **optional** | [Request options](https://www.npmjs.com/package/got#options) |
+| `streamPayload` | `Stream`| **optional** | Stream payload |
+
+### Returns
+**Type:** `Promise`
+
+## `_delete` 
+
+HTTP DELETE method
+
+### Parameters
+| Property | Type | Default | Description |
+| -------- | ---- | ------- | ----------- |
+| `url` | `String`| **required** | URL |
+| `opt` | `Object`| **optional** | [Request options](https://www.npmjs.com/package/got#options) |
+
+### Returns
+**Type:** `Promise`
 
 # Usage
 ## Actions
@@ -188,7 +381,7 @@ broker.createService({
   mixins: [HTTPClientService],
 
   settings: {
-    // Only load HTTP GET action
+    // Only load HTTP POST action
     httpClient: { includeMethods: ["post"] }
   }
 });
@@ -250,7 +443,7 @@ broker.start().then(() => {
 
 ## Cache
 ### Moleculer Cache
-If you are using [actions](#Service-Actions) to make HTTP requests then you can use [Moleculer's cache](https://moleculer.services/docs/0.13/caching.html) to cache responses.
+If you are using [actions](#service-actions) to make HTTP requests then you can use [Moleculer's cache](https://moleculer.services/docs/0.13/caching.html) to cache responses.
 
 > Please note that when using Moleculer's cache you will be ignoring [`Cache-Control` header field](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control). If you care about `Cache-Control` then you should use [Got's cache](#gots-cache).
 
@@ -316,7 +509,7 @@ Cache   ->  INFO  http-client/BROKER: { slideshow: { author: 'Yours Truly', date
 ```
 
 ### Got's Cache
-If you are using [methods](#Service-Methods) or you care about `Cache-Control` header option then you should use [Got's cache](https://github.com/sindresorhus/got#cache-1).
+If you are using [methods](#service-methods) or you care about `Cache-Control` header option then you should use [Got's cache](https://www.npmjs.com/package/got#cache-1).
 
 **Example of Got cache**
 ```js
@@ -345,7 +538,7 @@ broker.createService({
 
       defaultOptions: {
         // Set Got's built-in cache
-        // More info: https://github.com/sindresorhus/got#cache-1
+        // More info: https://www.npmjs.com/package/got#cache-1
         cache: cacheMap
       }
     }
@@ -382,195 +575,56 @@ INFO  http-client/HTTP: **CACHED** HTTP GET to "https://httpbin.org/cache/150" r
 INFO  http-client/BROKER: true
 ```
 
-## Service Settings
+### Got Instance
+If you need to do some fancy request (e.g., `HEAD`, `TRACE`, `OPTIONS`) you can directly call the got client available at `_client`.
+
 ```js
-module.exports = {
+const { ServiceBroker } = require("moleculer");
+const HTTPClientService = require("moleculer-http-client");
+
+// Create broker
+let broker = new ServiceBroker({
+  nodeID: "http-client"
+});
+
+// Create a service
+broker.createService({
   name: "http",
-  
-  /**
-   * Default settings
-   */
-  settings: {
-    httpClient: {
-      // HTTP methods to include as Moleculer Actions
-      includeMethods: null, // ['get', 'post', 'put', 'patch', 'delete' ]
 
-      // Boolean value indicating whether request should be logged or not
-      logging: true,
+  // Load HTTP Client Service
+  mixins: [HTTPClientService],
 
-      // Log request function
-      logOutgoingRequest: logOutgoingRequest,
-
-      // Log response function
-      logIncomingResponse: logIncomingResponse,
-
-      // Format the Response
-      responseFormatter: "body", // one of "body", "headers", "status", "raw"
-
-      // Format the Errors
-      errorFormatter: errorFormatter,
-
-      // Got Client options
-      defaultOptions: {
-        // Put here any Got available option that can be used to extend Got client
+  actions: {
+    async fancyGET(ctx) {
+      try {
+        // Direct call to Got Client
+        // Can be any Got supported HTTP Method
+        return await this._client(ctx.params.url, ctx.params.opt);
+      } catch (error) {
+        throw error;
       }
     }
-  },
-};
+  }
+});
+
+// Start the broker
+broker.start().then(() => {
+  broker
+    // Make a fancyGET request
+    .call("http.fancyGET", {
+      url: "https://httpbin.org/json",
+      opt: { json: true }
+    })
+    .then(res => broker.logger.info(res.body))
+    .catch(error => broker.logger.error(error));
+});
 ```
 
-## Service Actions
-Use `includeMethods` field in service settings to create the desired service actions.
-
-> **Note:** By default no actions are created. This is done to avoid any potential conflicts with other service actions when `moleculer-http-client` is used as a mixin.
-
-## `get`
-HTTP GET action
-
-### Parameters
-| Property | Type | Default | Description |
-| -------- | ---- | ------- | ----------- |
-| `url` | `String`| **required** | URL |
-| `opt` | `Object`| **optional** | [Request options](https://www.npmjs.com/package/got#options) |
-
-### Returns
-**Type:** `Promise`, `Stream`
-
-## `post` 
-
-HTTP POST action
-
-### Parameters
-| Property | Type | Default | Description |
-| -------- | ---- | ------- | ----------- |
-| `url` | `String`| **required** | URL |
-| `opt` | `Object`| **optional** | [Request options](https://www.npmjs.com/package/got#options) |
-| `streamPayload` | `Stream`| **optional** | Stream payload |
-
-> **Note:** When streaming use `ctx.meta` to pass `url` and `opt` and `ctx.params` to pass stream data
-
-### Returns
-**Type:** `Promise`
-
-## `put` 
-
-HTTP PUT action
-
-### Parameters
-| Property | Type | Default | Description |
-| -------- | ---- | ------- | ----------- |
-| `url` | `String`| **required** | URL |
-| `opt` | `Object`| **optional** | [Request options](https://www.npmjs.com/package/got#options) |
-| `streamPayload` | `Stream`| **optional** | Stream payload |
-
-> **Note:** When streaming use `ctx.meta` to pass `url` and `opt` and `ctx.params` to pass stream data
-
-### Returns
-**Type:** `Promise`
-
-## `patch` 
-
-HTTP PATCH action
-
-### Parameters
-| Property | Type | Default | Description |
-| -------- | ---- | ------- | ----------- |
-| `url` | `String`| **required** | URL |
-| `opt` | `Object`| **optional** | [Request options](https://www.npmjs.com/package/got#options) |
-| `streamPayload` | `Stream`| **optional** | Stream payload |
-
-> **Note:** When streaming use `ctx.meta` to pass `url` and `opt` and `ctx.params` to pass stream data
-
-### Returns
-**Type:** `Promise`
-
-## `delete` 
-
-HTTP DELETE action
-
-### Parameters
-| Property | Type | Default | Description |
-| -------- | ---- | ------- | ----------- |
-| `url` | `String`| **required** | URL |
-| `opt` | `Object`| **optional** | [Request options](https://www.npmjs.com/package/got#options) |
-| `streamPayload` | `Stream`| **optional** | Stream payload |
-
-> **Note:** When streaming use `ctx.meta` to pass `url` and `opt` and `ctx.params` to pass stream data
-
-### Returns
-**Type:** `Promise`
-
-## Service Methods
-## `_get` 
-
-HTTP GET method
-
-### Parameters
-| Property | Type | Default | Description |
-| -------- | ---- | ------- | ----------- |
-| `url` | `String`| **required** | URL |
-| `opt` | `Object`| **optional** | [Request options](https://www.npmjs.com/package/got#options) |
-
-### Returns
-**Type:** `Promise`, `Stream`
-
-## `_post` 
-
-HTTP POST method
-
-### Parameters
-| Property | Type | Default | Description |
-| -------- | ---- | ------- | ----------- |
-| `url` | `String`| **required** | URL |
-| `opt` | `Object`| **optional** | [Request options](https://www.npmjs.com/package/got#options) |
-| `streamPayload` | `Stream`| **optional** | Stream payload |
-
-### Returns
-**Type:** `Promise`
-
-
-## `_put` 
-
-HTTP PUT method
-
-### Parameters
-| Property | Type | Default | Description |
-| -------- | ---- | ------- | ----------- |
-| `url` | `String`| **required** | URL |
-| `opt` | `Object`| **optional** | [Request options](https://www.npmjs.com/package/got#options) |
-| `streamPayload` | `Stream`| **optional** | Stream payload |
-
-### Returns
-**Type:** `Promise`
-
-
-## `_patch` 
-
-HTTP PATCH method
-
-### Parameters
-| Property | Type | Default | Description |
-| -------- | ---- | ------- | ----------- |
-| `url` | `String`| **required** | URL |
-| `opt` | `Object`| **optional** | [Request options](https://www.npmjs.com/package/got#options) |
-| `streamPayload` | `Stream`| **optional** | Stream payload |
-
-### Returns
-**Type:** `Promise`
-
-## `_delete` 
-
-HTTP DELETE method
-
-### Parameters
-| Property | Type | Default | Description |
-| -------- | ---- | ------- | ----------- |
-| `url` | `String`| **required** | URL |
-| `opt` | `Object`| **optional** | [Request options](https://www.npmjs.com/package/got#options) |
-
-### Returns
-**Type:** `Promise`
-
+```bash
+INFO  http-client/HTTP: => HTTP GET to "https://httpbin.org/json"
+INFO  http-client/HTTP: <= HTTP GET to "https://httpbin.org/json" returned with status code 200
+INFO  http-client/BROKER: { slideshow: { author: 'Yours Truly', date: 'date of publication', slides: [ [Object], [Object] ], title: 'Sample Slide Show' } }
+```
 
 ## Customization
 ### Log Messages
@@ -584,14 +638,14 @@ HTTP DELETE method
         httpClient: {
           includeMethods: ["get"],
 
-          // Input is Got's options object. More info: https://github.com/sindresorhus/got#options
+          // Input is Got's options object. More info: https://www.npmjs.com/package/got#options
           logOutgoingRequest: options => {
             console.log(`-----> Request ${options.href}`);
           },
 
-          // Input is Got's response object: More info: https://github.com/sindresorhus/got#response
+          // Input is Got's response object: More info: https://www.npmjs.com/package/got#response
           logIncomingResponse: response => {
-            console.log(`<----- Request ${response.statusCode}`);
+            console.log(`<----- Response Status Code ${response.statusCode}`);
           }
         }
       }
@@ -610,7 +664,7 @@ HTTP DELETE method
           includeMethods: ["get"],
 
           // Custom error handler function
-          // Input error is Got's error. More info: https://github.com/sindresorhus/got#errors 
+          // Input error is Got's error. More info: https://www.npmjs.com/package/got#errors
           errorFormatter: error => {
             return new Error("Custom Error");
           }
@@ -620,7 +674,7 @@ HTTP DELETE method
 ```
 
 ## Test
-```
+```bash
 $ npm test
 ```
 

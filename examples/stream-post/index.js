@@ -18,12 +18,12 @@ broker.createService({
   mixins: [HTTPClientService],
 
   settings: {
-    // Only load HTTP GET action
+    // Only load HTTP POST action
     httpClient: { includeMethods: ["post"] }
   }
 });
 
-// Create HTTP Server Services
+// Create HTTP Server Service
 broker.createService({
   name: "api",
   mixins: [ApiGateway],

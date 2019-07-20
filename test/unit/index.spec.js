@@ -92,6 +92,7 @@ describe("Test mixin Moleculer HTTP", () => {
     expect(service.actions.get).toBeUndefined();
     expect(service.actions.post).toBeUndefined();
     expect(service.actions.put).toBeUndefined();
+    expect(service.actions.patch).toBeUndefined();
     expect(service.actions.delete).toBeUndefined();
   });
 
@@ -110,6 +111,7 @@ describe("Test mixin Moleculer HTTP", () => {
     expect(service.actions.get).toBeDefined();
     expect(service.actions.post).toBeDefined();
     expect(service.actions.put).toBeUndefined();
+    expect(service.actions.patch).toBeUndefined();
     expect(service.actions.delete).toBeUndefined();
   });
 
@@ -119,7 +121,9 @@ describe("Test mixin Moleculer HTTP", () => {
       mixins: [MoleculerHTTP],
 
       settings: {
-        httpClient: { includeMethods: ["get", "post", "put", "delete"] }
+        httpClient: {
+          includeMethods: ["get", "post", "put", "patch", "delete"]
+        }
       }
     });
 
@@ -128,6 +132,7 @@ describe("Test mixin Moleculer HTTP", () => {
     expect(service.actions.get).toBeDefined();
     expect(service.actions.post).toBeDefined();
     expect(service.actions.put).toBeDefined();
+    expect(service.actions.patch).toBeDefined();
     expect(service.actions.delete).toBeDefined();
   });
 
@@ -137,7 +142,9 @@ describe("Test mixin Moleculer HTTP", () => {
       mixins: [MoleculerHTTP],
 
       settings: {
-        httpClient: { includeMethods: ["GET", "POST", "PUT", "DELETE"] }
+        httpClient: {
+          includeMethods: ["GET", "POST", "PUT", "PATCH", "DELETE"]
+        }
       }
     });
 
@@ -146,6 +153,7 @@ describe("Test mixin Moleculer HTTP", () => {
     expect(service.actions.get).toBeDefined();
     expect(service.actions.post).toBeDefined();
     expect(service.actions.put).toBeDefined();
+    expect(service.actions.patch).toBeDefined();
     expect(service.actions.delete).toBeDefined();
   });
 });
@@ -164,11 +172,35 @@ describe("Test HTTP methods", () => {
 
     settings: {
       httpClient: { includeMethods: ["get", "post", "put", "delete"] }
+    },
+
+    actions: {
+      async fancyRequest(ctx) {
+        try {
+          // Use raw got client
+          return await this._client(ctx.params.url, ctx.params.opt);
+        } catch (error) {
+          throw error;
+        }
+      }
     }
   });
 
   beforeAll(() => broker.start());
   afterAll(() => broker.stop());
+
+  it("should GET with raw Got _client", async () => {
+    expect.assertions(1);
+
+    let res = await broker.call("http.fancyRequest", {
+      url: "http://localhost:4000/json",
+      opt: { method: "GET", json: true }
+    });
+
+    let expected = { hello: 200 };
+
+    expect(res.body).toEqual(expected);
+  });
 
   it("should GET JSON object", async () => {
     expect.assertions(1);
