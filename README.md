@@ -595,7 +595,7 @@ broker.createService({
   mixins: [HTTPClientService],
 
   actions: {
-    async fancyGET(ctx) {
+    async fancyRequest(ctx) {
       try {
         // Direct call to Got Client
         // Can be any Got supported HTTP Method
@@ -610,10 +610,10 @@ broker.createService({
 // Start the broker
 broker.start().then(() => {
   broker
-    // Make a fancyGET request
-    .call("http.fancyGET", {
+    // Make a fancy request
+    .call("http.fancyRequest", {
       url: "https://httpbin.org/json",
-      opt: { json: true }
+      opt: { method: "GET", json: true }
     })
     .then(res => broker.logger.info(res.body))
     .catch(error => broker.logger.error(error));

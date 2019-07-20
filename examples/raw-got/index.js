@@ -30,7 +30,7 @@ broker.createService({
 // Start the broker
 broker.start().then(() => {
   broker
-    // Make a fancyGET request
+    // Make a fancy request
     .call("http.fancyRequest", {
       url: "https://httpbin.org/json",
       opt: { method: "GET", json: true }
