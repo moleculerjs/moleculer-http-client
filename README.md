@@ -1,6 +1,6 @@
 ![Moleculer logo](http://moleculer.services/images/banner.png)
 
-[![Build Status](https://travis-ci.org/AndreMaz/moleculer-http-client.svg?branch=master)](https://travis-ci.org/AndreMaz/moleculer-http-client) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/AndreMaz/moleculer-http-client/master/LICENSE) [![npm](https://img.shields.io/npm/v/moleculer-http-client.svg)](https://www.npmjs.com/package/moleculer-http-client) [![Downloads](https://img.shields.io/npm/dm/moleculer-http-client.svg)](https://www.npmjs.com/package/moleculer-http-client)
+[![Build Status](https://travis-ci.org/AndreMaz/moleculer-http-client.svg?branch=master)](https://travis-ci.org/AndreMaz/moleculer-http-client) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/AndreMaz/moleculer-http-client/master/LICENSE) [![npm](https://img.shields.io/npm/v/moleculer-http-client.svg)](https://www.npmjs.com/package/moleculer-http-client) [![Downloads](https://img.shields.io/npm/dm/moleculer-http-client.svg)](https://www.npmjs.com/package/moleculer-http-client) [![Coverage Status](https://coveralls.io/repos/github/AndreMaz/moleculer-http-client/badge.svg?branch=master)](https://coveralls.io/github/AndreMaz/moleculer-http-client?branch=master)
 
 # moleculer-http-client
 
