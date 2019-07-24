@@ -151,7 +151,7 @@ module.exports = {
         try {
           return await this._get(ctx.params.url, ctx.params.opt);
         } catch (error) {
-          throw this._httpErrorHandler(error);
+          throw error;
         }
       }
     },
@@ -168,7 +168,7 @@ module.exports = {
           }
           return await this._post(ctx.params.url, ctx.params.opt);
         } catch (error) {
-          throw this._httpErrorHandler(error);
+          throw error;
         }
       }
     },
@@ -185,7 +185,7 @@ module.exports = {
           }
           return await this._put(ctx.params.url, ctx.params.opt);
         } catch (error) {
-          throw this._httpErrorHandler(error);
+          throw error;
         }
       }
     },
@@ -206,7 +206,7 @@ module.exports = {
           }
           return await this._patch(ctx.params.url, ctx.params.opt);
         } catch (error) {
-          throw await this._httpErrorHandler(error);
+          throw error;
         }
       }
     },
@@ -219,7 +219,7 @@ module.exports = {
         try {
           return await this._delete(ctx.params.url, ctx.params.opt);
         } catch (error) {
-          throw await this._httpErrorHandler(error);
+          throw error;
         }
       }
     }
@@ -297,13 +297,16 @@ module.exports = {
      * @param {string} url
      * @param {GotOptions} opt
      * @param {stream.Readable} streamPayload
+     * @returns {Promise|stream.Readable}
      */
     _genericRequest(url, opt, streamPayload) {
       if (opt && opt.stream) {
         return this._streamRequest(url, opt, streamPayload);
       }
 
-      return this._client(url, opt);
+      return this._client(url, opt)
+        .then(res => Promise.resolve(res))
+        .catch(error => Promise.reject(this._httpErrorHandler(error)));
     },
 
     /**
@@ -311,6 +314,7 @@ module.exports = {
      * @param {string} url
      * @param {GotOptions} opt
      * @param {stream.Readable} streamPayload
+     * @returns {Promise|stream.Readable}
      */
     _streamRequest(url, opt, streamPayload) {
       if (opt.method == "GET") {
@@ -335,7 +339,7 @@ module.exports = {
           resolve(response);
         });
 
-        writeStream.on("error", error => reject(error));
+        writeStream.on("error", error => reject(this._httpErrorHandler(error)));
       });
     },
 
