@@ -146,6 +146,7 @@ module.exports = {
       /**
        * HTTP GET Action
        * @param {Context} ctx
+       * @returns {Promise|stream.Readable}
        */
       async handler(ctx) {
         return this._get(ctx.params.url, ctx.params.opt);
@@ -156,6 +157,7 @@ module.exports = {
       /**
        * HTTP POST Action
        * @param {Context} ctx
+       * @returns {Promise}
        */
       async handler(ctx) {
         if (ctx.params instanceof stream.Readable) {
@@ -170,6 +172,7 @@ module.exports = {
       /**
        * HTTP PUT Action
        * @param {Context} ctx
+       * @returns {Promise}
        */
       async handler(ctx) {
         if (ctx.params instanceof stream.Readable) {
@@ -184,6 +187,7 @@ module.exports = {
       /**
        * HTTP PATCH Action
        * @param {Context} ctx
+       * @returns {Promise}
        */
       async handler(ctx) {
         if (ctx.params instanceof stream.Readable) {
@@ -197,6 +201,7 @@ module.exports = {
       /**
        * HTTP DELETE Action
        * @param {Context} ctx
+       * @returns {Promise}
        */
       async handler(ctx) {
         return this._delete(ctx.params.url, ctx.params.opt);
@@ -212,6 +217,7 @@ module.exports = {
      * HTTP GET method
      * @param {string} url
      * @param {GotOptions} opt
+     * @returns {Promise|stream.Readable}
      */
     _get(url, opt) {
       if (!_.isObject(opt)) opt = {};
@@ -225,6 +231,7 @@ module.exports = {
      * @param {string} url
      * @param {GotOptions} opt
      * @param {stream.Readable} streamPayload
+     * @returns {Promise}
      */
     _post(url, opt, streamPayload) {
       if (!_.isObject(opt)) opt = {};
@@ -238,6 +245,7 @@ module.exports = {
      * @param {string} url
      * @param {GotOptions} opt
      * @param {stream.Readable} streamPayload
+     * @returns {Promise}
      */
     _put(url, opt, streamPayload) {
       if (!_.isObject(opt)) opt = {};
@@ -251,6 +259,7 @@ module.exports = {
      * @param {string} url
      * @param {GotOptions} opt
      * @param {stream.Readable} streamPayload
+     * @returns {Promise}
      */
     _patch(url, opt, streamPayload) {
       if (!_.isObject(opt)) opt = {};
@@ -263,6 +272,7 @@ module.exports = {
      * HTTP DELETE method
      * @param {string} url
      * @param {GotOptions} opt
+     * @returns {Promise}
      */
     _delete(url, opt) {
       if (!_.isObject(opt)) opt = {};
