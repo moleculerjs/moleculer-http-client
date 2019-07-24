@@ -159,7 +159,8 @@ module.exports = {
        */
       async handler(ctx) {
         if (ctx.params instanceof stream.Readable) {
-          return this._post(ctx.meta.url, { stream: true }, ctx.params);
+          ctx.meta.stream = true; // Default value when streaming
+          return this._post(ctx.meta.url, ctx.meta, ctx.params);
         }
         return this._post(ctx.params.url, ctx.params.opt);
       }
@@ -172,7 +173,8 @@ module.exports = {
        */
       async handler(ctx) {
         if (ctx.params instanceof stream.Readable) {
-          return this._put(ctx.meta.url, { stream: true }, ctx.params);
+          ctx.meta.stream = true; // Default value when streaming
+          return this._put(ctx.meta.url, ctx.meta, ctx.params);
         }
         return this._put(ctx.params.url, ctx.params.opt);
       }
@@ -185,7 +187,8 @@ module.exports = {
        */
       async handler(ctx) {
         if (ctx.params instanceof stream.Readable) {
-          return this._patch(ctx.meta.url, { stream: true }, ctx.params);
+          ctx.meta.stream = true; // Default value when streaming
+          return this._patch(ctx.meta.url, ctx.meta, ctx.params);
         }
         return this._patch(ctx.params.url, ctx.params.opt);
       }
