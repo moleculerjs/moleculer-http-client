@@ -148,11 +148,7 @@ module.exports = {
        * @param {Context} ctx
        */
       async handler(ctx) {
-        try {
-          return await this._get(ctx.params.url, ctx.params.opt);
-        } catch (error) {
-          throw error;
-        }
+        return this._get(ctx.params.url, ctx.params.opt);
       }
     },
 
@@ -162,14 +158,10 @@ module.exports = {
        * @param {Context} ctx
        */
       async handler(ctx) {
-        try {
-          if (ctx.params instanceof stream.Readable) {
-            return await this._post(ctx.meta.url, { stream: true }, ctx.params);
-          }
-          return await this._post(ctx.params.url, ctx.params.opt);
-        } catch (error) {
-          throw error;
+        if (ctx.params instanceof stream.Readable) {
+          return this._post(ctx.meta.url, { stream: true }, ctx.params);
         }
+        return this._post(ctx.params.url, ctx.params.opt);
       }
     },
 
@@ -179,14 +171,10 @@ module.exports = {
        * @param {Context} ctx
        */
       async handler(ctx) {
-        try {
-          if (ctx.params instanceof stream.Readable) {
-            return await this._put(ctx.meta.url, { stream: true }, ctx.params);
-          }
-          return await this._put(ctx.params.url, ctx.params.opt);
-        } catch (error) {
-          throw error;
+        if (ctx.params instanceof stream.Readable) {
+          return this._put(ctx.meta.url, { stream: true }, ctx.params);
         }
+        return this._put(ctx.params.url, ctx.params.opt);
       }
     },
 
@@ -196,18 +184,10 @@ module.exports = {
        * @param {Context} ctx
        */
       async handler(ctx) {
-        try {
-          if (ctx.params instanceof stream.Readable) {
-            return await this._patch(
-              ctx.meta.url,
-              { stream: true },
-              ctx.params
-            );
-          }
-          return await this._patch(ctx.params.url, ctx.params.opt);
-        } catch (error) {
-          throw error;
+        if (ctx.params instanceof stream.Readable) {
+          return this._patch(ctx.meta.url, { stream: true }, ctx.params);
         }
+        return this._patch(ctx.params.url, ctx.params.opt);
       }
     },
     delete: {
@@ -216,11 +196,7 @@ module.exports = {
        * @param {Context} ctx
        */
       async handler(ctx) {
-        try {
-          return await this._delete(ctx.params.url, ctx.params.opt);
-        } catch (error) {
-          throw error;
-        }
+        return this._delete(ctx.params.url, ctx.params.opt);
       }
     }
   },
