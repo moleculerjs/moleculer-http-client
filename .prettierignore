@@ -1,2 +1,4 @@
 *.html
 *.md
+/node_modules/
+/src/coverage/
