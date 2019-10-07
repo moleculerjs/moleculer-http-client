@@ -57,7 +57,6 @@
     "node": ">= 8.x.x"
   },
   "dependencies": {
-    "chalk": "^2.4.2",
     "got": "^9.6.0",
     "kleur": "^3.0.3",
     "lodash": "^4.17.15"
