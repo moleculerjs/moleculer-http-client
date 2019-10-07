@@ -15,17 +15,20 @@
   "keywords": [
     "moleculer",
     "microservice",
+    "microservices",
+    "http client",
     "http-client",
-    "http-request"
+    "http-request",
+    "http request"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/AndreMaz/moleculer-http-client.git"
+    "url": "https://github.com/moleculerjs/moleculer-http-client.git"
   },
   "author": "André Mazayev",
   "license": "MIT",
   "peerDependencies": {
-    "moleculer": "^0.13.0"
+    "moleculer": "^0.13.0 || ^0.14.0"
   },
   "devDependencies": {
     "@types/got": "^9.6.7",

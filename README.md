@@ -1,10 +1,10 @@
 ![Moleculer logo](http://moleculer.services/images/banner.png)
 
-[![Build Status](https://travis-ci.org/AndreMaz/moleculer-http-client.svg?branch=master)](https://travis-ci.org/AndreMaz/moleculer-http-client) [![Coverage Status](https://coveralls.io/repos/github/AndreMaz/moleculer-http-client/badge.svg?branch=master)](https://coveralls.io/github/AndreMaz/moleculer-http-client?branch=master) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/AndreMaz/moleculer-http-client/master/LICENSE) [![npm](https://img.shields.io/npm/v/moleculer-http-client.svg)](https://www.npmjs.com/package/moleculer-http-client) [![Downloads](https://img.shields.io/npm/dm/moleculer-http-client.svg)](https://www.npmjs.com/package/moleculer-http-client)
+[![Build Status](https://travis-ci.org/moleculerjs/moleculer-http-client.svg?branch=master)](https://travis-ci.org/moleculerjs/moleculer-http-client) [![Coverage Status](https://coveralls.io/repos/github/moleculerjs/moleculer-http-client/badge.svg?branch=master)](https://coveralls.io/github/moleculerjs/moleculer-http-client?branch=master) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/moleculerjs/moleculer-http-client/master/LICENSE) [![npm](https://img.shields.io/npm/v/moleculer-http-client.svg)](https://www.npmjs.com/package/moleculer-http-client) [![Downloads](https://img.shields.io/npm/dm/moleculer-http-client.svg)](https://www.npmjs.com/package/moleculer-http-client)
 
 # moleculer-http-client
 
-A tiny wrapper around [got](https://www.npmjs.com/package/got) HTTP client that allows [Moleculer](https://moleculer.services/) services to communicate with REST APIs.
+A tiny wrapper around [got](https://www.npmjs.com/package/got) HTTP client that allows [Moleculer](https://moleculer.services/) services to communicate with REST APIs. Why got? Because [reasons](https://github.com/sindresorhus/got#comparison).
 
   - [Service Settings](#service-settings)
   - [Service Actions](#service-actions)
@@ -686,4 +686,4 @@ Please send pull requests improving the usage and fixing bugs, improving documen
 The project is available under the [MIT license](https://tldrlegal.com/license/mit-license).
 
 # Contact
-Copyright (c) 2019 André Mazayev
+Copyright (c) 2019 MoleculerJS
