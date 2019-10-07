@@ -160,7 +160,7 @@ describe("Test mixin Moleculer HTTP", () => {
 
 describe("Test HTTP methods", () => {
   const broker = new ServiceBroker({
-    // logger: false
+    logger: false
   });
 
   const HTTPMock = broker.createService(HTTPMockServer);
@@ -462,7 +462,7 @@ describe("Test Error Handling", () => {
   describe("Method Error Handling", () => {
     describe("Default Error Handling", () => {
       const broker = new ServiceBroker({
-        // logger: false
+        logger: false
       });
 
       const HTTPMock = broker.createService(HTTPMockServer);
@@ -549,7 +549,7 @@ describe("Test Error Handling", () => {
 
     describe("Throwing Got's Errors", () => {
       const broker = new ServiceBroker({
-        // logger: false
+        logger: false
       });
 
       const HTTPMock = broker.createService(HTTPMockServer);
@@ -632,7 +632,7 @@ describe("Test Error Handling", () => {
 
     describe("Custom Error Handling", () => {
       const broker = new ServiceBroker({
-        // logger: false
+        logger: false
       });
 
       const HTTPMock = broker.createService(HTTPMockServer);
@@ -721,7 +721,7 @@ describe("Test Error Handling", () => {
   describe("Action Error Handling", () => {
     describe("Default Error Handling", () => {
       const broker = new ServiceBroker({
-        // logger: false
+        logger: false
       });
 
       const HTTPMock = broker.createService(HTTPMockServer);
@@ -817,7 +817,7 @@ describe("Test Error Handling", () => {
 
     describe("Throwing Got's Errors", () => {
       const broker = new ServiceBroker({
-        // logger: false
+        logger: false
       });
 
       const HTTPMock = broker.createService(HTTPMockServer);
@@ -906,7 +906,7 @@ describe("Test Error Handling", () => {
 
     describe("Custom Error Handling", () => {
       const broker = new ServiceBroker({
-        // logger: false
+        logger: false
       });
 
       const HTTPMock = broker.createService(HTTPMockServer);
@@ -999,7 +999,9 @@ describe("Test Error Handling", () => {
 });
 
 describe("Test Moleculer HTTP Client Logging", () => {
-  const broker = new ServiceBroker({});
+  const broker = new ServiceBroker({
+    logger: false
+  });
 
   const HTTPMock = broker.createService(HTTPMockServer);
 
@@ -1054,7 +1056,9 @@ describe("Test Moleculer HTTP Client Logging", () => {
 });
 
 describe("Test Response Formatter", () => {
-  const broker = new ServiceBroker({});
+  const broker = new ServiceBroker({
+    logger: false
+  });
 
   const HTTPMock = broker.createService(HTTPMockServer);
 
@@ -1191,6 +1195,7 @@ describe("Test Response Formatter", () => {
 describe("Test Cache", () => {
   describe("Test Moleculer cache", () => {
     const broker = new ServiceBroker({
+      logger: false,
       cacher: "Memory"
     });
 
@@ -1249,7 +1254,9 @@ describe("Test Cache", () => {
   });
 
   describe("Test Got's internal cache", () => {
-    const broker = new ServiceBroker();
+    const broker = new ServiceBroker({
+      logger: false
+    });
 
     const mockFn = jest.fn(ctx => {
       ctx.meta.$responseHeaders = {

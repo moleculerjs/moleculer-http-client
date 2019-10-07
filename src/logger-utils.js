@@ -9,14 +9,14 @@
  * @typedef {import("got").Response} Response
  */
 
-const chalk = require("chalk");
+const kleur = require("kleur");
 
 /* istanbul ignore next */
 function coloringStatusCode(code) {
-  if (code >= 500) return chalk.red.bold(code);
-  if (code >= 400 && code < 500) return chalk.red.bold(code);
-  if (code >= 300 && code < 400) return chalk.cyan.bold(code);
-  if (code >= 200 && code < 300) return chalk.green.bold(code);
+  if (code >= 500) return kleur.red().bold(code);
+  if (code >= 400 && code < 500) return kleur.red().bold(code);
+  if (code >= 300 && code < 400) return kleur.cyan().bold(code);
+  if (code >= 200 && code < 300) return kleur.green().bold(code);
   return code;
 }
 /* istanbul ignore next */
@@ -36,7 +36,7 @@ function loggerLevels(code) {
  * @returns {string}
  */
 function logOutgoingRequest(options) {
-  return `=> HTTP ${options.method} to "${chalk.underline(options.href)}"`;
+  return `=> HTTP ${options.method} to "${kleur.underline(options.href)}"`;
 }
 
 /**
@@ -50,13 +50,13 @@ function logIncomingResponse(response) {
   const method = response.request.gotOptions.method;
 
   if (response.fromCache) {
-    return `${chalk.bgYellow(
+    return `${kleur.bgYellow(
       `**CACHED**`
-    )} HTTP ${method} to "${chalk.underline(
+    )} HTTP ${method} to "${kleur.underline(
       response.requestUrl
     )}" returned with status code ${coloringStatusCode(response.statusCode)}`;
   }
-  return `<= HTTP ${method} to "${chalk.underline(
+  return `<= HTTP ${method} to "${kleur.underline(
     response.requestUrl
   )}" returned with status code ${coloringStatusCode(response.statusCode)}`;
 }
