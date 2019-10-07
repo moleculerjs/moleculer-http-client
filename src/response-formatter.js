@@ -11,12 +11,7 @@ const formatter = {
   body: response => {
     const { json } = response.request.gotOptions;
     if (json === true) {
-      try {
-        return JSON.parse(response.body);
-        // return req.body;
-      } catch (error) {
-        throw error;
-      }
+      return JSON.parse(response.body);
     }
     return response.body;
   },
