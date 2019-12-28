@@ -33,7 +33,7 @@ broker.start().then(() => {
     // Make a fancy request
     .call("http.fancyRequest", {
       url: "https://httpbin.org/json",
-      opt: { method: "GET", json: true }
+      opt: { method: "GET", responseType: "json" }
     })
     .then(res => broker.logger.info(res.body))
     .catch(error => broker.logger.error(error));

@@ -108,8 +108,8 @@ module.exports = {
            */
           afterResponse: [
             function incomingLogger(response) {
-              const { logger } = response.request.gotOptions;
-              const { logIncomingResponse } = response.request.gotOptions;
+              const { logger } = response.request.options;
+              const { logIncomingResponse } = response.request.options;
 
               if (logger && logIncomingResponse) {
                 logger[loggerLevels(response.statusCode)](
@@ -120,9 +120,10 @@ module.exports = {
               return response;
             },
             function formatter(response) {
-              const { responseFormatter } = response.request.gotOptions;
+              const { responseFormatter } = response.request.options;
 
               return responseFormatter(response);
+              return response
             }
           ],
           /**
@@ -161,7 +162,7 @@ module.exports = {
        */
       async handler(ctx) {
         if (ctx.params instanceof stream.Readable) {
-          ctx.meta.stream = true; // Default value when streaming
+          ctx.meta.isStream = true; // Default value when streaming
           return this._post(ctx.meta.url, ctx.meta, ctx.params);
         }
         return this._post(ctx.params.url, ctx.params.opt);
@@ -176,7 +177,7 @@ module.exports = {
        */
       async handler(ctx) {
         if (ctx.params instanceof stream.Readable) {
-          ctx.meta.stream = true; // Default value when streaming
+          ctx.meta.isStream = true; // Default value when streaming
           return this._put(ctx.meta.url, ctx.meta, ctx.params);
         }
         return this._put(ctx.params.url, ctx.params.opt);
@@ -191,7 +192,7 @@ module.exports = {
        */
       async handler(ctx) {
         if (ctx.params instanceof stream.Readable) {
-          ctx.meta.stream = true; // Default value when streaming
+          ctx.meta.isStream = true; // Default value when streaming
           return this._patch(ctx.meta.url, ctx.meta, ctx.params);
         }
         return this._patch(ctx.params.url, ctx.params.opt);
@@ -289,7 +290,7 @@ module.exports = {
      * @returns {Promise|stream.Readable}
      */
     _genericRequest(url, opt, streamPayload) {
-      if (opt && opt.stream) {
+      if (opt && opt.isStream) {
         return this._streamRequest(url, opt, streamPayload);
       }
 
@@ -367,7 +368,7 @@ module.exports = {
       });
     }
 
-    // Add Logging functions got Got's default options
+    // Add Logging functions Got's default options
     const { defaultOptions } = this.settings.httpClient;
 
     if (this.settings.httpClient.logging) {

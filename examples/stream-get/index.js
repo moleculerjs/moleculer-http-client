@@ -28,7 +28,7 @@ broker.start().then(() => {
     // Make a HTTP GET request
     .call("http.get", {
       url: "https://sindresorhus.com/",
-      opt: { stream: true }
+      opt: { isStream: true }
     })
     .then(res => {
       const filePath = "./examples/stream-get/file.md";

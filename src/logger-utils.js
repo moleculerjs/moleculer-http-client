@@ -36,7 +36,7 @@ function loggerLevels(code) {
  * @returns {string}
  */
 function logOutgoingRequest(options) {
-  return `=> HTTP ${options.method} to "${kleur.underline(options.href)}"`;
+  return `=> HTTP ${options.method} to "${kleur.underline(options.url.href)}"`;
 }
 
 /**
@@ -47,7 +47,7 @@ function logOutgoingRequest(options) {
  * @returns {string}
  */
 function logIncomingResponse(response) {
-  const method = response.request.gotOptions.method;
+  const method = response.request.options.method;
 
   if (response.fromCache) {
     return `${kleur.bgYellow(
