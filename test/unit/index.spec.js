@@ -261,16 +261,15 @@ describe("Test HTTP methods", () => {
 
   it("should POST a JSON object", async () => {
     expect.assertions(2);
-    
-   
-      let res = await broker.call("http.post", {
-        url: "http://localhost:4000/json",
-        opt: {
-          json: { data: "POST From unit test" },
-          responseType: "json"
-        }
-      });
-  
+
+    let res = await broker.call("http.post", {
+      url: "http://localhost:4000/json",
+      opt: {
+        json: { data: "POST From unit test" },
+        responseType: "json"
+      }
+    });
+
     let expected = { id: 123, data: "POST From unit test" };
 
     expect(res.statusCode).toEqual(200);
@@ -586,7 +585,9 @@ describe("Test Error Handling", () => {
         expect.assertions(1);
 
         try {
-          await service._post("http://localhost:4000/status/404", { responseType: "json" });
+          await service._post("http://localhost:4000/status/404", {
+            responseType: "json"
+          });
         } catch (error) {
           expect(error.response.statusCode).toEqual(404);
         }
@@ -596,7 +597,9 @@ describe("Test Error Handling", () => {
         expect.assertions(1);
 
         try {
-          await service._put("http://localhost:4000/status/404", { responseType: "json" });
+          await service._put("http://localhost:4000/status/404", {
+            responseType: "json"
+          });
         } catch (error) {
           expect(error.response.statusCode).toEqual(404);
         }
@@ -606,7 +609,9 @@ describe("Test Error Handling", () => {
         expect.assertions(1);
 
         try {
-          await service._patch("http://localhost:4000/status/404", { responseType: "json" });
+          await service._patch("http://localhost:4000/status/404", {
+            responseType: "json"
+          });
         } catch (error) {
           expect(error.response.statusCode).toEqual(404);
         }
@@ -616,7 +621,9 @@ describe("Test Error Handling", () => {
         expect.assertions(1);
 
         try {
-          await service._delete("http://localhost:4000/status/404",{ responseType: "json" });
+          await service._delete("http://localhost:4000/status/404", {
+            responseType: "json"
+          });
         } catch (error) {
           expect(error.response.statusCode).toEqual(404);
         }
@@ -653,7 +660,9 @@ describe("Test Error Handling", () => {
         expect.assertions(1);
 
         try {
-          await service._get("http://localhost:4000/status/404", { responseType: "json" });
+          await service._get("http://localhost:4000/status/404", {
+            responseType: "json"
+          });
         } catch (error) {
           expect(error.message).toEqual(`Custom Error`);
         }
@@ -663,7 +672,9 @@ describe("Test Error Handling", () => {
         expect.assertions(1);
 
         try {
-          await service._post("http://localhost:4000/status/404", { responseType: "json" });
+          await service._post("http://localhost:4000/status/404", {
+            responseType: "json"
+          });
         } catch (error) {
           expect(error.message).toEqual(`Custom Error`);
         }
@@ -673,7 +684,9 @@ describe("Test Error Handling", () => {
         expect.assertions(1);
 
         try {
-          await service._put("http://localhost:4000/status/404", { responseType: "json" });
+          await service._put("http://localhost:4000/status/404", {
+            responseType: "json"
+          });
         } catch (error) {
           expect(error.message).toEqual(`Custom Error`);
         }
@@ -683,7 +696,9 @@ describe("Test Error Handling", () => {
         expect.assertions(1);
 
         try {
-          await service._patch("http://localhost:4000/status/404", { responseType: "json" });
+          await service._patch("http://localhost:4000/status/404", {
+            responseType: "json"
+          });
         } catch (error) {
           expect(error.message).toEqual(`Custom Error`);
         }
@@ -693,7 +708,9 @@ describe("Test Error Handling", () => {
         expect.assertions(1);
 
         try {
-          await service._delete("http://localhost:4000/status/404", { responseType: "json" });
+          await service._delete("http://localhost:4000/status/404", {
+            responseType: "json"
+          });
         } catch (error) {
           expect(error.message).toEqual(`Custom Error`);
         }
@@ -1038,7 +1055,7 @@ describe("Test Moleculer HTTP Client Logging", () => {
   });
 });
 
-describe.skip("Test Response Formatter", () => {
+describe("Test Response Formatter", () => {
   const broker = new ServiceBroker({
     logger: false
   });
@@ -1063,21 +1080,21 @@ describe.skip("Test Response Formatter", () => {
   });
 
   it("should return JSON body", async () => {
-      let schema = _.cloneDeep(serviceSchema);
-      schema.settings.httpClient.responseFormatter = "body";
-      broker.createService(schema);
-      await broker.start();
-  
-      expect.assertions(1);
-  
-      let res = await broker.call("http.get", {
-        url: "http://localhost:4000/json",
-        responseType: "json"
-      });
-  
-      let expected = { hello: 200 };
-  
-      expect(res).toEqual(expected); 
+    let schema = _.cloneDeep(serviceSchema);
+    schema.settings.httpClient.responseFormatter = "body";
+    broker.createService(schema);
+    await broker.start();
+
+    expect.assertions(1);
+
+    let res = await broker.call("http.get", {
+      url: "http://localhost:4000/json",
+      opt: { responseType: "json" }
+    });
+
+    let expected = { hello: 200 };
+
+    expect(res).toEqual(expected);
   });
 
   it("should return String body", async () => {

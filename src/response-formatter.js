@@ -9,10 +9,10 @@ const formatter = {
   // Wait for a new (>v9.6.0) Got release
   // https://github.com/sindresorhus/got/pull/704
   body: response => {
-    /* const { json } = response.request.options;
-    if (json === true) {
-      return JSON.parse(response.body);
-    }*/
+    const { responseType } = response.request.options;
+    if (responseType === "json") {
+      return response.body;
+    }
     return response.body;
   },
   headers: response => {

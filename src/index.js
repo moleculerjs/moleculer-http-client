@@ -7,7 +7,7 @@
 "use strict";
 
 /**
- * @typedef {import("got").GotInstance} GotInstance
+ * @typedef {import("got").Got} GotInstance
  * @typedef {import("got").GotOptions} GotOptions
  * @typedef {import("got").GotBodyOptions} GotBodyOptions
  * @typedef {import("got").GotError} GotError
@@ -118,13 +118,13 @@ module.exports = {
               }
 
               return response;
-            },
-            function formatter(response) {
+            }
+            /* function formatter(response) {
               const { responseFormatter } = response.request.options;
 
               return responseFormatter(response);
-              return response
-            }
+              return response;
+            } */
           ],
           /**
            * More info: https://github.com/sindresorhus/got#hooksbeforeerror
@@ -295,7 +295,14 @@ module.exports = {
       }
 
       return this._client(url, opt)
-        .then(res => Promise.resolve(res))
+        .then(res => {
+          let { responseFormatter } = this.settings.httpClient.defaultOptions;
+          if (responseFormatter) {
+            let resp = responseFormatter(res);
+            return Promise.resolve(resp);
+          }
+          Promise.resolve(res);
+        })
         .catch(error => Promise.reject(this._httpErrorHandler(error)));
     },
 
