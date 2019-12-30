@@ -48,6 +48,7 @@ function logIncomingResponse(response) {
   const method = response.request.options.method;
 
   if (response.fromCache) {
+    /* istanbul ignore next */
     return `${kleur.bgYellow(
       `**CACHED**`
     )} HTTP ${method} to "${kleur.underline(

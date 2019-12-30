@@ -9,7 +9,6 @@
     "test": "jest --coverage",
     "lint": "prettier --check 'src/**/*.js' 'test/**/*.js'",
     "lint:fix": "prettier --write 'src/**/*.js' 'test/**/*.js'",
-    "deps": "npm-check -u",
     "coverall": "cat ./src/coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
   },
   "keywords": [
@@ -39,7 +38,6 @@
     "moleculer": "^0.14.0-beta6",
     "moleculer-web": "^0.9.0-beta7",
     "nodemon": "^2.0.2",
-    "npm-check": "5.9.0",
     "prettier": "^1.19.1"
   },
   "jest": {

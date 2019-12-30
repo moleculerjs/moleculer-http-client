@@ -27,6 +27,7 @@ function errorFormatter(error) {
   const { response } = error;
 
   // Not a HTTP Error
+  /* istanbul ignore next */
   if (!response) {
     return new MoleculerHTTPClientError(`Moleculer HTTP Client Error.`, error);
   }

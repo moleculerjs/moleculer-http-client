@@ -294,10 +294,7 @@ module.exports = {
       return this._client(url, opt)
         .then(res => {
           let { responseFormatter } = this.settings.httpClient.defaultOptions;
-          if (_.isFunction(responseFormatter)) {
-            return Promise.resolve(responseFormatter(res));
-          }
-          return Promise.resolve(res);
+          return Promise.resolve(responseFormatter(res));
         })
         .catch(error => Promise.reject(this._httpErrorHandler(error)));
     },
