@@ -5,20 +5,18 @@
  */
 "use strict";
 
+/**
+ * @typedef {import("got").Response} Response
+ */
+
 const formatter = {
-  // Wait for a new (>v9.6.0) Got release
-  // https://github.com/sindresorhus/got/pull/704
-  body: response => {
-    const { responseType } = response.request.options;
-    if (responseType === "json") {
-      return response.body;
-    }
-    return response.body;
-  },
-  headers: response => {
-    return response.headers;
-  },
+  /** @param {Response} response */
+  body: response => response.body,
+  /** @param {Response} response */
+  headers: response => response.headers,
+  /** @param {Response} response */
   status: response => response.statusCode,
+  /** @param {Response} response */
   raw: response => response
 };
 

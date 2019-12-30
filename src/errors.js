@@ -7,6 +7,11 @@
 const { MoleculerError } = require("moleculer").Errors;
 
 class MoleculerHTTPClientError extends MoleculerError {
+  /**
+   *
+   * @param {string} msg
+   * @param {any} data
+   */
   constructor(msg, data) {
     super(msg, 500, "MOLECULER_HTTP_CLIENT_ERROR", data);
   }
@@ -19,16 +24,24 @@ class MoleculerHTTPClientError extends MoleculerError {
  * @returns {MoleculerHTTPClientError}
  */
 function errorFormatter(error) {
-  // ToDo: Parse the Got Error. Extract only what's needed
+  const { response } = error;
+
+  // Not a HTTP Error
+  if (!response) {
+    return new MoleculerHTTPClientError(`Moleculer HTTP Client Error.`, error);
+  }
+
+  // ToDo: Parse the Got Error.
+  // Extract only what's needed
+  // URL, status code and HTTP method is enough ?
   const parsedError = {
-    method:
-      error.response.req && error.response.req.method
-        ? error.response.req.method
-        : null,
-    statusCode: error.response.statusCode,
-    stack: error.stack,
-    message: error.message
+    message: error.message,
+    method: response.req && response.req.method ? response.req.method : null,
+    url: response.url,
+    statusCode: response.statusCode,
+    stack: error.stack
   };
+
   return new MoleculerHTTPClientError(
     `Moleculer HTTP Client Error.`,
     parsedError

@@ -36,7 +36,7 @@
     "coveralls": "^3.0.9",
     "jest": "^24.9.0",
     "jest-cli": "^24.9.0",
-    "moleculer": "^0.13.12",
+    "moleculer": "^0.14.0-beta6",
     "moleculer-web": "^0.9.0-beta7",
     "nodemon": "^2.0.2",
     "npm-check": "5.9.0",
@@ -54,7 +54,7 @@
     ]
   },
   "engines": {
-    "node": ">= 8.x.x"
+    "node": ">= 10.x.x"
   },
   "dependencies": {
     "got": "^10.2.0",
