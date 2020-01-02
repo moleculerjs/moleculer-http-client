@@ -317,7 +317,7 @@ module.exports = {
       }
 
       return new Promise((resolve, reject) => {
-        const writeStream = this._client(url, opt);
+        const writeStream = this._client(opt);
 
         streamPayload.pipe(writeStream);
 
