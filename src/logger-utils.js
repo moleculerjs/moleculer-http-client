@@ -1,6 +1,6 @@
 /*
  * moleculer-http-client
- * Copyright (c) 2019 MoleculerJS (https://github.com/moleculerjs/moleculer-http-client)
+ * Copyright (c) 2020 MoleculerJS (https://github.com/moleculerjs/moleculer-http-client)
  * MIT Licensed
  */
 "use strict";
@@ -47,10 +47,10 @@ function logOutgoingRequest(options) {
 function logIncomingResponse(response) {
   const method = response.request.options.method;
 
-  if (response.fromCache) {
+  if (response.isFromCache) {
     /* istanbul ignore next */
-    return `${kleur.bgYellow(
-      `**CACHED**`
+    return `${kleur.bgCyan(
+      `*From Cache*`
     )} HTTP ${method} to "${kleur.underline(
       response.requestUrl
     )}" returned with status code ${coloringStatusCode(response.statusCode)}`;

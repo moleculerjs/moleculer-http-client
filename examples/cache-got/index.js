@@ -37,13 +37,13 @@ broker.start().then(() => {
       url: "https://httpbin.org/cache/150",
       opt: { responseType: "json" }
     })
-    .then(res => broker.logger.info(res.fromCache))
+    .then(res => broker.logger.info(res.isFromCache))
     .then(() =>
       broker.call("http.get", {
         url: "https://httpbin.org/cache/150",
         opt: { responseType: "json" }
       })
     )
-    .then(res => broker.logger.info(res.fromCache))
+    .then(res => broker.logger.info(res.isFromCache))
     .catch(error => broker.logger.error(error));
 });

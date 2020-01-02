@@ -1,6 +1,6 @@
 /*
  * moleculer-http-client
- * Copyright (c) 2019 MoleculerJS (https://github.com/moleculerjs/moleculer-http-client)
+ * Copyright (c) 2020 MoleculerJS (https://github.com/moleculerjs/moleculer-http-client)
  * MIT Licensed
  */
 "use strict";
@@ -37,7 +37,8 @@ function errorFormatter(error) {
   // URL, status code and HTTP method is enough ?
   const parsedError = {
     message: error.message,
-    method: response.req && response.req.method ? response.req.method : null,
+    method:
+      response.req && response.req.method ? response.req.method : undefined,
     url: response.url,
     statusCode: response.statusCode,
     stack: error.stack
