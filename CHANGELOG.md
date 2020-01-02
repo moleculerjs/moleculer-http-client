@@ -2,6 +2,8 @@
 # [0.2.0](https://github.com/moleculerjs/moleculer/compare/v0.1.10...v0.2.0) (2020-xx-xx)
 
 # Breaking changes
+- Due to Node.js v8 End-Of-Life we no longer support it
+
 - Got HTTP client was updated to `v10`. Check Got's [release notes](https://github.com/sindresorhus/got/releases/tag/v10.0.0) for more info about the changes in `v10`.
 
 - The overall API is the same. The only change is the `opt` param that is passed along with the `url`.
