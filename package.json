@@ -1,6 +1,6 @@
 {
   "name": "moleculer-http-client",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "HTTP client mixin that allows Moleculer services to communicate with remote REST APIs",
   "main": "index.js",
   "scripts": {
