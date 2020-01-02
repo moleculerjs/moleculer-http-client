@@ -17,7 +17,7 @@ broker.createService({
 
   settings: {
     // Only load HTTP GET action
-    httpClient: { includeMethods: ["get"] }
+    httpClient: { includeMethods: ["post"] }
   }
 });
 
@@ -25,9 +25,10 @@ broker.createService({
 broker.start().then(() => {
   broker
     // Make a HTTP GET request
-    .call("http.get", {
-      url: "https://httpbin.org/json",
-      opt: { json: true }
+    .call("http.post", {
+      url: "https://httpbin.org/post",
+      opt: { responseType: "json", json: { foo: "bar" } }
+      // opt: { responseType: "json", body: `data-to-post` }
     })
     .then(res => broker.logger.info(res.body))
     .catch(error => broker.logger.error(error));

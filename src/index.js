@@ -1,16 +1,20 @@
 /*
  * moleculer-http-client
- * Copyright (c) 2019 MoleculerJS (https://github.com/moleculerjs/moleculer-http-client)
+ * Copyright (c) 2020 MoleculerJS (https://github.com/moleculerjs/moleculer-http-client)
  * MIT Licensed
  */
 
 "use strict";
 
 /**
- * @typedef {import("got").GotInstance} GotInstance
- * @typedef {import("got").GotOptions} GotOptions
- * @typedef {import("got").GotBodyOptions} GotBodyOptions
+ * @typedef {import("got").Got} GotInstance
+ * @typedef {import("got").GotOptions} GotRequestOptions
  * @typedef {import("got").GotError} GotError
+ * @typedef {import('got').BeforeRequestHook} GotBeforeRequestHook
+ * @typedef {import('got').AfterResponseHook} GotAfterResponseHook
+ * @typedef {import('got').BeforeErrorHook} GotBeforeErrorHook
+ * @typedef {import('got').Response} GotResponse
+ * @typedef {import('got').NormalizedOptions} GotNormalizedOptions
  * @typedef {import("moleculer").Context} Context
  */
 
@@ -53,8 +57,9 @@ module.exports = {
   settings: {
     httpClient: {
       /**
-       *  @type {Array<String>} Array with HTTP methods to include.
-       *  If set to `null` no actions handlers will be created.
+       * @type {Array<string>} Array with HTTP methods to include.
+       *
+       * If set to `null` no actions handlers will be created.
        */
       includeMethods: null,
 
@@ -84,7 +89,7 @@ module.exports = {
       errorFormatter: errorFormatter,
 
       /**
-       * @param {GotBodyOptions}
+       * @type {GotBodyOptions}
        *
        * More about Got default options: https://github.com/sindresorhus/got#instances
        */
@@ -92,8 +97,10 @@ module.exports = {
         hooks: {
           /**
            * More info: https://github.com/sindresorhus/got#hooksbeforerequest
+           * @type {GotBeforeRequestHook}
            */
           beforeRequest: [
+            /**@param {GotNormalizedOptions} options */
             function outgoingLogger(options) {
               const { logger } = options;
               const { logOutgoingRequest } = options;
@@ -105,11 +112,13 @@ module.exports = {
           ],
           /**
            * More info: https://github.com/sindresorhus/got#hooksafterresponse
+           * @type {GotAfterResponseHook}
            */
           afterResponse: [
+            /**@param {GotResponse} response */
             function incomingLogger(response) {
-              const { logger } = response.request.gotOptions;
-              const { logIncomingResponse } = response.request.gotOptions;
+              const { logger } = response.request.options;
+              const { logIncomingResponse } = response.request.options;
 
               if (logger && logIncomingResponse) {
                 logger[loggerLevels(response.statusCode)](
@@ -118,24 +127,13 @@ module.exports = {
               }
 
               return response;
-            },
-            function formatter(response) {
-              const { responseFormatter } = response.request.gotOptions;
-
-              return responseFormatter(response);
             }
           ],
           /**
            * More info: https://github.com/sindresorhus/got#hooksbeforeerror
+           * @type {GotBeforeErrorHook}
            */
-          beforeError: [
-            /*error => {
-              // Wait for a new (>v9.6.0) Got release
-              // https://github.com/sindresorhus/got/issues/781
-              // When released do error handling here instead of `_httpErrorHandler()` method
-              return error;
-            }*/
-          ]
+          beforeError: []
         }
       }
     }
@@ -161,7 +159,7 @@ module.exports = {
        */
       async handler(ctx) {
         if (ctx.params instanceof stream.Readable) {
-          ctx.meta.stream = true; // Default value when streaming
+          ctx.meta.isStream = true; // Default value when streaming
           return this._post(ctx.meta.url, ctx.meta, ctx.params);
         }
         return this._post(ctx.params.url, ctx.params.opt);
@@ -176,7 +174,7 @@ module.exports = {
        */
       async handler(ctx) {
         if (ctx.params instanceof stream.Readable) {
-          ctx.meta.stream = true; // Default value when streaming
+          ctx.meta.isStream = true; // Default value when streaming
           return this._put(ctx.meta.url, ctx.meta, ctx.params);
         }
         return this._put(ctx.params.url, ctx.params.opt);
@@ -191,7 +189,7 @@ module.exports = {
        */
       async handler(ctx) {
         if (ctx.params instanceof stream.Readable) {
-          ctx.meta.stream = true; // Default value when streaming
+          ctx.meta.isStream = true; // Default value when streaming
           return this._patch(ctx.meta.url, ctx.meta, ctx.params);
         }
         return this._patch(ctx.params.url, ctx.params.opt);
@@ -216,7 +214,7 @@ module.exports = {
     /**
      * HTTP GET method
      * @param {string} url
-     * @param {GotOptions} opt
+     * @param {GotRequestOptions} opt
      * @returns {Promise|stream.Readable}
      */
     _get(url, opt) {
@@ -229,7 +227,7 @@ module.exports = {
     /**
      * HTTP POST method
      * @param {string} url
-     * @param {GotOptions} opt
+     * @param {GotRequestOptions} opt
      * @param {stream.Readable} streamPayload
      * @returns {Promise}
      */
@@ -243,7 +241,7 @@ module.exports = {
     /**
      * HTTP PUT method
      * @param {string} url
-     * @param {GotOptions} opt
+     * @param {GotRequestOptions} opt
      * @param {stream.Readable} streamPayload
      * @returns {Promise}
      */
@@ -257,7 +255,7 @@ module.exports = {
     /**
      * HTTP PUT method
      * @param {string} url
-     * @param {GotOptions} opt
+     * @param {GotRequestOptions} opt
      * @param {stream.Readable} streamPayload
      * @returns {Promise}
      */
@@ -271,7 +269,7 @@ module.exports = {
     /**
      * HTTP DELETE method
      * @param {string} url
-     * @param {GotOptions} opt
+     * @param {GotRequestOptions} opt
      * @returns {Promise}
      */
     _delete(url, opt) {
@@ -284,24 +282,27 @@ module.exports = {
     /**
      * Request handler
      * @param {string} url
-     * @param {GotOptions} opt
+     * @param {GotRequestOptions} opt
      * @param {stream.Readable} streamPayload
      * @returns {Promise|stream.Readable}
      */
     _genericRequest(url, opt, streamPayload) {
-      if (opt && opt.stream) {
+      if (opt && opt.isStream) {
         return this._streamRequest(url, opt, streamPayload);
       }
 
       return this._client(url, opt)
-        .then(res => Promise.resolve(res))
+        .then(res => {
+          let { responseFormatter } = this.settings.httpClient.defaultOptions;
+          return Promise.resolve(responseFormatter(res));
+        })
         .catch(error => Promise.reject(this._httpErrorHandler(error)));
     },
 
     /**
      * Handles incoming and outgoing stream requests
      * @param {string} url
-     * @param {GotOptions} opt
+     * @param {GotRequestOptions} opt
      * @param {stream.Readable} streamPayload
      * @returns {Promise|stream.Readable}
      */
@@ -316,7 +317,7 @@ module.exports = {
       }
 
       return new Promise((resolve, reject) => {
-        const writeStream = this._client(url, opt);
+        const writeStream = this._client(opt);
 
         streamPayload.pipe(writeStream);
 
@@ -334,7 +335,7 @@ module.exports = {
 
     /**
      * Error handling function that wraps Got's errors with Moleculer Errors
-     * @param {GotError|Error} error
+     * @param {GotError} error
      * @returns {Error}
      */
     _httpErrorHandler(error) {
@@ -367,7 +368,7 @@ module.exports = {
       });
     }
 
-    // Add Logging functions got Got's default options
+    // Add Logging functions Got's default options
     const { defaultOptions } = this.settings.httpClient;
 
     if (this.settings.httpClient.logging) {

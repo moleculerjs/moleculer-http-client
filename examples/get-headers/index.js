@@ -15,26 +15,20 @@ broker.createService({
   // Load HTTP Client Service
   mixins: [HTTPClientService],
 
-  actions: {
-    async fancyRequest(ctx) {
-      try {
-        // Use raw got client
-        return await this._client(ctx.params.url, ctx.params.opt);
-      } catch (error) {
-        throw error;
-      }
-    }
+  settings: {
+    // Only load HTTP GET action
+    httpClient: { includeMethods: ["get"], responseFormatter: "headers" }
+    // httpClient: { includeMethods: ["get"], responseFormatter: "status" } // Return the status code only
   }
 });
 
 // Start the broker
 broker.start().then(() => {
   broker
-    // Make a fancy request
-    .call("http.fancyRequest", {
-      url: "https://httpbin.org/json",
-      opt: { method: "GET", responseType: "json" }
+    // Make a HTTP GET request
+    .call("http.get", {
+      url: "https://httpbin.org/json"
     })
-    .then(res => broker.logger.info(res.body))
+    .then(res => broker.logger.info(res))
     .catch(error => broker.logger.error(error));
 });

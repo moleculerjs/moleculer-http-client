@@ -1,6 +1,6 @@
 {
   "name": "moleculer-http-client",
-  "version": "0.1.10",
+  "version": "0.2.0",
   "description": "HTTP client mixin that allows Moleculer services to communicate with remote REST APIs",
   "main": "index.js",
   "scripts": {
@@ -9,7 +9,6 @@
     "test": "jest --coverage",
     "lint": "prettier --check 'src/**/*.js' 'test/**/*.js'",
     "lint:fix": "prettier --write 'src/**/*.js' 'test/**/*.js'",
-    "deps": "npm-check -u",
     "coverall": "cat ./src/coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
   },
   "keywords": [
@@ -31,16 +30,15 @@
     "moleculer": "^0.13.0 || ^0.14.0"
   },
   "devDependencies": {
-    "@types/got": "^9.6.7",
-    "@types/jest": "^24.0.18",
-    "coveralls": "^3.0.6",
+    "@types/got": "^9.6.9",
+    "@types/jest": "^24.0.25",
+    "coveralls": "^3.0.9",
     "jest": "^24.9.0",
     "jest-cli": "^24.9.0",
-    "moleculer": "^0.13.11",
-    "moleculer-web": "^0.9.0-beta6",
-    "nodemon": "^1.19.3",
-    "npm-check": "5.9.0",
-    "prettier": "^1.18.2"
+    "moleculer": "^0.14.0-beta6",
+    "moleculer-web": "^0.9.0-beta7",
+    "nodemon": "^2.0.2",
+    "prettier": "^1.19.1"
   },
   "jest": {
     "testEnvironment": "node",
@@ -54,10 +52,10 @@
     ]
   },
   "engines": {
-    "node": ">= 8.x.x"
+    "node": ">= 10.x.x"
   },
   "dependencies": {
-    "got": "^9.6.0",
+    "got": "^10.2.1",
     "kleur": "^3.0.3",
     "lodash": "^4.17.15"
   }

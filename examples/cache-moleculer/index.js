@@ -37,13 +37,13 @@ broker.start().then(() => {
     // Make a HTTP GET request
     .call("http.get", {
       url: "https://httpbin.org/json",
-      opt: { json: true }
+      opt: { responseType: "json" }
     })
     .then(res => broker.logger.info(res.body))
     .then(() =>
       broker.call("http.get", {
         url: "https://httpbin.org/json",
-        opt: { json: true }
+        opt: { responseType: "json" }
       })
     )
     .then(res => broker.logger.info(res.body))

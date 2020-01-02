@@ -14,7 +14,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:site" content="@sindresorhus">
 <meta name="twitter:creator" content="@sindresorhus">
-<meta name="x-build-time" content="Sat, 13 Jul 2019 08:18:11 +0000">
+<meta name="x-build-time" content="Tue, 03 Dec 2019 15:15:05 +0000">
 <title>Sindre Sorhus</title>
 <link rel="alternate" type="application/rss+xml" title="Sindre Sorhus' blog" href="https://blog.sindresorhus.com/feed">
 <link rel="preload" href="/font-awesome.woff" as="font" crossorigin>
@@ -122,16 +122,6 @@ if (location.hash === '#apps') {
 </p>
 <br>
 <a href="/thanks">Huge thanks to all my amazing supporters!</a>
-<br>
-<br>
-<hr id="latest-blog-post-separator">
-<div id="latest-blog-post">
-<h4 class="title is-4">
-<a class="is-gray-link" href=""></a>
-<span class="tag is-small">Latest writing</span>
-</h4>
-<p></p>
-</div>
 </div>
 </div>
 </div>

@@ -553,14 +553,14 @@ broker.start().then(() => {
       url: "https://httpbin.org/cache/150",
       opt: { json: true }
     })
-    .then(res => broker.logger.info(res.fromCache))
+    .then(res => broker.logger.info(res.isFromCache))
     .then(() =>
       broker.call("http.get", {
         url: "https://httpbin.org/cache/150",
         opt: { json: true }
       })
     )
-    .then(res => broker.logger.info(res.fromCache))
+    .then(res => broker.logger.info(res.isFromCache))
     .catch(error => broker.logger.error(error));
 });
 ```
@@ -686,6 +686,6 @@ Please send pull requests improving the usage and fixing bugs, improving documen
 The project is available under the [MIT license](https://tldrlegal.com/license/mit-license).
 
 # Contact
-Copyright (c) 2016-2018 MoleculerJS
+Copyright (c) 2016-2020 MoleculerJS
 
 [![@moleculerjs](https://img.shields.io/badge/github-moleculerjs-green.svg)](https://github.com/moleculerjs) [![@MoleculerJS](https://img.shields.io/badge/twitter-MoleculerJS-blue.svg)](https://twitter.com/MoleculerJS) 
