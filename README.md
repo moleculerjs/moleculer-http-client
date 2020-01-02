@@ -252,9 +252,9 @@ broker.start().then(() => {
     // Make a HTTP GET request
     .call("http.get", {
       url: "https://httpbin.org/json",
-      opt: { json: true }
+      opt: { responseType: "json" }
     })
-    .then(res => broker.logger.info(res.body))
+    .then(res => broker.logger.info(res))
     .catch(error => broker.logger.error(error));
 });
 ```
@@ -298,10 +298,10 @@ broker.createService({
 // Start the broker
 broker.start().then(() => {
   broker
-    // Emit an event
+    // Emit some event
     .emit("some.Event", {
       url: "https://httpbin.org/json",
-      opt: { json: true }
+      opt: { responseType: "json" }
     });
 });
 ```
@@ -346,11 +346,10 @@ broker.start().then(() => {
     // Make a HTTP GET request
     .call("http.get", {
       url: "https://sindresorhus.com/",
-      opt: { stream: true }
+      opt: { isStream: true }
     })
     .then(res => {
-      const filePath = "./examples/stream/file.md";
-      // Write stream into file
+      const filePath = "./examples/stream-get/file.md";
       res.pipe(fs.createWriteStream(filePath, { encoding: "utf8" }));
 
       res.on("response", response => {
@@ -432,7 +431,7 @@ broker.start().then(() => {
   // Pass stream as ctx.params
   // Pass URL and options in ctx.meta
   const req = broker.call("http.post", stream, {
-    meta: { url: "http://localhost:4000/stream", stream: true }
+    meta: { url: "http://localhost:4000/stream", isStream: true }
   });
 
   req.then(res => {
@@ -487,13 +486,13 @@ broker.start().then(() => {
     // Make a HTTP GET request
     .call("http.get", {
       url: "https://httpbin.org/json",
-      opt: { json: true }
+      opt: { responseType: "json" }
     })
     .then(res => broker.logger.info(res.body))
     .then(() =>
       broker.call("http.get", {
         url: "https://httpbin.org/json",
-        opt: { json: true }
+        opt: { responseType: "json" }
       })
     )
     .then(res => broker.logger.info(res.body))
@@ -551,13 +550,13 @@ broker.start().then(() => {
     // Make a HTTP GET request
     .call("http.get", {
       url: "https://httpbin.org/cache/150",
-      opt: { json: true }
+      opt: { responseType: "json" }
     })
     .then(res => broker.logger.info(res.isFromCache))
     .then(() =>
       broker.call("http.get", {
         url: "https://httpbin.org/cache/150",
-        opt: { json: true }
+        opt: { responseType: "json" }
       })
     )
     .then(res => broker.logger.info(res.isFromCache))
@@ -613,7 +612,7 @@ broker.start().then(() => {
     // Make a fancy request
     .call("http.fancyRequest", {
       url: "https://httpbin.org/json",
-      opt: { method: "GET", json: true }
+      opt: { method: "GET", responseType: "json" }
     })
     .then(res => broker.logger.info(res.body))
     .catch(error => broker.logger.error(error));
