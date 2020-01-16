@@ -1,8 +1,7 @@
 "use strict";
 
 const { ServiceBroker } = require("moleculer");
-// const HTTPClientService = require("../../index");
-const Filter = require("./method-selector.mixin");
+const MethodSelector = require("./method-selector.mixin");
 
 // Create broker
 let broker = new ServiceBroker({
@@ -13,19 +12,21 @@ let broker = new ServiceBroker({
 broker.createService({
   name: "http",
 
-  // Load HTTP Client Service
-  // mixins: [HTTPClientService],
-
-  mixins: [Filter(["get", "post"])],
+  mixins: [MethodSelector(["get", "post"])],
 
   settings: {
-    // Only load HTTP GET action
+    // Only GET the body of the response
     httpClient: { responseFormatter: "body" }
+  },
+
+  actions: {
+    post: false
   }
 });
 
 // Start the broker
 broker.start().then(() => {
+  broker.repl();
   broker
     // Make a HTTP GET request
     .call("http.get", {

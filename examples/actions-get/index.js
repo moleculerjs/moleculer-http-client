@@ -16,8 +16,12 @@ broker.createService({
   mixins: [HTTPClientService],
 
   settings: {
-    // Only load HTTP GET action
+    // Only GET the body of the response
     httpClient: { responseFormatter: "body" }
+  },
+
+  actions: {
+    get: false
   }
 });
 

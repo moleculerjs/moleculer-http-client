@@ -34,8 +34,6 @@ npm install moleculer-http-client --save
 ## Service Settings
 Use `httpClient` field to configure your got client.
 
-> **Note:** By default no [actions](#service-actions) are created. This is done to avoid any potential conflicts with other service actions when `moleculer-http-client` is used as a mixin.
-
 ```js
 module.exports = {
   name: "http",
@@ -71,7 +69,6 @@ module.exports = {
 ```
 
 ## Service Actions
-Use `includeMethods` field in service settings to create the desired service actions.
 
 ## `get`
 HTTP GET action
@@ -508,7 +505,6 @@ broker.createService({
   mixins: [HTTPClientService],
 
   settings: {
-    // Only load HTTP GET action
     httpClient: {
       defaultOptions: {
         // Set Got's built-in cache

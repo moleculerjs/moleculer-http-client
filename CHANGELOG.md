@@ -1,5 +1,30 @@
+<a name="0.3.0"></a>
+# [0.3.0](https://github.com/moleculerjs/moleculer/compare/v0.2.1...v0.3.0) (2020-01-16)
+
+# Breaking changes
+- `includeMethods` option have been dropped. Now, by default, all actions are created. If you still want to disable some action you can create a [mixin that will remove unwanted methods](examples/select-http-methods/method-selector.mixin.js) or just set the undesired action to `false` in your service. For example:
+```js
+// Create a service
+broker.createService({
+  name: "http",
+
+  // Load HTTP Client Service
+  mixins: [HTTPClientService],
+
+  settings: {
+    // Only GET the body of the response
+    httpClient: { responseFormatter: "body" }
+  },
+
+  // Disable HTTP GET action
+  actions: {
+    get: false
+  }
+});
+```
+
 <a name="0.2.0"></a>
-# [0.2.0](https://github.com/moleculerjs/moleculer/compare/v0.1.10...v0.2.0) (2020-xx-xx)
+# [0.2.0](https://github.com/moleculerjs/moleculer/compare/v0.1.10...v0.2.0) (2020-01-02)
 
 # Breaking changes
 - Due to Node.js v8 End-Of-Life we no longer support it

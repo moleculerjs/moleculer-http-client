@@ -17,7 +17,6 @@ broker.createService({
   mixins: [HTTPClientService],
 
   settings: {
-    // Only load HTTP GET action
     httpClient: {
       defaultOptions: {
         // Set Got's built-in cache

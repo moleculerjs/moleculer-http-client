@@ -19,7 +19,7 @@ broker.createService({
 // Start the broker
 broker.start().then(() => {
   broker
-    // Make a HTTP GET request
+    // Make a HTTP POST request
     .call("http.post", {
       url: "https://httpbin.org/post",
       opt: { responseType: "json", json: { foo: "bar" } }

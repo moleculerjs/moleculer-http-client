@@ -16,7 +16,7 @@ broker.createService({
   mixins: [HTTPClientService],
 
   settings: {
-    // Only load HTTP GET action
+    // Only GET the headers of the response
     httpClient: { responseFormatter: "headers" }
     // httpClient: { responseFormatter: "status" } // Return the status code only
   }
