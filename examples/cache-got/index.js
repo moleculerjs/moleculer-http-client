@@ -19,7 +19,6 @@ broker.createService({
   settings: {
     // Only load HTTP GET action
     httpClient: {
-      includeMethods: ["get"],
       defaultOptions: {
         // Set Got's built-in cache
         // More info: https://github.com/sindresorhus/got#cache-1

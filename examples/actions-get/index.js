@@ -17,7 +17,7 @@ broker.createService({
 
   settings: {
     // Only load HTTP GET action
-    httpClient: { includeMethods: ["get"], responseFormatter: "body" }
+    httpClient: { responseFormatter: "body" }
   }
 });
 

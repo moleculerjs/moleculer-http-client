@@ -33,7 +33,6 @@ describe("Test Moleculer HTTP Client base service", () => {
 
   it("settings field should be an Object", () => {
     expect(service.settings.httpClient).toBeInstanceOf(Object);
-    expect(service.settings.httpClient.includeMethods).toEqual(null);
     expect(service.settings.httpClient.defaultOptions).toBeInstanceOf(Object);
   });
 
@@ -41,17 +40,19 @@ describe("Test Moleculer HTTP Client base service", () => {
     expect(service._client).toBeDefined();
   });
 
-  it("should NOT have any actions (default config)", () => {
-    expect(service.actions.get).toBeUndefined();
-    expect(service.actions.post).toBeUndefined();
-    expect(service.actions.put).toBeUndefined();
-    expect(service.actions.delete).toBeUndefined();
+  it("should have all actions defined (default config)", () => {
+    expect(service.actions.get).toBeDefined();
+    expect(service.actions.post).toBeDefined();
+    expect(service.actions.put).toBeDefined();
+    expect(service.actions.patch).toBeDefined();
+    expect(service.actions.delete).toBeDefined();
   });
 
-  it("should have the methods (default config)", () => {
+  it("should have all methods defined (default config)", () => {
     expect(service._get).toBeDefined();
     expect(service._post).toBeDefined();
     expect(service._put).toBeDefined();
+    expect(service._patch).toBeDefined();
     expect(service._delete).toBeDefined();
     expect(service._streamRequest).toBeDefined();
     expect(service._genericRequest).toBeDefined();
@@ -86,76 +87,6 @@ describe("Test mixin Moleculer HTTP", () => {
     expect(defaultOptions.logIncomingResponse).toBeUndefined();
     expect(defaultOptions.logOutgoingRequest).toBeUndefined();
   });
-
-  it("should NOT include any HTTP method", () => {
-    expect(service).toBeDefined();
-    expect(service.actions.get).toBeUndefined();
-    expect(service.actions.post).toBeUndefined();
-    expect(service.actions.put).toBeUndefined();
-    expect(service.actions.patch).toBeUndefined();
-    expect(service.actions.delete).toBeUndefined();
-  });
-
-  it("should only include GET & POST actions", () => {
-    const service = broker.createService({
-      name: "gotMixed",
-      mixins: [MoleculerHTTP],
-
-      settings: {
-        httpClient: { includeMethods: ["get", "post"] }
-      }
-    });
-
-    expect(service).toBeDefined();
-
-    expect(service.actions.get).toBeDefined();
-    expect(service.actions.post).toBeDefined();
-    expect(service.actions.put).toBeUndefined();
-    expect(service.actions.patch).toBeUndefined();
-    expect(service.actions.delete).toBeUndefined();
-  });
-
-  it("should include ALL actions - lower case case", () => {
-    const service = broker.createService({
-      name: "gotMixed",
-      mixins: [MoleculerHTTP],
-
-      settings: {
-        httpClient: {
-          includeMethods: ["get", "post", "put", "patch", "delete"]
-        }
-      }
-    });
-
-    expect(service).toBeDefined();
-
-    expect(service.actions.get).toBeDefined();
-    expect(service.actions.post).toBeDefined();
-    expect(service.actions.put).toBeDefined();
-    expect(service.actions.patch).toBeDefined();
-    expect(service.actions.delete).toBeDefined();
-  });
-
-  it("should include ALL actions - upper case", () => {
-    const service = broker.createService({
-      name: "gotMixed",
-      mixins: [MoleculerHTTP],
-
-      settings: {
-        httpClient: {
-          includeMethods: ["GET", "POST", "PUT", "PATCH", "DELETE"]
-        }
-      }
-    });
-
-    expect(service).toBeDefined();
-
-    expect(service.actions.get).toBeDefined();
-    expect(service.actions.post).toBeDefined();
-    expect(service.actions.put).toBeDefined();
-    expect(service.actions.patch).toBeDefined();
-    expect(service.actions.delete).toBeDefined();
-  });
 });
 
 describe("Test HTTP methods", () => {
@@ -170,9 +101,7 @@ describe("Test HTTP methods", () => {
 
     mixins: [MoleculerHTTP],
 
-    settings: {
-      httpClient: { includeMethods: ["get", "post", "put", "delete"] }
-    },
+    settings: {},
 
     actions: {
       async fancyRequest(ctx) {
@@ -644,8 +573,6 @@ describe("Test Error Handling", () => {
 
         settings: {
           httpClient: {
-            includeMethods: ["get", "post", "put", "delete"],
-
             errorFormatter: error => {
               return new Error("Custom Error");
             }
@@ -731,9 +658,7 @@ describe("Test Error Handling", () => {
 
         mixins: [MoleculerHTTP],
 
-        settings: {
-          httpClient: { includeMethods: ["get", "post", "put", "delete"] }
-        }
+        settings: {}
       });
 
       beforeAll(() => broker.start());
@@ -829,8 +754,7 @@ describe("Test Error Handling", () => {
 
         settings: {
           httpClient: {
-            errorFormatter: null,
-            includeMethods: ["get", "post", "put", "delete"]
+            errorFormatter: null
           }
         }
       });
@@ -918,8 +842,6 @@ describe("Test Error Handling", () => {
 
         settings: {
           httpClient: {
-            includeMethods: ["get", "post", "put", "delete"],
-
             errorFormatter: error => {
               return new Error("Custom Error");
             }
@@ -1014,8 +936,6 @@ describe("Test Moleculer HTTP Client Logging", () => {
 
     settings: {
       httpClient: {
-        includeMethods: ["get"],
-
         logIncomingResponse: logIncomingResponse,
         logOutgoingRequest: logOutgoingRequest
       }
@@ -1067,9 +987,7 @@ describe("Test Response Formatter", () => {
     mixins: [MoleculerHTTP],
 
     settings: {
-      httpClient: {
-        includeMethods: ["get"]
-      }
+      httpClient: {}
     }
   };
 
@@ -1219,9 +1137,7 @@ describe("Test Cache", () => {
 
       mixins: [MoleculerHTTP],
 
-      settings: {
-        httpClient: { includeMethods: ["get"] }
-      },
+      settings: {},
 
       actions: {
         get: {
@@ -1283,7 +1199,6 @@ describe("Test Cache", () => {
 
       settings: {
         httpClient: {
-          includeMethods: ["get"],
           defaultOptions: {
             cache: mapCache
           }

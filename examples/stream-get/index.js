@@ -14,12 +14,7 @@ broker.createService({
   name: "http",
 
   // Load HTTP Client Service
-  mixins: [HTTPClientService],
-
-  settings: {
-    // Only load HTTP GET action
-    httpClient: { includeMethods: ["get"] }
-  }
+  mixins: [HTTPClientService]
 });
 
 // Start the broker

@@ -14,7 +14,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:site" content="@sindresorhus">
 <meta name="twitter:creator" content="@sindresorhus">
-<meta name="x-build-time" content="Tue, 03 Dec 2019 15:15:05 +0000">
+<meta name="x-build-time" content="Fri, 10 Jan 2020 05:43:16 +0000">
 <title>Sindre Sorhus</title>
 <link rel="alternate" type="application/rss+xml" title="Sindre Sorhus' blog" href="https://blog.sindresorhus.com/feed">
 <link rel="preload" href="/font-awesome.woff" as="font" crossorigin>

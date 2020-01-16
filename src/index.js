@@ -57,13 +57,6 @@ module.exports = {
   settings: {
     httpClient: {
       /**
-       * @type {Array<string>} Array with HTTP methods to include.
-       *
-       * If set to `null` no actions handlers will be created.
-       */
-      includeMethods: null,
-
-      /**
        *  @type {Boolean} Whether to log or not the requests
        */
       logging: true,
@@ -353,21 +346,6 @@ module.exports = {
    * Service created lifecycle event handler
    */
   created() {
-    // Remove unwanted actions from the service
-    let { includeMethods } = this.settings.httpClient;
-    if (!includeMethods || Array.isArray(includeMethods)) {
-      if (_.isNil(includeMethods)) includeMethods = [];
-
-      const methodsToRemove = _.difference(
-        HTTP_METHODS,
-        includeMethods.map(name => name.toLowerCase())
-      );
-
-      methodsToRemove.forEach(methodName => {
-        delete this.actions[`${methodName}`];
-      });
-    }
-
     // Add Logging functions Got's default options
     const { defaultOptions } = this.settings.httpClient;
 
@@ -392,5 +370,7 @@ module.exports = {
      * @type {GotInstance}
      */
     this._client = got.extend(defaultOptions);
-  }
+  },
+
+  HTTP_METHODS
 };

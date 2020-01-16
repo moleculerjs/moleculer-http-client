@@ -46,9 +46,6 @@ module.exports = {
   settings: {
     // HTTP client settings
     httpClient: {
-      // HTTP methods to include as Moleculer Actions
-      includeMethods: null, // ['get', 'post', 'put', 'patch', 'delete' ]
-
       // Boolean value indicating whether request should be logged or not
       logging: true,
 
@@ -238,12 +235,7 @@ broker.createService({
   name: "http",
 
   // Load HTTP Client Service  
-  mixins: [HTTPClientService],
-  
-  settings: {
-    // Only load HTTP GET action
-    httpClient: { includeMethods: ["get"] }
-  }
+  mixins: [HTTPClientService]
 });
 
 // Start the broker
@@ -332,12 +324,7 @@ broker.createService({
   name: "http",
 
   // Load HTTP Client Service
-  mixins: [HTTPClientService],
-
-  settings: {
-    // Only load HTTP GET action
-    httpClient: { includeMethods: ["get"] }
-  }
+  mixins: [HTTPClientService]
 });
 
 // Start the broker
@@ -377,12 +364,7 @@ broker.createService({
   name: "http",
 
   // Load HTTP Client Service
-  mixins: [HTTPClientService],
-
-  settings: {
-    // Only load HTTP POST action
-    httpClient: { includeMethods: ["post"] }
-  }
+  mixins: [HTTPClientService]
 });
 
 // Create HTTP Server Services
@@ -466,11 +448,6 @@ broker.createService({
   // Load HTTP Client Service
   mixins: [HTTPClientService],
 
-  settings: {
-    // Only load HTTP GET action
-    httpClient: { includeMethods: ["get"] }
-  },
-
   actions: {
     get: {
       // Enable cache for GET action
@@ -533,8 +510,6 @@ broker.createService({
   settings: {
     // Only load HTTP GET action
     httpClient: {
-      includeMethods: ["get"],
-
       defaultOptions: {
         // Set Got's built-in cache
         // More info: https://www.npmjs.com/package/got#cache-1
@@ -635,8 +610,6 @@ INFO  http-client/BROKER: { slideshow: { author: 'Yours Truly', date: 'date of p
 
       settings: {
         httpClient: {
-          includeMethods: ["get"],
-
           // Input is Got's options object. More info: https://www.npmjs.com/package/got#options
           logOutgoingRequest: options => {
             console.log(`-----> Request ${options.href}`);
@@ -660,8 +633,6 @@ INFO  http-client/BROKER: { slideshow: { author: 'Yours Truly', date: 'date of p
 
       settings: {
         httpClient: {
-          includeMethods: ["get"],
-
           // Custom error handler function
           // Input error is Got's error. More info: https://www.npmjs.com/package/got#errors
           errorFormatter: error => {

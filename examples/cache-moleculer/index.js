@@ -17,11 +17,6 @@ broker.createService({
   // Load HTTP Client Service
   mixins: [HTTPClientService],
 
-  settings: {
-    // Only load HTTP GET action
-    httpClient: { includeMethods: ["get"] }
-  },
-
   actions: {
     get: {
       // Enable cache for GET action
