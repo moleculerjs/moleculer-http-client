@@ -18,10 +18,6 @@ broker.createService({
   settings: {
     // Only GET the body of the response
     httpClient: { responseFormatter: "body" }
-  },
-
-  actions: {
-    get: false
   }
 });
 

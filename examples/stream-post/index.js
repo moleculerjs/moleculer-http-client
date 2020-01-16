@@ -69,5 +69,5 @@ broker.start().then(() => {
 
   req.then(res => {
     broker.logger.info(res.statusCode);
-  });
+  }).then(() => broker.stop());
 });
