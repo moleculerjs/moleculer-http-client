@@ -1135,7 +1135,7 @@ describe("Test Response Formatter", () => {
 
     // Delete
     delete res.date;
-
+    delete res["x-request-id"];
     expect(res).toEqual(expected);
   });
 
