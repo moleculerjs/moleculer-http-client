@@ -8,8 +8,8 @@
 
 /**
  * @typedef {import("got").Got} GotInstance
- * @typedef {import("got").GotOptions} GotRequestOptions
- * @typedef {import("got").GotError} GotError
+ * @typedef {import("got").Options} GotRequestOptions
+ * @typedef {import("got").RequestError} RequestError
  * @typedef {import('got').BeforeRequestHook} GotBeforeRequestHook
  * @typedef {import('got').AfterResponseHook} GotAfterResponseHook
  * @typedef {import('got').BeforeErrorHook} GotBeforeErrorHook
@@ -328,7 +328,7 @@ module.exports = {
 
     /**
      * Error handling function that wraps Got's errors with Moleculer Errors
-     * @param {GotError} error
+     * @param {RequestError} error
      * @returns {Error}
      */
     _httpErrorHandler(error) {
