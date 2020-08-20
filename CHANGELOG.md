@@ -1,3 +1,9 @@
+
+<a name="0.4.0"></a>
+# [0.4.0](https://github.com/moleculerjs/moleculer/compare/v0.3.0...v0.4.0) (2020-08-20)
+
+- Got HTTP client was updated to `v11`. Check Got's [release notes](https://github.com/sindresorhus/got/releases/tag/v11.0.0) for more info about the changes in `v11`.
+
 <a name="0.3.0"></a>
 # [0.3.0](https://github.com/moleculerjs/moleculer/compare/v0.2.1...v0.3.0) (2020-01-16)
 
