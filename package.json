@@ -31,15 +31,15 @@
   },
   "devDependencies": {
     "@types/got": "^9.6.11",
-    "@types/jest": "^25.2.1",
-    "coveralls": "^3.0.11",
-    "jest": "^25.4.0",
-    "jest-cli": "^25.4.0",
-    "moleculer": "^0.14.6",
+    "@types/jest": "^26.0.10",
+    "coveralls": "^3.1.0",
+    "jest": "^26.4.0",
+    "jest-cli": "^26.4.0",
+    "moleculer": "^0.14.9",
     "moleculer-repl": "^0.6.4",
     "moleculer-web": "^0.9.1",
-    "nodemon": "^2.0.3",
-    "prettier": "^1.19.1"
+    "nodemon": "^2.0.4",
+    "prettier": "^2.0.5"
   },
   "jest": {
     "testEnvironment": "node",
@@ -57,7 +57,7 @@
   },
   "dependencies": {
     "got": "^11.0.0",
-    "kleur": "^3.0.3",
-    "lodash": "^4.17.15"
+    "kleur": "^4.1.1",
+    "lodash": "^4.17.20"
   }
 }
