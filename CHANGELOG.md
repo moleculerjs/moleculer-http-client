@@ -1,3 +1,7 @@
+<a name="0.4.1"></a>
+# [0.4.1](https://github.com/moleculerjs/moleculer/compare/v0.4.0...v0.4.1) (2021-03-01)
+
+- Fixed "Converting circular structure to JSON" error. More info [here](https://github.com/moleculerjs/moleculer-http-client/issues/5).
 
 <a name="0.4.0"></a>
 # [0.4.0](https://github.com/moleculerjs/moleculer/compare/v0.3.0...v0.4.0) (2020-08-20)

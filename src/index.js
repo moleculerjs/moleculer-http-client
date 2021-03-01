@@ -55,6 +55,12 @@ module.exports = {
    * Default settings
    */
   settings: {
+    // Fix for: https://github.com/moleculerjs/moleculer-http-client/issues/5
+    // JSON.stringify of logger reference caused: "Converting circular structure to JSON" Error
+    $secureSettings: [
+			"httpClient.defaultOptions.logger"
+		],
+
     httpClient: {
       /**
        *  @type {Boolean} Whether to log or not the requests
