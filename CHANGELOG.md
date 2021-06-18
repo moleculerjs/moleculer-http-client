@@ -1,3 +1,8 @@
+<a name="0.4.2"></a>
+# [0.4.2](https://github.com/moleculerjs/moleculer/compare/v0.4.1...v0.4.2) (2021-06-17)
+
+- Added TypeScript declaration file (`index.d.ts`) to support use of `import` statements instead of `require` in moleculerjs TS projects to resolve the `typescript-eslint/no-var-requires` error that is thrown during the linting.
+
 <a name="0.4.1"></a>
 # [0.4.1](https://github.com/moleculerjs/moleculer/compare/v0.4.0...v0.4.1) (2021-03-01)
 
