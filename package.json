@@ -32,15 +32,15 @@
   },
   "devDependencies": {
     "@types/got": "^9.6.11",
-    "@types/jest": "^26.0.20",
+    "@types/jest": "^26.0.23",
     "coveralls": "^3.1.0",
     "jest": "^26.6.3",
     "jest-cli": "^26.6.3",
-    "moleculer": "^0.14.12",
-    "moleculer-repl": "^0.6.4",
+    "moleculer": "^0.14.13",
+    "moleculer-repl": "^0.6.5",
     "moleculer-web": "^0.9.1",
     "nodemon": "^2.0.7",
-    "prettier": "^2.2.1"
+    "prettier": "^2.3.1"
   },
   "jest": {
     "testEnvironment": "node",
