@@ -156,35 +156,36 @@ describe("Test HTTP methods", () => {
     expect(res.body).toEqual(JSON.stringify(expected));
   });
 
-  it("should GET as stream a Readme file", async done => {
-    let res = await broker.call("http.get", {
+  it("should GET as stream a Readme file", done => {
+    broker.call("http.get", {
       url: "http://localhost:4000/stream",
       opt: { isStream: true }
-    });
+    }).then((res) => {
 
-    const actualPath = "./test/utils/stream-data/destination.md";
-    res.pipe(fs.createWriteStream(actualPath, { encoding: "utf8" }));
+      const actualPath = "./test/utils/stream-data/destination.md";
+      res.pipe(fs.createWriteStream(actualPath, { encoding: "utf8" }));
 
-    res.on("response", async response => {
-      // Check HTTP headers
-      expect(response.statusCode).toBe(200);
-      expect(response.headers["content-disposition"]).toBe(
-        `attachment; filename=$README.md`
-      );
+      res.on("response", async response => {
+        // Check HTTP headers
+        expect(response.statusCode).toBe(200);
+        expect(response.headers["content-disposition"]).toBe(
+          `attachment; filename=$README.md`
+        );
 
-      // Compare the actual files
-      const expectedPath = "./test/utils/stream-data/expected.md";
-      let expected = await readFile(expectedPath, {
-        encoding: "utf8"
+        // Compare the actual files
+        const expectedPath = "./test/utils/stream-data/expected.md";
+        let expected = await readFile(expectedPath, {
+          encoding: "utf8"
+        });
+
+        let actual = await readFile(actualPath, { encoding: "utf8" });
+        await unlink(actualPath);
+
+        expect(actual).toEqual(expected);
+
+        // Exit test
+        done();
       });
-
-      let actual = await readFile(actualPath, { encoding: "utf8" });
-      await unlink(actualPath);
-
-      expect(actual).toEqual(expected);
-
-      // Exit test
-      done();
     });
   });
 

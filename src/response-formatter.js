@@ -17,6 +17,12 @@ const formatter = {
   /** @param {Response} response */
   status: response => response.statusCode,
   /** @param {Response} response */
+  full: response => ({
+    body: response.body,
+    headers: response.headers,
+    status: response.statusCode,
+  }),
+  /** @param {Response} response */
   raw: response => response
 };
 

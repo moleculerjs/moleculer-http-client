@@ -54,7 +54,7 @@ module.exports = {
       logIncomingResponse: logIncomingResponse,
 
       // Format the Response
-      responseFormatter: "body", // one of "body", "headers", "status", "raw"
+      responseFormatter: "body", // one of "body", "headers", "status", "full", "raw"
 
       // Format the Errors
       errorFormatter: errorFormatter,

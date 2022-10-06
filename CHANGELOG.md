@@ -1,3 +1,10 @@
+<a name="0.4.3"></a>
+# [0.4.3](https://github.com/moleculerjs/moleculer/compare/v0.4.2...v0.4.3) (2022-10-06)
+
+- Add `full` to response `responseFormatter`. Full will return `body`, `headers` and `statusCode`
+
+- Bump deps
+
 <a name="0.4.2"></a>
 # [0.4.2](https://github.com/moleculerjs/moleculer/compare/v0.4.1...v0.4.2) (2021-06-17)
 
