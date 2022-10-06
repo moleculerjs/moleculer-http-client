@@ -20,8 +20,9 @@ jobs:
       with:
         path: node_modules
         key: ${{ matrix.node-version }}-node-${{ hashFiles('**/package-lock.json') }}
-    - name: npm install, build, and test
+    - name: npm install and test
       run: |
+        npm install
         npm test
       env:
         CI: true
