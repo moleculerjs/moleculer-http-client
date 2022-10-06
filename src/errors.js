@@ -7,14 +7,14 @@
 const { MoleculerError } = require("moleculer").Errors;
 
 class MoleculerHTTPClientError extends MoleculerError {
-  /**
-   *
-   * @param {string} msg
-   * @param {any} data
-   */
-  constructor(msg, data) {
-    super(msg, 500, "MOLECULER_HTTP_CLIENT_ERROR", data);
-  }
+	/**
+	 *
+	 * @param {string} msg
+	 * @param {any} data
+	 */
+	constructor(msg, data) {
+		super(msg, 500, "MOLECULER_HTTP_CLIENT_ERROR", data);
+	}
 }
 
 /**
@@ -24,30 +24,26 @@ class MoleculerHTTPClientError extends MoleculerError {
  * @returns {MoleculerHTTPClientError}
  */
 function errorFormatter(error) {
-  const { response } = error;
+	const { response } = error;
 
-  // Not a HTTP Error
-  /* istanbul ignore next */
-  if (!response) {
-    return new MoleculerHTTPClientError(`Moleculer HTTP Client Error.`, error);
-  }
+	// Not a HTTP Error
+	/* istanbul ignore next */
+	if (!response) {
+		return new MoleculerHTTPClientError(`Moleculer HTTP Client Error.`, error);
+	}
 
-  // ToDo: Parse the Got Error.
-  // Extract only what's needed
-  // URL, status code and HTTP method is enough ?
-  const parsedError = {
-    message: error.message,
-    method:
-      response.req && response.req.method ? response.req.method : undefined,
-    url: response.url,
-    statusCode: response.statusCode,
-    stack: error.stack
-  };
+	// ToDo: Parse the Got Error.
+	// Extract only what's needed
+	// URL, status code and HTTP method is enough ?
+	const parsedError = {
+		message: error.message,
+		method: response.req && response.req.method ? response.req.method : undefined,
+		url: response.url,
+		statusCode: response.statusCode,
+		stack: error.stack
+	};
 
-  return new MoleculerHTTPClientError(
-    `Moleculer HTTP Client Error.`,
-    parsedError
-  );
+	return new MoleculerHTTPClientError(`Moleculer HTTP Client Error.`, parsedError);
 }
 
 module.exports = { MoleculerHTTPClientError, errorFormatter };

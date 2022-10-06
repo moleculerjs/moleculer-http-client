@@ -1,1 +1,1 @@
-declare module 'moleculer-http-client';
+declare module "moleculer-http-client";
