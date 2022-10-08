@@ -355,6 +355,8 @@ module.exports = {
 		const { responseFormatter } = this.settings.httpClient;
 		if (_.isString(responseFormatter) && formatOptions.includes(responseFormatter)) {
 			defaultOptions.responseFormatter = formatter[responseFormatter];
+		} else if (_.isFunction(responseFormatter)) {
+			defaultOptions.responseFormatter = responseFormatter;
 		} else {
 			defaultOptions.responseFormatter = formatter["raw"];
 		}

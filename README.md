@@ -53,8 +53,8 @@ module.exports = {
       // Log response function
       logIncomingResponse: logIncomingResponse,
 
-      // Format the Response
-      responseFormatter: "body", // one of "body", "headers", "status", "full", "raw"
+      // Format the Response      
+      responseFormatter: "body", // one of "body", "headers", "status", "full", "raw" or a Function. Example: (res) => ({body: res.body, headers: res.headers})
 
       // Format the Errors
       errorFormatter: errorFormatter,
