@@ -4,6 +4,8 @@
 
 # moleculer-http-client
 
+> **Warning** Current version uses got v11 which does not support node v18. [We need help migrate to got v12](https://github.com/moleculerjs/moleculer-http-client/issues/19)
+
 A tiny wrapper around [got](https://www.npmjs.com/package/got) HTTP client that allows [Moleculer](https://moleculer.services/) services to communicate with REST APIs. Why got? Because [reasons](https://github.com/sindresorhus/got#comparison).
 
   - [Service Settings](#service-settings)
