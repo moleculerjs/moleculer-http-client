@@ -412,7 +412,7 @@ broker.start().then(() => {
   // Pass stream as ctx.params
   // Pass URL and options in ctx.meta
   const req = broker.call("http.post", stream, {
-    meta: { url: "http://localhost:4000/stream", isStream: true }
+    meta: { url: "http://127.0.0.1:4000/stream", isStream: true }
   });
 
   req.then(res => {

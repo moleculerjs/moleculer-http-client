@@ -122,7 +122,7 @@ describe("Test HTTP methods", () => {
 		expect.assertions(1);
 
 		let res = await broker.call("http.fancyRequest", {
-			url: "http://localhost:4000/json",
+			url: "http://127.0.0.1:4000/json",
 			opt: { method: "GET", responseType: "json" }
 		});
 
@@ -135,7 +135,7 @@ describe("Test HTTP methods", () => {
 		expect.assertions(1);
 
 		let res = await broker.call("http.get", {
-			url: "http://localhost:4000/json",
+			url: "http://127.0.0.1:4000/json",
 			opt: { responseType: "json" }
 		});
 
@@ -148,7 +148,7 @@ describe("Test HTTP methods", () => {
 		expect.assertions(1);
 
 		let res = await broker.call("http.get", {
-			url: "http://localhost:4000/json"
+			url: "http://127.0.0.1:4000/json"
 		});
 
 		let expected = { hello: 200 };
@@ -159,7 +159,7 @@ describe("Test HTTP methods", () => {
 	it("should GET as stream a Readme file", done => {
 		broker
 			.call("http.get", {
-				url: "http://localhost:4000/stream",
+				url: "http://127.0.0.1:4000/stream",
 				opt: { isStream: true }
 			})
 			.then(res => {
@@ -194,7 +194,7 @@ describe("Test HTTP methods", () => {
 		expect.assertions(2);
 
 		let res = await broker.call("http.post", {
-			url: "http://localhost:4000/json",
+			url: "http://127.0.0.1:4000/json",
 			opt: {
 				json: { data: "POST From unit test" },
 				responseType: "json"
@@ -211,7 +211,7 @@ describe("Test HTTP methods", () => {
 		expect.assertions(2);
 
 		let res = await broker.call("http.post", {
-			url: "http://localhost:4000/json"
+			url: "http://127.0.0.1:4000/json"
 		});
 
 		let expected = { id: 123 };
@@ -226,7 +226,7 @@ describe("Test HTTP methods", () => {
 
 		let res = await broker.call("http.post", stream, {
 			meta: {
-				url: "http://localhost:4000/stream",
+				url: "http://127.0.0.1:4000/stream",
 				isStream: true
 			}
 		});
@@ -251,7 +251,7 @@ describe("Test HTTP methods", () => {
 		expect.assertions(2);
 
 		let res = await broker.call("http.put", {
-			url: "http://localhost:4000/json",
+			url: "http://127.0.0.1:4000/json",
 			opt: {
 				json: { data: "PUT From unit test" },
 				responseType: "json"
@@ -268,7 +268,7 @@ describe("Test HTTP methods", () => {
 		expect.assertions(2);
 
 		let res = await broker.call("http.put", {
-			url: "http://localhost:4000/json"
+			url: "http://127.0.0.1:4000/json"
 		});
 
 		let expected = { updated: "something" };
@@ -283,7 +283,7 @@ describe("Test HTTP methods", () => {
 
 		let res = await broker.call("http.put", stream, {
 			meta: {
-				url: "http://localhost:4000/stream",
+				url: "http://127.0.0.1:4000/stream",
 				isStream: true
 			}
 		});
@@ -308,7 +308,7 @@ describe("Test HTTP methods", () => {
 		expect.assertions(2);
 
 		let res = await broker.call("http.patch", {
-			url: "http://localhost:4000/json",
+			url: "http://127.0.0.1:4000/json",
 			opt: {
 				json: { data: "PATCH From unit test" },
 				responseType: "json"
@@ -325,7 +325,7 @@ describe("Test HTTP methods", () => {
 		expect.assertions(2);
 
 		let res = await broker.call("http.patch", {
-			url: "http://localhost:4000/json"
+			url: "http://127.0.0.1:4000/json"
 		});
 
 		let expected = { patched: "something" };
@@ -340,7 +340,7 @@ describe("Test HTTP methods", () => {
 
 		let res = await broker.call("http.patch", stream, {
 			meta: {
-				url: "http://localhost:4000/stream",
+				url: "http://127.0.0.1:4000/stream",
 				isStream: true
 			}
 		});
@@ -365,7 +365,7 @@ describe("Test HTTP methods", () => {
 		expect.assertions(2);
 
 		let res = await broker.call("http.delete", {
-			url: "http://localhost:4000/json/123",
+			url: "http://127.0.0.1:4000/json/123",
 			opt: { responseType: "json" }
 		});
 
@@ -379,7 +379,7 @@ describe("Test HTTP methods", () => {
 		expect.assertions(2);
 
 		let res = await broker.call("http.delete", {
-			url: "http://localhost:4000/json/123"
+			url: "http://127.0.0.1:4000/json/123"
 		});
 
 		let expected = { deleted: "something", id: 123 };
@@ -411,7 +411,7 @@ describe("Test Error Handling", () => {
 				expect.assertions(3);
 
 				try {
-					await service._get("http://localhost:4000/status/404", {
+					await service._get("http://127.0.0.1:4000/status/404", {
 						responseType: "json"
 					});
 				} catch (error) {
@@ -425,7 +425,7 @@ describe("Test Error Handling", () => {
 				expect.assertions(3);
 
 				try {
-					await service._post("http://localhost:4000/status/404", {
+					await service._post("http://127.0.0.1:4000/status/404", {
 						responseType: "json"
 					});
 				} catch (error) {
@@ -439,7 +439,7 @@ describe("Test Error Handling", () => {
 				expect.assertions(3);
 
 				try {
-					await service._put("http://localhost:4000/status/404", {
+					await service._put("http://127.0.0.1:4000/status/404", {
 						responseType: "json"
 					});
 				} catch (error) {
@@ -453,7 +453,7 @@ describe("Test Error Handling", () => {
 				expect.assertions(3);
 
 				try {
-					await service._patch("http://localhost:4000/status/404", {
+					await service._patch("http://127.0.0.1:4000/status/404", {
 						responseType: "json"
 					});
 				} catch (error) {
@@ -467,7 +467,7 @@ describe("Test Error Handling", () => {
 				expect.assertions(3);
 
 				try {
-					await service._delete("http://localhost:4000/status/404", {
+					await service._delete("http://127.0.0.1:4000/status/404", {
 						responseType: "json"
 					});
 				} catch (error) {
@@ -504,7 +504,7 @@ describe("Test Error Handling", () => {
 				expect.assertions(1);
 
 				try {
-					await service._get("http://localhost:4000/status/404", {
+					await service._get("http://127.0.0.1:4000/status/404", {
 						responseType: "json"
 					});
 				} catch (error) {
@@ -516,7 +516,7 @@ describe("Test Error Handling", () => {
 				expect.assertions(1);
 
 				try {
-					await service._post("http://localhost:4000/status/404", {
+					await service._post("http://127.0.0.1:4000/status/404", {
 						responseType: "json"
 					});
 				} catch (error) {
@@ -528,7 +528,7 @@ describe("Test Error Handling", () => {
 				expect.assertions(1);
 
 				try {
-					await service._put("http://localhost:4000/status/404", {
+					await service._put("http://127.0.0.1:4000/status/404", {
 						responseType: "json"
 					});
 				} catch (error) {
@@ -540,7 +540,7 @@ describe("Test Error Handling", () => {
 				expect.assertions(1);
 
 				try {
-					await service._patch("http://localhost:4000/status/404", {
+					await service._patch("http://127.0.0.1:4000/status/404", {
 						responseType: "json"
 					});
 				} catch (error) {
@@ -552,7 +552,7 @@ describe("Test Error Handling", () => {
 				expect.assertions(1);
 
 				try {
-					await service._delete("http://localhost:4000/status/404", {
+					await service._delete("http://127.0.0.1:4000/status/404", {
 						responseType: "json"
 					});
 				} catch (error) {
@@ -589,7 +589,7 @@ describe("Test Error Handling", () => {
 				expect.assertions(1);
 
 				try {
-					await service._get("http://localhost:4000/status/404", {
+					await service._get("http://127.0.0.1:4000/status/404", {
 						responseType: "json"
 					});
 				} catch (error) {
@@ -601,7 +601,7 @@ describe("Test Error Handling", () => {
 				expect.assertions(1);
 
 				try {
-					await service._post("http://localhost:4000/status/404", {
+					await service._post("http://127.0.0.1:4000/status/404", {
 						responseType: "json"
 					});
 				} catch (error) {
@@ -613,7 +613,7 @@ describe("Test Error Handling", () => {
 				expect.assertions(1);
 
 				try {
-					await service._put("http://localhost:4000/status/404", {
+					await service._put("http://127.0.0.1:4000/status/404", {
 						responseType: "json"
 					});
 				} catch (error) {
@@ -625,7 +625,7 @@ describe("Test Error Handling", () => {
 				expect.assertions(1);
 
 				try {
-					await service._patch("http://localhost:4000/status/404", {
+					await service._patch("http://127.0.0.1:4000/status/404", {
 						responseType: "json"
 					});
 				} catch (error) {
@@ -637,7 +637,7 @@ describe("Test Error Handling", () => {
 				expect.assertions(1);
 
 				try {
-					await service._delete("http://localhost:4000/status/404", {
+					await service._delete("http://127.0.0.1:4000/status/404", {
 						responseType: "json"
 					});
 				} catch (error) {
@@ -671,7 +671,7 @@ describe("Test Error Handling", () => {
 
 				try {
 					await broker.call("http.get", {
-						url: "http://localhost:4000/status/404",
+						url: "http://127.0.0.1:4000/status/404",
 						opt: { responseType: "json" }
 					});
 				} catch (error) {
@@ -686,7 +686,7 @@ describe("Test Error Handling", () => {
 
 				try {
 					await broker.call("http.post", {
-						url: "http://localhost:4000/status/404",
+						url: "http://127.0.0.1:4000/status/404",
 						opt: { responseType: "json" }
 					});
 				} catch (error) {
@@ -701,7 +701,7 @@ describe("Test Error Handling", () => {
 
 				try {
 					await broker.call("http.put", {
-						url: "http://localhost:4000/status/404",
+						url: "http://127.0.0.1:4000/status/404",
 						opt: { responseType: "json" }
 					});
 				} catch (error) {
@@ -716,7 +716,7 @@ describe("Test Error Handling", () => {
 
 				try {
 					await broker.call("http.patch", {
-						url: "http://localhost:4000/status/404",
+						url: "http://127.0.0.1:4000/status/404",
 						opt: { responseType: "json" }
 					});
 				} catch (error) {
@@ -731,7 +731,7 @@ describe("Test Error Handling", () => {
 
 				try {
 					await broker.call("http.delete", {
-						url: "http://localhost:4000/status/404",
+						url: "http://127.0.0.1:4000/status/404",
 						opt: { responseType: "json" }
 					});
 				} catch (error) {
@@ -769,7 +769,7 @@ describe("Test Error Handling", () => {
 
 				try {
 					await broker.call("http.get", {
-						url: "http://localhost:4000/status/404",
+						url: "http://127.0.0.1:4000/status/404",
 						opt: { responseType: "json" }
 					});
 				} catch (error) {
@@ -782,7 +782,7 @@ describe("Test Error Handling", () => {
 
 				try {
 					await broker.call("http.post", {
-						url: "http://localhost:4000/status/404",
+						url: "http://127.0.0.1:4000/status/404",
 						opt: { responseType: "json" }
 					});
 				} catch (error) {
@@ -795,7 +795,7 @@ describe("Test Error Handling", () => {
 
 				try {
 					await broker.call("http.put", {
-						url: "http://localhost:4000/status/404",
+						url: "http://127.0.0.1:4000/status/404",
 						opt: { responseType: "json" }
 					});
 				} catch (error) {
@@ -808,7 +808,7 @@ describe("Test Error Handling", () => {
 
 				try {
 					await broker.call("http.patch", {
-						url: "http://localhost:4000/status/404",
+						url: "http://127.0.0.1:4000/status/404",
 						opt: { responseType: "json" }
 					});
 				} catch (error) {
@@ -821,7 +821,7 @@ describe("Test Error Handling", () => {
 
 				try {
 					await broker.call("http.delete", {
-						url: "http://localhost:4000/status/404",
+						url: "http://127.0.0.1:4000/status/404",
 						opt: { responseType: "json" }
 					});
 				} catch (error) {
@@ -859,7 +859,7 @@ describe("Test Error Handling", () => {
 
 				try {
 					await broker.call("http.get", {
-						url: "http://localhost:4000/status/404",
+						url: "http://127.0.0.1:4000/status/404",
 						opt: { responseType: "json" }
 					});
 				} catch (error) {
@@ -872,7 +872,7 @@ describe("Test Error Handling", () => {
 
 				try {
 					await broker.call("http.post", {
-						url: "http://localhost:4000/status/404",
+						url: "http://127.0.0.1:4000/status/404",
 						opt: { responseType: "json" }
 					});
 				} catch (error) {
@@ -885,7 +885,7 @@ describe("Test Error Handling", () => {
 
 				try {
 					await broker.call("http.put", {
-						url: "http://localhost:4000/status/404",
+						url: "http://127.0.0.1:4000/status/404",
 						opt: { responseType: "json" }
 					});
 				} catch (error) {
@@ -898,7 +898,7 @@ describe("Test Error Handling", () => {
 
 				try {
 					await broker.call("http.patch", {
-						url: "http://localhost:4000/status/404",
+						url: "http://127.0.0.1:4000/status/404",
 						opt: { responseType: "json" }
 					});
 				} catch (error) {
@@ -911,7 +911,7 @@ describe("Test Error Handling", () => {
 
 				try {
 					await broker.call("http.delete", {
-						url: "http://localhost:4000/status/404",
+						url: "http://127.0.0.1:4000/status/404",
 						opt: { responseType: "json" }
 					});
 				} catch (error) {
@@ -958,7 +958,7 @@ describe("Test Moleculer HTTP Client Logging", () => {
 
 	it("should use log messages 2 times each", async () => {
 		let response = await broker.call("gotMixed.get", {
-			url: "http://localhost:4000/status/200",
+			url: "http://127.0.0.1:4000/status/200",
 			opt: { responseType: "json" }
 		});
 		expect(response.statusCode).toBe(200);
@@ -969,7 +969,7 @@ describe("Test Moleculer HTTP Client Logging", () => {
 		expect(defaultOptions.logIncomingResponse).toHaveBeenCalledTimes(1);
 
 		await broker.call("gotMixed.get", {
-			url: "http://localhost:4000/status/200"
+			url: "http://127.0.0.1:4000/status/200"
 		});
 
 		expect(defaultOptions.logOutgoingRequest).toHaveBeenCalledTimes(2);
@@ -1008,7 +1008,7 @@ describe("Test Response Formatter", () => {
 		expect.assertions(1);
 
 		let res = await broker.call("http.get", {
-			url: "http://localhost:4000/json",
+			url: "http://127.0.0.1:4000/json",
 			opt: { responseType: "json" }
 		});
 
@@ -1026,7 +1026,7 @@ describe("Test Response Formatter", () => {
 		expect.assertions(1);
 
 		let res = await broker.call("http.get", {
-			url: "http://localhost:4000/json"
+			url: "http://127.0.0.1:4000/json"
 		});
 
 		let expected = { hello: 200 };
@@ -1043,7 +1043,7 @@ describe("Test Response Formatter", () => {
 		expect.assertions(1);
 
 		let res = await broker.call("http.get", {
-			url: "http://localhost:4000/json",
+			url: "http://127.0.0.1:4000/json",
 			opt: { responseType: "json" }
 		});
 
@@ -1068,7 +1068,7 @@ describe("Test Response Formatter", () => {
 		expect.assertions(1);
 
 		let res = await broker.call("http.get", {
-			url: "http://localhost:4000/json",
+			url: "http://127.0.0.1:4000/json",
 			opt: { responseType: "json" }
 		});
 
@@ -1084,7 +1084,7 @@ describe("Test Response Formatter", () => {
 		expect.assertions(3);
 
 		let res = await broker.call("http.get", {
-			url: "http://localhost:4000/json",
+			url: "http://127.0.0.1:4000/json",
 			opt: { responseType: "json" }
 		});
 
@@ -1102,7 +1102,7 @@ describe("Test Response Formatter", () => {
 		expect.assertions(3);
 
 		let res = await broker.call("http.get", {
-			url: "http://localhost:4000/json",
+			url: "http://127.0.0.1:4000/json",
 			opt: { responseType: "json" }
 		});
 
@@ -1155,12 +1155,12 @@ describe("Test Cache", () => {
 			expect.assertions(2);
 
 			let res1 = await broker.call("http.get", {
-				url: "http://localhost:4000/cache",
+				url: "http://127.0.0.1:4000/cache",
 				opt: { responseType: "json" }
 			});
 
 			let res2 = await broker.call("http.get", {
-				url: "http://localhost:4000/cache",
+				url: "http://127.0.0.1:4000/cache",
 				opt: { responseType: "json" }
 			});
 
@@ -1215,12 +1215,12 @@ describe("Test Cache", () => {
 			expect.assertions(2);
 
 			let res1 = await broker.call("http.get", {
-				url: "http://localhost:4000/cache",
+				url: "http://127.0.0.1:4000/cache",
 				opt: { responseType: "json" }
 			});
 
 			let res2 = await broker.call("http.get", {
-				url: "http://localhost:4000/cache",
+				url: "http://127.0.0.1:4000/cache",
 				opt: { responseType: "json" }
 			});
 

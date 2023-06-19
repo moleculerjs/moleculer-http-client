@@ -3,6 +3,8 @@
 
 - Add `full` to response `responseFormatter`. Full will return `body`, `headers` and `statusCode`
 
+- Allow `responseFormatter` to be custom function
+
 - Bump deps
 
 <a name="0.4.2"></a>
